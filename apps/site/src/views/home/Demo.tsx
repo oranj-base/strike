@@ -12,7 +12,7 @@ export default function Demo() {
             See STRIKE in action
           </p>
         </div>
-        <div className="font-normal text-[18px] leading-[27px] text-justify">
+        <div className="font-normal text-[18px] leading-[27px] text-left">
           <p>
             Unlock the full potential of STRIKE by interacting with canisters
             directly through shared links on social media. Using the STRIKE

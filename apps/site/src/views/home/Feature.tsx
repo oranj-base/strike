@@ -14,7 +14,7 @@ export default function Feature() {
           </p>
         </div>
         <div>
-          <p className="text-[18px] leading-[27px] text-justify">
+          <p className="text-[18px] leading-[27px] text-left">
             STRIKE empowers users to share actionable links that interact with
             canisters on the Internet Computer Protocol (ICP). With STRIKE,
             users can perform secure and efficient actions directly from social

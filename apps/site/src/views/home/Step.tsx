@@ -28,7 +28,7 @@ export default function Step() {
             <p className="sm:text-[24px] text-[20px] leading-[32px] sm:font-medium font-bold sm:font-sans font-archivo">
               Install the Chrome Extension
             </p>
-            <p className="text-[16px] leading-[24px] font-normal text-justify">
+            <p className="text-[16px] leading-[24px] font-normal text-left">
               Download the STRIKE Chrome extension to authenticate and interact
               with STRIKE-supported platforms via the Internet Computer Protocol
               (ICP).
@@ -45,7 +45,7 @@ export default function Step() {
             <p className="sm:text-[24px] text-[20px] leading-[32px] sm:font-medium font-bold sm:font-sans font-archivo">
               Create and Host the Actions File
             </p>
-            <p className="text-[16px] leading-[24px] font-normal text-justify">
+            <p className="text-[16px] leading-[24px] font-normal text-left">
               Define actions in a JSON file, host it publicly, and test it using
               the STRIKE website to preview the actions before sharing.
             </p>
@@ -61,7 +61,7 @@ export default function Step() {
             <p className="sm:text-[24px] text-[20px] leading-[32px] sm:font-medium font-bold sm:font-sans font-archivo">
               Share and Engage with STRIKE Cards
             </p>
-            <p className="text-[16px] leading-[24px] font-normal text-justify">
+            <p className="text-[16px] leading-[24px] font-normal text-left">
               Share your hosted link on platforms like X (formerly Twitter),
               where it will unfurl into a STRIKE Card for users to interact with
               your canister actions, powered by ICP.

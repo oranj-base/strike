@@ -72,35 +72,36 @@ export default function Header() {
               onClick={handlerMenuIconClick}
             />
           )}
-        </div>
-        {menuVisible && (
-          <div className="sm:hidden flex flex-col gap-[16px] py-[32px] transition-opacity ease-in-out delay-150">
-            <div className="flex flex-row gap-[8px]">
-              <ExtensionIcon width={20} height={20} />
-              <a
-                href="https://chromewebstore.google.com/detail/strike-by-oranj/iomlailejogiahpdlmckpjdkipgpfccm "
-                target="_blank"
-              >
-                Get Chrome Extension
-              </a>
+          {menuVisible && (
+            <div className="sm:hidden absolute top-full flex flex-col gap-[16px] py-[32px] px-[10px] transition-opacity ease-in-out delay-150 w-full bg-[#FAFAFA] shadow-xl">
+              <div className="flex flex-row gap-[8px]">
+                <ExtensionIcon width={20} height={20} />
+                <a
+                  href="https://chromewebstore.google.com/detail/strike-by-oranj/iomlailejogiahpdlmckpjdkipgpfccm "
+                  target="_blank"
+                >
+                  Get Chrome Extension
+                </a>
+              </div>
+              <ConnectButton
+                style={{
+                  borderRadius: 12,
+                  padding: `8px 12px`,
+                  borderColor: '#2B5ACC',
+                  backgroundColor: '#3670FF',
+                  fontWeight: 600,
+                  fontSize: 14,
+                  borderWidth: 1,
+                  borderStyle: 'solid',
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              />
             </div>
-            <ConnectButton
-              style={{
-                borderRadius: 12,
-                padding: `8px 12px`,
-                borderColor: '#2B5ACC',
-                backgroundColor: '#3670FF',
-                fontWeight: 600,
-                fontSize: 14,
-                borderWidth: 1,
-                borderStyle: 'solid',
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            />
-          </div>
-        )}
+          )}
+        </div>
+
         <div className="flex flex-col sm:gap-[48px] gap-[32px] sm:pb-[48px] py-[32px]">
           <div className="flex flex-row gap-[12px] xs:py-[10px]">
             <span className="font-normal text-[18px] leading-[27px]">
@@ -120,7 +121,7 @@ export default function Header() {
             <span>powered by ICP.</span>
           </div>
           <div className="font-normal text-[18px] leading-[27px]">
-            <p className="text-justify">
+            <p className="text-left">
               STRIKE helps users share links that convert into STRIKE Cards,
               making it simple to interact and perform actions on social media.
             </p>
