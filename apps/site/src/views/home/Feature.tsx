@@ -5,7 +5,7 @@ export default function Feature() {
   return (
     <section className="flex md:flex-row flex-col gap-[64px] items-center font-normal lg:py-[96px] py-[48px] lg:px-[160px] px-[20px]">
       <div className="flex flex-col gap-[16px] w-full">
-        <div className="flex flex-col gap-[12px] font-medium sm:text-center text-left ">
+        <div className="flex flex-col gap-[12px] font-medium text-left">
           <a className="text-[#3670FF] text-[16px] leading-[24px]" href="/">
             Features
           </a>
@@ -45,13 +45,13 @@ export default function Feature() {
         </div>
       </div>
       <div className="lg:px-[88px] px-[40px] lg:py-[112px]">
-        <div className="relative flex flex-col gap-[20px] rounded-[12px] p-[12px]">
+        <div className="relative flex flex-col gap-[20px] rounded-[12px] p-[12px] bg-[#F4F4F5]">
           <Image
             src={'/hello-strike.png'}
             alt="card"
             width={336}
             height={320}
-            className="rounded-[8px] sm:max-w-[336px]"
+            className="rounded-[8px] sm:max-w-[336px] border-[1px] border-[#E4E4E7]"
           />
           <div className="flex flex-col gap-[12px] font-normal">
             <div className="flex flex-row gap-[8px]">

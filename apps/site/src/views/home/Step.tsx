@@ -11,7 +11,7 @@ export default function Step() {
           </p>
         </div>
         <div>
-          <p className="text-[18px] leading-[27px] font-normal">
+          <p className="text-[18px] leading-[27px] font-normal text-center">
             Let's explore how STRIKE operates to better understand its
             operation.
           </p>
