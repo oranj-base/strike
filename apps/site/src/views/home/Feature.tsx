@@ -44,14 +44,14 @@ export default function Feature() {
           </div>
         </div>
       </div>
-      <div className="lg:px-[88px] px-[20px] lg:py-[112px]">
-        <div className="relative flex flex-col gap-[20px] rounded-[12px] p-[12px] sm:max-w-[336px] max-w-[245px]">
+      <div className="lg:px-[88px] px-[40px] lg:py-[112px]">
+        <div className="relative flex flex-col gap-[20px] rounded-[12px] p-[12px]">
           <Image
             src={'/hello-strike.png'}
             alt="card"
             width={336}
             height={320}
-            className="rounded-[8px] sm:max-w-[336px] max-w-[245px]"
+            className="rounded-[8px] sm:max-w-[336px]"
           />
           <div className="flex flex-col gap-[12px] font-normal">
             <div className="flex flex-row gap-[8px]">

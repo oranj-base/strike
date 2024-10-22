@@ -39,8 +39,8 @@ export default function Header() {
   };
 
   return (
-    <section className="flex md:flex-row flex-col gap-[64px] sm:mt-[32px] lg:pl-[160px] px-[20px]">
-      <div className="flex flex-col justify-between w-full">
+    <section className="flex md:flex-row flex-col gap-[64px] sm:mt-[32px] lg:pl-[160px] px-[20px] lg:h-screen">
+      <div className="flex flex-col justify-between w-full ">
         <div className="relative flex flex-row justify-between lg:py-[0px] py-[24px]">
           <a className="flex flex-row gap-[4.36px] items-center" href="/">
             <StrikeLogo width={24} height={24} />
@@ -101,7 +101,6 @@ export default function Header() {
             </div>
           )}
         </div>
-
         <div className="flex flex-col sm:gap-[48px] gap-[32px] sm:pb-[48px] py-[32px]">
           <div className="flex flex-row gap-[12px] xs:py-[10px]">
             <span className="font-normal text-[18px] leading-[27px]">
