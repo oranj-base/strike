@@ -6,11 +6,11 @@ import { ConnectButton, ConnectDialog } from '@blinks-icp/wallet-adapter-react';
 import { ICP_BLINK_PREFIX } from '@blinks-icp/core';
 import {
   StrikeLogo,
-  BetBTCIcon,
   LinkIcon,
   MenuIcon,
   CrossIcon,
   ExtensionIcon,
+  OranjOrangeIcon,
 } from '@/assets';
 import '@blinks-icp/core/index.css';
 import '@blinks-icp/wallet-adapter-react/index.css';
@@ -106,9 +106,9 @@ export default function Header() {
             <span className="font-normal text-[18px] leading-[27px]">
               Brought to you by
             </span>
-            <BetBTCIcon width={92} height={22} />
+            <OranjOrangeIcon width={69} height={22} />
           </div>
-          <div className="flex flex-col gap-[12px] sm:font-medium font-bold sm:font-sans font-archivo sm:text-[72px] xs:text-[47px] text-[40px] sm:leading-[72px] leading-[40px] lg:text-left sm:text-center text-left">
+          <div className="flex flex-col gap-[12px] font-bold font-archivo sm:text-[72px] xs:text-[47px] text-[40px] sm:leading-[72px] leading-[40px] lg:text-left sm:text-center text-left">
             Share actionable
             <div className="flex flex-row lg:justify-between sm:justify-center justify-between items-center">
               links
@@ -119,7 +119,7 @@ export default function Header() {
             </div>
             <span>powered by ICP.</span>
           </div>
-          <div className="font-normal text-[18px] leading-[27px]">
+          <div className="font-normal text-[18px] text-[#27272A] leading-[27px] ">
             <p className="text-left">
               STRIKE helps users share links that convert into STRIKE Cards,
               making it simple to interact and perform actions on social media.
@@ -128,7 +128,7 @@ export default function Header() {
           <div className="flex sm:flex-row flex-col justify-between sm:gap-[48px] gap-[16px]">
             <input
               type="text"
-              className="outline-none w-full rounded-[12px] border-[#D4D4D8] py-[12px] px-[14px]"
+              className="outline-none w-full rounded-[12px] border-[1px] border-[#D4D4D8] py-[12px] px-[14px]"
               placeholder="Enter URL to unfurl"
               value={tempUrl}
               onChange={(e) => setTempUrl(e.target.value)}

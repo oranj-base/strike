@@ -9,12 +9,12 @@ export default function Feature() {
           <a className="text-[#3670FF] text-[16px] leading-[24px]" href="/">
             Features
           </a>
-          <p className="sm:font-sans font-archivo sm:text-[48px] sm:font-medium font-bold text-[32px] leading-[60px]">
+          <p className="font-archivo sm:text-[48px] font-bold text-[32px] leading-[60px]">
             Features of STRIKE
           </p>
         </div>
         <div>
-          <p className="text-[18px] leading-[27px] text-left">
+          <p className="text-[18px] leading-[27px] text-left text-[#27272A]">
             STRIKE empowers users to share actionable links that interact with
             canisters on the Internet Computer Protocol (ICP). With STRIKE,
             users can perform secure and efficient actions directly from social

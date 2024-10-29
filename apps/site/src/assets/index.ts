@@ -9,3 +9,5 @@ export * from './MenuIcon';
 export * from './CrossIcon';
 export * from './ExtensionIcon';
 export * from './VerifyIcon';
+export * from './OranjOrangeIcon';
+export * from './OranjWhiteIcon';
