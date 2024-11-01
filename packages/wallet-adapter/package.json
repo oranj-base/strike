@@ -1,8 +1,8 @@
 {
-  "name": "@blinks-icp/wallet-adapter",
-  "author": "Mio Quispe",
+  "name": "@oranjlabs/icp-wallet-adapter",
+  "author": "Edward Lee <edward@oranj.co>",
   "private": false,
-  "version": "0.2.0-beta.23",
+  "version": "0.0.1",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",

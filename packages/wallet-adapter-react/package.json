@@ -1,7 +1,7 @@
 {
-  "name": "@blinks-icp/wallet-adapter-react",
-  "author": "Mio Quispe",
-  "version": "0.2.0-beta.23",
+  "name": "@oranjlabs/icp-wallet-adapter-react",
+  "author": "Edward Lee <edward@oranj.co>",
+  "version": "0.0.1",
   "sideEffects": true,
   "type": "module",
   "main": "dist/index.js",
@@ -38,7 +38,7 @@
     "typescript": "^5.5.3"
   },
   "peerDependencies": {
-    "@blinks-icp/wallet-adapter": "*",
+    "@oranjlabs/icp-wallet-adapter": "*",
     "react": "*"
   }
 }

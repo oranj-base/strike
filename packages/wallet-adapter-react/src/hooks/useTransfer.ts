@@ -3,7 +3,7 @@ import {
   type IConnector,
   type IWalletConnector,
   TransferError,
-} from "@blinks-icp/wallet-adapter";
+} from "@oranjlabs/icp-wallet-adapter";
 import { err } from "neverthrow";
 
 import { useConnect } from "./useConnect";

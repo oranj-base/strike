@@ -1,6 +1,6 @@
-import '@blinks-icp/core/index.css';
-import { ActionConfig, setupTwitterObserver } from '@blinks-icp/core';
-import { createClient, defaultProviders } from '@blinks-icp/wallet-adapter';
+import '@oranjlabs/strike/index.css';
+import { ActionConfig, setupTwitterObserver } from '@oranjlabs/strike';
+import { createClient, defaultProviders } from '@oranjlabs/icp-wallet-adapter';
 import type { IDL } from '@dfinity/candid';
 
 export const host =

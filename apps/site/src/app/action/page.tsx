@@ -2,8 +2,8 @@
 import type { Metadata, ResolvingMetadata } from 'next';
 
 // DO NOT IMPORT FROM core directly
-import { unfurlUrlToActionApiUrl } from '@blinks-icp/core/utils';
-import { Action } from '@blinks-icp/core/api';
+import { unfurlUrlToActionApiUrl } from '@oranjlabs/strike/utils';
+import { Action } from '@oranjlabs/strike/api';
 
 import { StrikePage } from '@/views';
 

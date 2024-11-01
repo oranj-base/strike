@@ -1,6 +1,6 @@
-import { useConnect, useDialog } from '@blinks-icp/wallet-adapter-react';
 import { Actor, HttpAgent } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
+import { useConnect, useDialog } from '@oranjlabs/icp-wallet-adapter-react';
 import { useMemo } from 'react';
 
 import { ActionConfig } from '../../api';

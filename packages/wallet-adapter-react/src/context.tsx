@@ -1,5 +1,5 @@
 import React, { createContext, useState, type PropsWithChildren } from "react";
-import type { Client } from "@blinks-icp/wallet-adapter";
+import type { Client } from "@oranjlabs/icp-wallet-adapter";
 
 import "./style.css";
 import { ConnectDialog } from "./components";

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { HttpAgent } from '@dfinity/agent';
-import { Blink, useAction, useActionICPWalletAdapter } from '@blinks-icp/core';
+import { Blink, useAction, useActionICPWalletAdapter } from '@oranjlabs/strike';
 
 import { host } from '@/config';
 

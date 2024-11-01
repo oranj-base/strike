@@ -1,6 +1,9 @@
 import { useContext } from "react";
 import { useSelector } from "@xstate/react";
-import type { IConnector, IWalletConnector } from "@blinks-icp/wallet-adapter";
+import type {
+  IConnector,
+  IWalletConnector,
+} from "@oranjlabs/icp-wallet-adapter";
 
 import { useConnect } from "./useConnect";
 import { Connect2ICContext } from "../context";

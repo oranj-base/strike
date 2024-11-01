@@ -1,5 +1,5 @@
 {
-  "name": "blinks-icp",
+  "name": "oranjlabs-strike",
   "version": "0.7.0",
   "license": "Apache-2.0",
   "private": true,
@@ -13,15 +13,10 @@
     "apps/*"
   ],
   "scripts": {
-    "dev:site": "yarn workspace @blinks-icp/site start",
+    "dev:site": "yarn workspace @ornajlabs/strike-site start",
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint"
-  },
-  "resolutions": {
-    "@solana/wallet-adapter-react": "^0.15.0",
-    "@solana/wallet-adapter-react-ui": "^0.9.0",
-    "@solana/web3.js": "^1.95.1"
   },
   "devDependencies": {
     "turbo": "^2.0.12"
