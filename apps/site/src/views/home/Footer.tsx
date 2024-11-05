@@ -15,7 +15,7 @@ export default function Footer() {
           Visit betBTC
         </a>
         <a href="https://docs.strike.oranj.co/" target="_blank">
-          Visit Oranj
+          Documentation
         </a>
       </div>
       <div className="font-normal text-[16px] leading-[24px] text-[#717179]">

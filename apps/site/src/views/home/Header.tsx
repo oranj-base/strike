@@ -105,7 +105,7 @@ export default function Header() {
         <div className="flex flex-col sm:gap-[48px] gap-[32px] sm:pb-[48px] py-[32px]">
           <div className="flex flex-row gap-[12px] xs:py-[10px]">
             <span className="font-normal text-[18px] leading-[27px]">
-              Brought to you by
+              Brought you by
             </span>
             <OranjOrangeIcon width={69} height={22} />
           </div>
