@@ -22,10 +22,13 @@ export default function Demo() {
           </p>
         </div>
       </div>
-      <iframe
+      {/* <iframe
         className="w-full h-auto aspect-video rounded-[12px]"
         src="https://www.youtube.com/embed/tgbNymZ7vqY?&mute=1"
-      ></iframe>
+      ></iframe> */}
+      <div className="flex justify-center items-center w-full aspect-video rounded-[12px] bg-[#D4D4D8]">
+        <Vector className="lg:w-[160px] md:w-[100px] w-[80px]" />
+      </div>
     </section>
   );
 }
