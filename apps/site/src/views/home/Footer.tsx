@@ -11,9 +11,6 @@ export default function Footer() {
       </a>
       <div className="flex sm:flex-row flex-col md:gap-[32px] gap-[16px] text-[14px] leading-[24px] font-medium">
         <a href="/privacy">Privacy Policy</a>
-        <a href="" target="_blank">
-          Visit betBTC
-        </a>
         <a href="https://docs.strike.oranj.co/" target="_blank">
           Documentation
         </a>
