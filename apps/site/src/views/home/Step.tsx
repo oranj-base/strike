@@ -6,12 +6,12 @@ export default function Step() {
           <a className="text-[#3670FF] text-[16px] leading-[24px]" href="/">
             Steps
           </a>
-          <p className="sm:text-[48px] text-[32px] sm:font-medium font-bold sm:leading-[60px] leading-[40px] sm:font-sans font-archivo">
+          <p className="sm:text-[48px] text-[32px] font-bold sm:leading-[60px] leading-[40px] font-archivo">
             How STRIKE works
           </p>
         </div>
         <div>
-          <p className="text-[18px] leading-[27px] font-normal">
+          <p className="text-[18px] leading-[27px] font-normal text-center">
             Let's explore how STRIKE operates to better understand its
             operation.
           </p>
@@ -25,10 +25,10 @@ export default function Step() {
             </span>
           </div>
           <div className="flex flex-col gap-[12px] justfiy-between text-left">
-            <p className="sm:text-[24px] text-[20px] leading-[32px] sm:font-medium font-bold sm:font-sans font-archivo">
+            <p className="sm:text-[24px] text-[20px] leading-[32px] font-bold font-archivo">
               Install the Chrome Extension
             </p>
-            <p className="text-[16px] leading-[24px] font-normal text-justify">
+            <p className="text-[16px] leading-[24px] font-normal text-left text-[#45484F]">
               Download the STRIKE Chrome extension to authenticate and interact
               with STRIKE-supported platforms via the Internet Computer Protocol
               (ICP).
@@ -42,10 +42,10 @@ export default function Step() {
             </span>
           </div>
           <div className="flex flex-col gap-[12px] justfiy-between text-left">
-            <p className="sm:text-[24px] text-[20px] leading-[32px] sm:font-medium font-bold sm:font-sans font-archivo">
+            <p className="sm:text-[24px] text-[20px] leading-[32px] font-bold font-archivo">
               Create and Host the Actions File
             </p>
-            <p className="text-[16px] leading-[24px] font-normal text-justify">
+            <p className="text-[16px] leading-[24px] font-normal text-left text-[#45484F]">
               Define actions in a JSON file, host it publicly, and test it using
               the STRIKE website to preview the actions before sharing.
             </p>
@@ -58,10 +58,10 @@ export default function Step() {
             </span>
           </div>
           <div className="flex flex-col gap-[12px] justfiy-between text-left">
-            <p className="sm:text-[24px] text-[20px] leading-[32px] sm:font-medium font-bold sm:font-sans font-archivo">
+            <p className="sm:text-[24px] text-[20px] leading-[32px] font-bold font-archivo">
               Share and Engage with STRIKE Cards
             </p>
-            <p className="text-[16px] leading-[24px] font-normal text-justify">
+            <p className="text-[16px] leading-[24px] font-normal text-left text-[#45484F]">
               Share your hosted link on platforms like X (formerly Twitter),
               where it will unfurl into a STRIKE Card for users to interact with
               your canister actions, powered by ICP.

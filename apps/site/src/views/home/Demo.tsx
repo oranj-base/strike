@@ -8,11 +8,11 @@ export default function Demo() {
           <a className="text-[#3670FF] text-[16px] leading-[24px]" href="/">
             Demo
           </a>
-          <p className="sm:font-sans font-archivo sm:text-[48px] text-[32px] sm:font-medium font-bold sm:leading-[60px] leading-[40px]">
+          <p className="font-archivo sm:text-[48px] text-[32px] font-bold sm:leading-[60px] leading-[40px]">
             See STRIKE in action
           </p>
         </div>
-        <div className="font-normal text-[18px] leading-[27px] text-justify">
+        <div className="font-normal text-[18px] leading-[27px] sm:text-center text-left text-[#27272A]">
           <p>
             Unlock the full potential of STRIKE by interacting with canisters
             directly through shared links on social media. Using the STRIKE
@@ -22,6 +22,10 @@ export default function Demo() {
           </p>
         </div>
       </div>
+      {/* <iframe
+        className="w-full h-auto aspect-video rounded-[12px]"
+        src="https://www.youtube.com/embed/tgbNymZ7vqY?&mute=1"
+      ></iframe> */}
       <div className="flex justify-center items-center w-full aspect-video rounded-[12px] bg-[#D4D4D8]">
         <Vector className="lg:w-[160px] md:w-[100px] w-[80px]" />
       </div>

@@ -1,4 +1,4 @@
-import { StrikeLogo, BetBTCIcon, TelegramIcon, TwitterIcon } from '@/assets';
+import { StrikeLogo, OranjWhiteIcon } from '@/assets';
 
 export default function StrikeCard({
   image,
@@ -23,16 +23,11 @@ export default function StrikeCard({
             className="rounded-[6px] md:max-w-[240px] md:max-h-[232px]"
             alt="CardImg"
           />
-          <div className="flex gap-[8px] absolute right-[4px] bottom-[4px]">
-            <div className="bg-[#121212] p-[4px] rounded-[4px]">
-              <BetBTCIcon width={46} height={12} />
-            </div>
-            <div className="bg-[#121212] p-[5px] rounded-[4px]">
-              <TelegramIcon width={10} height={10} />
-            </div>
-            <div className="flex  bg-[#121212] p-[4px] rounded-[4px]">
-              <TwitterIcon width={10} height={10} />
-            </div>
+          <div className="flex gap-[6.4px] absolute right-[2%] bottom-[2%] px-[6.4px] py-[1.6px] rounded-[1.6px] bg-[#FAFAFA1A] items-center">
+            <p className="font-normal text-[#FAFAFA] text-[9.6px] leading-[14.4px]">
+              Powered by
+            </p>
+            <OranjWhiteIcon className="w-[35px] h-auto max-w-[15%]" />
           </div>
         </div>
       </div>

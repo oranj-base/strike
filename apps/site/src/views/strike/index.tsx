@@ -1,7 +1,4 @@
 'use client';
-
-import { useState } from 'react';
-import { ICP_BLINK_PREFIX } from '@oranjlabs/strike';
 import {
   ConnectButton,
   ConnectDialog,

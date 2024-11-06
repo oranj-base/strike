@@ -12,7 +12,7 @@ export default function Footer() {
       <div className="flex sm:flex-row flex-col md:gap-[32px] gap-[16px] text-[14px] leading-[24px] font-medium">
         <a href="/privacy">Privacy Policy</a>
         <a href="https://docs.strike.oranj.co/" target="_blank">
-          Visit Oranj
+          Documentation
         </a>
       </div>
       <div className="font-normal text-[16px] leading-[24px] text-[#717179]">

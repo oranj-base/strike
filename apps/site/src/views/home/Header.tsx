@@ -9,11 +9,11 @@ import {
 import { ICP_BLINK_PREFIX } from '@oranjlabs/strike';
 import {
   StrikeLogo,
-  BetBTCIcon,
   LinkIcon,
   MenuIcon,
   CrossIcon,
   ExtensionIcon,
+  OranjOrangeIcon,
 } from '@/assets';
 
 const StrikeSlider = dynamic(() => import('./StrikeSlider'), { ssr: false });
@@ -40,8 +40,8 @@ export default function Header() {
   };
 
   return (
-    <section className="flex md:flex-row flex-col gap-[64px] sm:mt-[32px] lg:pl-[160px] px-[20px]">
-      <div className="flex flex-col justify-between w-full">
+    <section className="flex md:flex-row flex-col gap-[64px] sm:mt-[32px] lg:pl-[160px] px-[20px] lg:h-screen">
+      <div className="flex flex-col justify-between w-full ">
         <div className="relative flex flex-row justify-between lg:py-[0px] py-[24px]">
           <a className="flex flex-row gap-[4.36px] items-center" href="/">
             <StrikeLogo width={24} height={24} />
@@ -73,43 +73,43 @@ export default function Header() {
               onClick={handlerMenuIconClick}
             />
           )}
-        </div>
-        {menuVisible && (
-          <div className="sm:hidden flex flex-col gap-[16px] py-[32px] transition-opacity ease-in-out delay-150">
-            <div className="flex flex-row gap-[8px]">
-              <ExtensionIcon width={20} height={20} />
-              <a
-                href="https://chromewebstore.google.com/detail/strike-by-oranj/iomlailejogiahpdlmckpjdkipgpfccm "
-                target="_blank"
-              >
-                Get Chrome Extension
-              </a>
+          {menuVisible && (
+            <div className="sm:hidden absolute top-full flex flex-col gap-[16px] py-[32px] px-[10px] transition-opacity ease-in-out delay-150 w-full bg-[#FAFAFA] shadow-xl">
+              <div className="flex flex-row gap-[8px]">
+                <ExtensionIcon width={20} height={20} />
+                <a
+                  href="https://chromewebstore.google.com/detail/strike-by-oranj/iomlailejogiahpdlmckpjdkipgpfccm "
+                  target="_blank"
+                >
+                  Get Chrome Extension
+                </a>
+              </div>
+              <ConnectButton
+                style={{
+                  borderRadius: 12,
+                  padding: `8px 12px`,
+                  borderColor: '#2B5ACC',
+                  backgroundColor: '#3670FF',
+                  fontWeight: 600,
+                  fontSize: 14,
+                  borderWidth: 1,
+                  borderStyle: 'solid',
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              />
             </div>
-            <ConnectButton
-              style={{
-                borderRadius: 12,
-                padding: `8px 12px`,
-                borderColor: '#2B5ACC',
-                backgroundColor: '#3670FF',
-                fontWeight: 600,
-                fontSize: 14,
-                borderWidth: 1,
-                borderStyle: 'solid',
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            />
-          </div>
-        )}
+          )}
+        </div>
         <div className="flex flex-col sm:gap-[48px] gap-[32px] sm:pb-[48px] py-[32px]">
-          <div className="flex flex-row gap-[12px] xs:py-[10px]">
+          <div className="flex flex-row gap-[12px] xs:py-[10px] items-center">
             <span className="font-normal text-[18px] leading-[27px]">
-              Brought to you by
+              Brought you by
             </span>
-            <BetBTCIcon width={92} height={22} />
+            <OranjOrangeIcon width={69} height={22} />
           </div>
-          <div className="flex flex-col gap-[12px] sm:font-medium font-bold sm:font-sans font-archivo sm:text-[72px] xs:text-[47px] text-[40px] sm:leading-[72px] leading-[40px] lg:text-left sm:text-center text-left">
+          <div className="flex flex-col gap-[12px] font-bold font-archivo sm:text-[72px] xs:text-[47px] text-[40px] sm:leading-[72px] leading-[40px] lg:text-left sm:text-center text-left">
             Share actionable
             <div className="flex flex-row lg:justify-between sm:justify-center justify-between items-center">
               links
@@ -118,10 +118,10 @@ export default function Header() {
               </button>
               with ease
             </div>
-            <span>powered by ICP.</span>
+            <span>powered by ICP</span>
           </div>
-          <div className="font-normal text-[18px] leading-[27px]">
-            <p className="text-justify">
+          <div className="font-normal text-[18px] text-[#27272A] leading-[27px] ">
+            <p className="text-left">
               STRIKE helps users share links that convert into STRIKE Cards,
               making it simple to interact and perform actions on social media.
             </p>
@@ -129,7 +129,7 @@ export default function Header() {
           <div className="flex sm:flex-row flex-col justify-between sm:gap-[48px] gap-[16px]">
             <input
               type="text"
-              className="outline-none w-full rounded-[12px] border-[#D4D4D8] py-[12px] px-[14px]"
+              className="outline-none w-full rounded-[12px] border-[1px] border-[#D4D4D8] py-[12px] px-[14px]"
               placeholder="Enter URL to unfurl"
               value={tempUrl}
               onChange={(e) => setTempUrl(e.target.value)}
@@ -144,7 +144,7 @@ export default function Header() {
         </div>
       </div>
       <div className="w-full sm:block hidden">
-        <div className="lg:h-[777px] w-full flex md:flex-row flex-col gap-[20px] w-full">
+        <div className="lg:h-[777px] w-full flex md:flex-row flex-col gap-[20px]">
           <StrikeSlider />
         </div>
       </div>
