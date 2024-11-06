@@ -23,11 +23,11 @@ export default function StrikeCard({
             className="rounded-[6px] md:max-w-[240px] md:max-h-[232px]"
             alt="CardImg"
           />
-          <div className="flex gap-[6.4px] absolute right-[9.6px] bottom-[9.6px] px-[6.4px] py-[1.6px] rounded-[1.6px] bg-[#FAFAFA1A] items-center">
+          <div className="flex gap-[6.4px] absolute right-[2%] bottom-[2%] px-[6.4px] py-[1.6px] rounded-[1.6px] bg-[#FAFAFA1A] items-center">
             <p className="font-normal text-[#FAFAFA] text-[9.6px] leading-[14.4px]">
               Powered by
             </p>
-            <OranjWhiteIcon width={35} height={11} />
+            <OranjWhiteIcon className="w-[35px] h-auto max-w-[15%]" />
           </div>
         </div>
       </div>
