@@ -103,7 +103,7 @@ export default function Header() {
           )}
         </div>
         <div className="flex flex-col sm:gap-[48px] gap-[32px] sm:pb-[48px] py-[32px]">
-          <div className="flex flex-row gap-[12px] xs:py-[10px]">
+          <div className="flex flex-row gap-[12px] xs:py-[10px] items-center">
             <span className="font-normal text-[18px] leading-[27px]">
               Brought you by
             </span>
@@ -118,7 +118,7 @@ export default function Header() {
               </button>
               with ease
             </div>
-            <span>powered by ICP.</span>
+            <span>powered by ICP</span>
           </div>
           <div className="font-normal text-[18px] text-[#27272A] leading-[27px] ">
             <p className="text-left">
@@ -144,7 +144,7 @@ export default function Header() {
         </div>
       </div>
       <div className="w-full sm:block hidden">
-        <div className="lg:h-[777px] w-full flex md:flex-row flex-col gap-[20px] w-full">
+        <div className="lg:h-[777px] w-full flex md:flex-row flex-col gap-[20px]">
           <StrikeSlider />
         </div>
       </div>
