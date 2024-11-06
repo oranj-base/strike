@@ -26,7 +26,7 @@
         "@oranjlabs/icp-wallet-adapter-react#build",
         "@oranjlabs/strike#build"
       ],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
     "@oranjlabs/strike-chrome-extension": {
       "dependsOn": [
