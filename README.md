@@ -7,9 +7,9 @@
   </a>   
    
 [![Internet Computer portal](https://img.shields.io/badge/Internet-Computer-grey?logo=internet%20computer)](https://internetcomputer.org)
-[![Strike Logo](https://img.shields.io/badge/Strike-Core-blue?logo=https://github.com/oranj-base/strike/blob/main/apps/chrome-extension/public/img/logo-128.png)](https://github.com/oranj-base/strike/blob/main/packages/core)
-[![Strike Logo](https://img.shields.io/badge/Strike-Backend-green?logo=https://github.com/oranj-base/strike/blob/main/apps/chrome-extension/public/img/logo-128.png)](https://github.com/oranj-base/strike/blob/main/canisters/strike_backend)
-[![Strike Logo](https://img.shields.io/badge/Strike-Chrome%20Extension-orange?logo=https://github.com/oranj-base/strike/blob/main/apps/chrome-extension/public/img/logo-128.png)](https://github.com/oranj-base/strike/tree/main/apps/chrome-extension)
+[![Strike Logo](https://img.shields.io/badge/STRIKE-Core%20Library-blue?logo=https://github.com/oranj-base/strike/blob/main/apps/chrome-extension/public/img/logo-128.png)](https://github.com/oranj-base/strike/blob/main/packages/core)
+[![Strike Logo](https://img.shields.io/badge/STRIKE-Registry%20Canister-green?logo=https://github.com/oranj-base/strike/blob/main/apps/chrome-extension/public/img/logo-128.png)](https://github.com/oranj-base/strike/blob/main/canisters/strike_backend)
+[![Strike Logo](https://img.shields.io/badge/STRIKE-Chrome%20Extension-orange?logo=https://github.com/oranj-base/strike/blob/main/apps/chrome-extension/public/img/logo-128.png)](https://github.com/oranj-base/strike/tree/main/apps/chrome-extension)
 </div>
 
 </div>
