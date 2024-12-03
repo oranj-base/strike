@@ -88,7 +88,7 @@ export interface LinkedAction {
   // href: string;
   /** button text rendered to the user */
   label: string;
-  methos: string;
+  method: string;
   type: 'update' | 'query';
   /**
    * Parameters used to accept user input within an action
