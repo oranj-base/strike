@@ -1,0 +1,23 @@
+{
+  "icon": "https://strike.oranj.co/hello-strike.png",
+  "label": "betBTC",
+  "title": "Test Market",
+  "description": "",
+  "canisterId": "mvrqi-eadnm-ghz2l-aqx7w-5bo6i-whqnh-pl7pl-wdkla-qlsvx-tk4gl-dvm",
+  "actions": [
+    {
+      "label": "Option 1",
+      "method": "bet",
+      "type": "update",
+      "parameters": ["id", "title", "image"],
+      "signatures": { "input": [], "output": [] }
+    },
+    {
+      "label": "Option 2",
+      "method": "bet",
+      "type": "update",
+      "parameters": ["id", "title", "image"],
+      "signatures": { "input": [], "output": [] }
+    }
+  ]
+}

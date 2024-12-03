@@ -44,18 +44,18 @@ export class Action {
     private readonly _chainMetadata: ActionChainMetadata = { isChained: false },
   ) {
     // if no links present or completed, fallback to original solana pay spec (or just using the button as a placeholder)
-    if (_data.type === 'completed' || !_data.links?.actions) {
+    if (_data.type === 'completed' || !_data?.actions) {
       this._actions = [new ButtonActionComponent(this, _data.label, _url)];
       return;
     }
 
     const urlObj = new URL(_url);
-    this._actions = _data.links.actions.map((action) => {
-      const href = action.href.startsWith('http')
-        ? action.href
-        : urlObj.origin + action.href;
+    this._actions = _data.actions.map((action) => {
+      // const href = action.href.startsWith('http')
+      //   ? action.href
+      //   : urlObj.origin + action.href;
 
-      return componentFactory(this, action.label, href, action.parameters);
+      return componentFactory(this, action.label, '', action.parameters);
     });
   }
 

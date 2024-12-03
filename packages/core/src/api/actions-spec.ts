@@ -71,10 +71,11 @@ export interface TypedAction<T extends ActionType = 'action'> {
   label: string;
   /** UI state for the button being rendered to the user */
   disabled?: boolean;
-  links?: {
-    /** list of related Actions a user could perform */
-    actions: LinkedAction[];
-  };
+  // links?: {
+  //   /** list of related Actions a user could perform */
+  //   actions: LinkedAction[];
+  // };
+  actions?: LinkedAction[];
   /** non-fatal error message to be displayed to the user */
   error?: ActionError;
 }
@@ -84,15 +85,18 @@ export interface TypedAction<T extends ActionType = 'action'> {
  */
 export interface LinkedAction {
   /** URL endpoint for an action */
-  href: string;
+  // href: string;
   /** button text rendered to the user */
   label: string;
+  methos: string;
+  type: 'update' | 'query';
   /**
    * Parameters used to accept user input within an action
    * @see {ActionParameter}
    * @see {ActionParameterSelectable}
    */
   parameters?: Array<TypedActionParameter>;
+  signatures: { input: string[]; output: string[] };
 }
 
 export type TypedActionParameter<
