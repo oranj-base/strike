@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  type IConnector,
+  type BaseConnector,
   type IWalletConnector,
   TransferError,
 } from "@oranjlabs/icp-wallet-adapter";
@@ -32,7 +32,7 @@ export const useTransfer = ({ amount, to }: Props) => {
     }
     setLoading(true);
     const result = await (
-      activeProvider as IConnector & IWalletConnector
+      activeProvider as BaseConnector & IWalletConnector
     ).requestTransfer({
       amount,
       to,

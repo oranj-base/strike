@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import {
-  type IConnector,
+  type BaseConnector,
   type IWalletConnector,
 } from "@oranjlabs/icp-wallet-adapter";
 
@@ -31,7 +31,7 @@ export const useBalance = () => {
       return;
     }
     const result = await (
-      activeProvider as IConnector & IWalletConnector
+      activeProvider as BaseConnector & IWalletConnector
     ).queryBalance?.();
     result.match(
       (assets) => {
