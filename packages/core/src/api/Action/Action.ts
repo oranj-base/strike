@@ -59,8 +59,6 @@ export class Action {
         action.uiParameters,
       );
     });
-
-    console.log(this._actions);
   }
 
   public get canisterId() {

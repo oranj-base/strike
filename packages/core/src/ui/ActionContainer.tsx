@@ -322,7 +322,6 @@ export const ActionContainer = ({
         });
         return;
       }
-      console.log({ actionData });
       // construct idlFactory
       const idlFactory: IDL.InterfaceFactory = ({ IDL }) => {
         const input = actionData.input.map(
@@ -392,7 +391,7 @@ export const ActionContainer = ({
       });
       return;
     } catch (e) {
-      console.log(e);
+      console.error(e);
       dispatch({
         type: ExecutionType.SOFT_RESET,
         errorMessage: (e as Error).message ?? 'Unknown error, please try again',
