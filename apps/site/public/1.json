@@ -1,9 +1,0 @@
-{
-  "method": "hello",
-  "type": "query",
-  "parameters": [],
-  "signatures": {
-    "input": [],
-    "output": ["Text"]
-  }
-}
