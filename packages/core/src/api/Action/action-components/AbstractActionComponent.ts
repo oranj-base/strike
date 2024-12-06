@@ -3,6 +3,7 @@ import type {
   ActionError,
   ActionPostRequest,
   ActionPostResponse,
+  TypedAction,
   TypedActionParameter,
 } from '../../actions-spec.ts';
 import { Action } from '../Action.ts';
@@ -12,6 +13,7 @@ export abstract class AbstractActionComponent {
     protected _parent: Action,
     protected _label: string,
     protected _href: string,
+    protected _actionIndex: number,
     protected _parameters?: TypedActionParameter[],
   ) {}
 
@@ -76,6 +78,8 @@ export abstract class AbstractActionComponent {
       } as ActionError;
     }
 
-    return (await response.json()) as ActionPostResponse;
+    const { actions } = (await response.json()) as TypedAction;
+
+    return actions[this._actionIndex];
   }
 }

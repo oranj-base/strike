@@ -44,19 +44,23 @@ export class Action {
     private readonly _chainMetadata: ActionChainMetadata = { isChained: false },
   ) {
     // if no links present or completed, fallback to original solana pay spec (or just using the button as a placeholder)
-    if (_data.type === 'completed' || !_data.links?.actions) {
-      this._actions = [new ButtonActionComponent(this, _data.label, _url)];
+    if (_data.type === 'completed' || !_data.actions) {
+      // new ButtonActionComponent(this, _data.label, _url)
+      this._actions = [];
       return;
     }
 
-    const urlObj = new URL(_url);
-    this._actions = _data.links.actions.map((action) => {
-      const href = action.href.startsWith('http')
-        ? action.href
-        : urlObj.origin + action.href;
-
-      return componentFactory(this, action.label, href, action.parameters);
+    this._actions = _data.actions.map((action, index) => {
+      return componentFactory(
+        this,
+        action.label,
+        _url,
+        index,
+        action.uiParameters,
+      );
     });
+
+    console.log(this._actions);
   }
 
   public get canisterId() {
@@ -217,25 +221,50 @@ const componentFactory = (
   parent: Action,
   label: string,
   href: string,
+  actionIndex: number,
   parameters?: TypedActionParameter[],
 ): AbstractActionComponent => {
   if (!parameters?.length) {
-    return new ButtonActionComponent(parent, label, href);
+    return new ButtonActionComponent(parent, label, href, actionIndex);
   }
 
   if (parameters.length > 1) {
-    return new FormActionComponent(parent, label, href, parameters);
+    return new FormActionComponent(
+      parent,
+      label,
+      href,
+      actionIndex,
+      parameters,
+    );
   }
 
   const [parameter] = parameters;
 
   if (!parameter.type) {
-    return new SingleValueActionComponent(parent, label, href, parameters);
+    return new SingleValueActionComponent(
+      parent,
+      label,
+      href,
+      actionIndex,
+      parameters,
+    );
   }
 
   if (MULTI_VALUE_TYPES.includes(parameter.type)) {
-    return new MultiValueActionComponent(parent, label, href, parameters);
+    return new MultiValueActionComponent(
+      parent,
+      label,
+      href,
+      actionIndex,
+      parameters,
+    );
   }
 
-  return new SingleValueActionComponent(parent, label, href, parameters);
+  return new SingleValueActionComponent(
+    parent,
+    label,
+    href,
+    actionIndex,
+    parameters,
+  );
 };

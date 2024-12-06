@@ -322,19 +322,22 @@ export const ActionContainer = ({
         });
         return;
       }
+      console.log({ actionData });
       // construct idlFactory
       const idlFactory: IDL.InterfaceFactory = ({ IDL }) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        const input = actionData.signatures.input.map((i) => IDL[i]);
+        const input = actionData.input.map(
+          (i) => IDL[i as unknown as keyof typeof IDL],
+        );
 
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        const output = actionData.signatures.output.map((i) => IDL[i]);
+        const output = actionData.output.map(
+          (i) => IDL[i as unknown as keyof typeof IDL],
+        );
         return IDL.Service({
-          [actionData.method]: IDL.Func(input, output, [
-            actionData.type === 'query' ? 'query' : '',
-          ]),
+          [actionData.method]: IDL.Func(
+            input as unknown as IDL.Type[],
+            output as unknown as IDL.Type[],
+            [actionData.type === 'query' ? 'query' : ''],
+          ),
         });
       };
       // Create actor
@@ -351,11 +354,12 @@ export const ActionContainer = ({
 
       const parameters: any[] = [];
 
-      for (let i = 0; i < actionData.parameters.length; i++) {
-        const parameter = actionData.parameters[i];
-        const type = actionData.signatures.input[i];
+      for (let i = 0; i < actionData.inputParameters.length; i++) {
+        const parameter = actionData.inputParameters[i];
+        const type = actionData.input[i];
         let value = '';
 
+        // If the parameter is a placeholder, replace it with the value from the input
         if (/^\{(.*)\}$/.test(parameter)) {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-expect-error

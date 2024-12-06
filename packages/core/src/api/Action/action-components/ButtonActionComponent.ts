@@ -10,10 +10,11 @@ export class ButtonActionComponent extends AbstractActionComponent {
     protected _parent: Action,
     protected _label: string,
     protected _href: string,
+    protected _actionIndex: number,
     protected _parameters?: TypedActionParameter[],
     protected _parentComponent?: AbstractActionComponent,
   ) {
-    super(_parent, _label, _href, _parameters);
+    super(_parent, _label, _href, _actionIndex, _parameters);
   }
 
   get parentComponent() {

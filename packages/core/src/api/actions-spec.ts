@@ -71,28 +71,10 @@ export interface TypedAction<T extends ActionType = 'action'> {
   label: string;
   /** UI state for the button being rendered to the user */
   disabled?: boolean;
-  links?: {
-    /** list of related Actions a user could perform */
-    actions: LinkedAction[];
-  };
+  /** list of related Actions a user could perform */
+  actions: ActionPostResponse[];
   /** non-fatal error message to be displayed to the user */
   error?: ActionError;
-}
-
-/**
- * Related action on a single endpoint
- */
-export interface LinkedAction {
-  /** URL endpoint for an action */
-  href: string;
-  /** button text rendered to the user */
-  label: string;
-  /**
-   * Parameters used to accept user input within an action
-   * @see {ActionParameter}
-   * @see {ActionParameterSelectable}
-   */
-  parameters?: Array<TypedActionParameter>;
 }
 
 export type TypedActionParameter<
@@ -179,18 +161,26 @@ export interface ActionPostRequest<T = string> {
   data?: Record<keyof T, string | Array<string>>;
 }
 
+export interface UIParameter {
+  name: string;
+  label: string;
+  candidType: string;
+}
+
 /**
  * Response body payload returned from the Action POST Request
  */
 export interface ActionPostResponse<_T extends ActionType = ActionType> {
+  /** action label */
+  label: string;
   /** method to do update call */
   method: string;
   type: 'query' | 'update';
-  parameters: string[];
-  signatures: {
-    input: string[];
-    output: string[];
-  };
+  uiParameters: UIParameter[];
+  inputParameters: string[];
+  input: string[];
+  output: string[];
+
   /** describes the nature of the transaction */
   message?: string;
   links?: {
