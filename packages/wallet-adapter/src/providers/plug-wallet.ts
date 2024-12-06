@@ -13,7 +13,7 @@ import {
   InitError,
   TransferError,
   type Config,
-  type IConnector,
+  BaseConnector,
   type IWalletConnector,
 } from "./connectors";
 
@@ -59,25 +59,8 @@ type Plug = {
   getManagementCanister: () => Promise<ActorSubclass | undefined>;
 };
 
-class PlugWallet implements IConnector, IWalletConnector {
-  public meta = {
-    features: ["wallet"],
-    icon: {
-      light: plugLogoLight,
-      dark: plugLogoDark,
-    },
-    id: "plug",
-    name: "Plug Wallet",
-  };
-
-  #config: {
-    whitelist: Array<string>;
-    host: string;
-    dev: boolean;
-    onConnectionUpdate: () => void;
-  };
+class PlugWallet extends BaseConnector implements IWalletConnector {
   #identity?: Identity;
-  #principal?: string;
   #client?: any;
   #ic?: Plug;
   #wallet?: {
@@ -93,10 +76,6 @@ class PlugWallet implements IConnector, IWalletConnector {
     return this.#wallet ? [this.#wallet] : [];
   }
 
-  get principal() {
-    return this.#principal;
-  }
-
   get client() {
     return this.#client;
   }
@@ -106,29 +85,32 @@ class PlugWallet implements IConnector, IWalletConnector {
   }
 
   constructor(userConfig = {}) {
-    this.#config = {
-      whitelist: [],
-      host: "https://icp0.io",
-      dev: true,
-      onConnectionUpdate: () => {
-        // TODO:
-        // const { agent, principal, accountId } =
-        //   window.ic.plug.sessionManager.sessionData;
-        // TODO: recreate actors
-        // TODO: handle account switching
+    super(
+      {
+        whitelist: [],
+        host: "https://icp0.io",
+        dev: true,
+        onConnectionUpdate: () => {
+          // TODO:
+          // const { agent, principal, accountId } =
+          //   window.ic.plug.sessionManager.sessionData;
+          // TODO: recreate actors
+          // TODO: handle account switching
+        },
+        ...userConfig,
       },
-      ...userConfig,
-    };
+      {
+        features: ["wallet"],
+        icon: {
+          light: plugLogoLight,
+          dark: plugLogoDark,
+        },
+        id: "plug",
+        name: "Plug Wallet",
+      }
+    );
     // @ts-ignore
     this.#ic = window.ic?.plug;
-  }
-
-  set config(config) {
-    this.#config = { ...this.#config, ...config };
-  }
-
-  get config() {
-    return this.#config;
   }
 
   async init() {
@@ -141,13 +123,13 @@ class PlugWallet implements IConnector, IWalletConnector {
 
       if (status === "connected") {
         await this.#ic.createAgent({
-          host: this.#config.host,
-          whitelist: this.#config.whitelist,
+          host: this.config.host,
+          whitelist: this.config.whitelist,
         });
         // Never finishes if locked
-        this.#principal = (await this.#ic.getPrincipal()).toString();
+        this.principal = (await this.#ic.getPrincipal()).toString();
         this.#wallet = {
-          principal: this.#principal,
+          principal: this.principal,
           accountId: this.#ic.accountId,
         };
       }
@@ -187,7 +169,7 @@ class PlugWallet implements IConnector, IWalletConnector {
     }
     try {
       // Fetch root key for certificate validation during development
-      if (this.#config.dev) {
+      if (this.config.dev) {
         const res = await this.#ic.agent
           .fetchRootKey()
           .then(() => ok(true))
@@ -213,11 +195,11 @@ class PlugWallet implements IConnector, IWalletConnector {
         window.open("https://plugwallet.ooo/", "_blank");
         return err({ kind: ConnectError.NotInstalled });
       }
-      await this.#ic.requestConnect(this.#config);
-      this.#principal = (await this.#ic.getPrincipal()).toString();
-      if (this.#principal) {
+      await this.#ic.requestConnect(this.config);
+      this.principal = (await this.#ic.getPrincipal()).toString();
+      if (this.principal) {
         this.#wallet = {
-          principal: this.#principal,
+          principal: this.principal,
           accountId: this.#ic.accountId,
         };
         return ok(true);

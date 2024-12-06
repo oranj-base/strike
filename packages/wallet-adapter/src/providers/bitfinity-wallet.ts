@@ -11,7 +11,7 @@ import {
   DisconnectError,
   InitError,
   type Config,
-  type IConnector,
+  BaseConnector,
 } from "./connectors";
 
 type IC = {
@@ -26,18 +26,7 @@ type IC = {
   requestConnect: (config: Config) => Promise<boolean>;
 };
 
-class InfinityWallet implements IConnector {
-  public meta = {
-    features: [],
-    icon: {
-      light: infinityLogoLight,
-      dark: infinityLogoDark,
-    },
-    id: "infinity",
-    name: "Bitfinity Wallet",
-  };
-
-  #config: Config;
+class InfinityWallet extends BaseConnector {
   #identity?: Identity;
   #principal?: string;
   #client?: any;
@@ -45,10 +34,6 @@ class InfinityWallet implements IConnector {
 
   get identity() {
     return this.#identity;
-  }
-
-  get principal() {
-    return this.#principal;
   }
 
   get client() {
@@ -60,24 +45,27 @@ class InfinityWallet implements IConnector {
   }
 
   constructor(userConfig: Partial<Config> = {}) {
-    this.#config = {
-      whitelist: [],
-      host: "https://icp0.io",
-      dev: true,
-      providerUrl: "https://identity.ic0.app",
-      ledgerCanisterId: "",
-      ...userConfig,
-    };
+    super(
+      {
+        whitelist: [],
+        host: "https://icp0.io",
+        dev: true,
+        providerUrl: "https://identity.ic0.app",
+        ledgerCanisterId: "",
+        ...userConfig,
+      },
+      {
+        features: [],
+        icon: {
+          light: infinityLogoLight,
+          dark: infinityLogoDark,
+        },
+        id: "infinity",
+        name: "Bitfinity Wallet",
+      }
+    );
     // @ts-ignore
     this.#ic = window.ic?.infinityWallet;
-  }
-
-  set config(config) {
-    this.#config = { ...this.#config, ...config };
-  }
-
-  get config() {
-    return this.#config;
   }
 
   // TODO: doesn't work if wallet is locked
@@ -121,7 +109,7 @@ class InfinityWallet implements IConnector {
       return err({ kind: CreateActorError.NotInitialized });
     }
     try {
-      if (this.#config.dev) {
+      if (this.config.dev) {
         console.error("Infinity wallet doesn't support creating local actors");
         return err({
           kind: CreateActorError.LocalActorsNotSupported,
@@ -148,7 +136,7 @@ class InfinityWallet implements IConnector {
         );
         return err({ kind: ConnectError.NotInstalled });
       }
-      await this.#ic.requestConnect(this.#config);
+      await this.#ic.requestConnect(this.config);
       this.#principal = (await this.#ic.getPrincipal()).toString();
       return ok(true);
     } catch (e) {

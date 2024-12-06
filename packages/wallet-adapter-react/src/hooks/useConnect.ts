@@ -41,7 +41,9 @@ export const useConnect = (props: Props = {}) => {
     isDisconnecting: client._service.getSnapshot().value === "disconnecting",
     isIdle: client._service.getSnapshot().value === "idle",
     connect: (provider?: string) => client.connect(provider),
-    connectAsync: async (provider?: string) => client.connectAsync(provider),
+    connectAsync: async (
+      props: { provider?: string; derivationOrigin?: string } | undefined
+    ) => client.connectAsync(props),
     cancelConnect: () => {
       client.cancelConnect();
     },

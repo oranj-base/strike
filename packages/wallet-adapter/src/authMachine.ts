@@ -1,7 +1,7 @@
 import { assign, setup, fromPromise, emit } from "xstate";
-import { type DisconnectResult, type IConnector } from "./providers";
+import { type DisconnectResult, type BaseConnector } from "./providers";
 
-type Provider = IConnector;
+type Provider = BaseConnector;
 
 export type RootContext = {
   host: string;
@@ -14,7 +14,10 @@ export type RootContext = {
   connectingProvider?: string;
 };
 
-export type ConnectEvent = { type: "CONNECT"; data: { provider?: string } };
+export type ConnectEvent = {
+  type: "CONNECT";
+  data: { provider?: string; derivationOrigin?: string };
+};
 export type CancelConnectEvent = { type: "CANCEL_CONNECT" };
 export type DisconnectEvent = { type: "DISCONNECT" };
 
@@ -42,7 +45,6 @@ export const createAuthMachine = (initialContext: RootContext) => {
         { providers: Provider[] }
       >(async ({ input: { providers } }) => {
         const initResult = await Promise.all(providers.map((p) => p.init()));
-        console.debug("initResult", initResult);
         let connectedProviders = providers.map(
           (p) =>
             new Promise<Provider>(async (resolve, reject) => {
@@ -58,8 +60,12 @@ export const createAuthMachine = (initialContext: RootContext) => {
       }),
       handleConnectRequest: fromPromise<
         { activeProvider: Provider; principal: string },
-        { providerId?: string; providers: Provider[] }
-      >(async ({ input: { providerId, providers } }) => {
+        {
+          providerId?: string;
+          derivationOrigin?: string;
+          providers: Provider[];
+        }
+      >(async ({ input: { providerId, derivationOrigin, providers } }) => {
         const provider2Connect =
           providerId ?? (localStorage.getItem("icp:provider") as string);
         if (!provider2Connect) {
@@ -145,6 +151,7 @@ export const createAuthMachine = (initialContext: RootContext) => {
           src: "handleConnectRequest",
           input: ({ event, context }) => ({
             providerId: (event as ConnectEvent).data.provider,
+            derivationOrigin: (event as ConnectEvent).data.derivationOrigin,
             providers: context.providers,
           }),
           onDone: {

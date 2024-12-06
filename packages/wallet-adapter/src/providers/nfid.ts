@@ -10,27 +10,10 @@ import {
   CreateActorError,
   DisconnectError,
   InitError,
-  type IConnector,
+  BaseConnector,
 } from "./connectors";
 
-class NFID implements IConnector {
-  public meta = {
-    features: [],
-    icon: {
-      light: nfidLogoLight,
-      dark: nfidLogoDark,
-    },
-    id: "nfid",
-    name: "NFID",
-  };
-
-  #config: {
-    whitelist: Array<string>;
-    appName: string;
-    host: string;
-    providerUrl: string;
-    dev: Boolean;
-  };
+class NFID extends BaseConnector {
   #identity?: Identity;
   #principal?: string;
   #client?: AuthClient;
@@ -39,31 +22,30 @@ class NFID implements IConnector {
     return this.#identity;
   }
 
-  get principal() {
-    return this.#principal;
-  }
-
   get client() {
     return this.#client;
   }
 
   constructor(userConfig = {}) {
-    this.#config = {
-      whitelist: [],
-      host: "https://icp0.io",
-      providerUrl: "https://nfid.one",
-      appName: "my-ic-app",
-      dev: true,
-      ...userConfig,
-    };
-  }
-
-  set config(config) {
-    this.#config = { ...this.#config, ...config };
-  }
-
-  get config() {
-    return this.#config;
+    super(
+      {
+        whitelist: [],
+        host: "https://icp0.io",
+        providerUrl: "https://nfid.one",
+        appName: "my-ic-app",
+        dev: true,
+        ...userConfig,
+      },
+      {
+        features: [],
+        icon: {
+          light: nfidLogoLight,
+          dark: nfidLogoDark,
+        },
+        id: "nfid",
+        name: "NFID",
+      }
+    );
   }
 
   async init() {
@@ -101,11 +83,11 @@ class NFID implements IConnector {
     try {
       // TODO: allow passing identity?
       const agent = new HttpAgent({
-        ...this.#config,
+        ...this.config,
         identity: this.#identity,
       });
 
-      if (this.#config.dev) {
+      if (this.config.dev) {
         // Fetch root key for certificate validation during development
         const res = await agent
           .fetchRootKey()
@@ -134,7 +116,7 @@ class NFID implements IConnector {
           return err({ kind: ConnectError.NotInitialized });
         }
         this.#client.login({
-          identityProvider: `https://nfid.one/authenticate/?applicationName=${this.#config.appName}`,
+          identityProvider: `https://nfid.one/authenticate/?applicationName=${this.config.appName}`,
           onSuccess: resolve,
           onError: reject,
         });

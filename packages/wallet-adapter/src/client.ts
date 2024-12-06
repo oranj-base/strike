@@ -1,10 +1,10 @@
 import { createActor, Actor } from "xstate";
 import { HttpAgent } from "@dfinity/agent";
 import EventEmitter from "events";
-import { defaultProviders, type IConnector } from "./providers";
+import { defaultProviders, type BaseConnector } from "./providers";
 import { createAuthMachine, type ConncetedEvent } from "./authMachine";
 
-type Provider = IConnector;
+type Provider = BaseConnector;
 
 type SupporedProviders = "ii" | "plug" | "stoic" | "dfinity";
 
@@ -48,8 +48,14 @@ class Client {
     this._service.send({ type: "CONNECT", data: { provider } });
   }
 
-  async connectAsync(provider?: string) {
-    this._service.send({ type: "CONNECT", data: { provider } });
+  async connectAsync(
+    props: { provider?: string; derivationOrigin?: string } | undefined
+  ) {
+    const { provider, derivationOrigin } = props || {};
+    this._service.send({
+      type: "CONNECT",
+      data: { provider, derivationOrigin },
+    });
 
     return new Promise<ConncetedEvent["data"]>((resolve, reject) => {
       this._service.on("CONNECTED", (event) => {

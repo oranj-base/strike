@@ -48,7 +48,9 @@ const adapter = (wallet: string) => {
       ) {
         return client.activeProvider.principal!;
       }
-      const { activeProvider } = await client.connectAsync(wallet);
+      const { activeProvider } = await client.connectAsync({
+        provider: wallet,
+      });
       return activeProvider.principal ?? null;
     },
   });

@@ -19,13 +19,13 @@ export function useActionICPWalletAdapter({ agent }: { agent: HttpAgent }) {
 
   const adapter = useMemo(() => {
     return new ActionConfig(agent, {
-      connect: async () => {
+      connect: async ({ derivationOrigin }) => {
         if (isConnected) {
           return principal!;
         }
 
         try {
-          const { activeProvider } = await connectAsync();
+          const { activeProvider } = await connectAsync({ derivationOrigin });
           return activeProvider.principal ?? null;
         } catch (error) {
           console.log(error);
