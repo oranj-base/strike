@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { useSelector } from "@xstate/react";
 import type {
-  IConnector,
+  BaseConnector,
   IWalletConnector,
 } from "@oranjlabs/icp-wallet-adapter";
 
@@ -18,7 +18,7 @@ export const useWallet = () => {
   const { isConnected } = useConnect();
   const wallet =
     isConnected && supportsWallet
-      ? (activeProvider as IConnector & Partial<IWalletConnector>)
+      ? (activeProvider as BaseConnector & Partial<IWalletConnector>)
       : undefined;
 
   return [wallet] as const;

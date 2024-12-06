@@ -5,6 +5,7 @@ import { AbstractActionComponent } from './Action/action-components';
 import type { ActionState } from './ActionsRegistry';
 
 export interface ActionContext {
+  derivationOrigin?: string;
   originalUrl: string;
   action: Action;
   actionState: ActionState;

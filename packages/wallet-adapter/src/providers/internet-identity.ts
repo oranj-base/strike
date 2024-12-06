@@ -12,55 +12,43 @@ import {
   CreateActorError,
   DisconnectError,
   InitError,
-  type IConnector,
+  BaseConnector,
+  type Config,
+  type ConnectOptions,
 } from "./connectors";
 import dfinityLogoLight from "../assets/dfinity.svg";
 import dfinityLogoDark from "../assets/dfinity.svg";
 
-class InternetIdentity implements IConnector {
-  public meta = {
-    features: [],
-    icon: {
-      light: dfinityLogoLight,
-      dark: dfinityLogoDark,
-    },
-    id: "ii",
-    name: "Internet Identity",
-  };
-
-  #config: {
-    whitelist: Array<string>;
-    host: string;
-    providerUrl: string;
-  };
+class InternetIdentity extends BaseConnector {
   #identity: Identity;
   #principal?: string;
   #client?: AuthClient;
-
-  get principal() {
-    return this.#principal;
-  }
 
   get client() {
     return this.#client;
   }
 
-  constructor(userConfig = {}) {
-    this.#config = {
-      whitelist: [],
-      host: "https://icp0.io",
-      providerUrl: "https://identity.ic0.app",
-      ...userConfig,
-    };
+  constructor(config: Partial<Config> = {}) {
+    super(
+      {
+        dev: false,
+        whitelist: [],
+        host: "https://icp0.io",
+        providerUrl: "https://identity.ic0.app",
+        ...config,
+      },
+      {
+        features: [],
+        icon: {
+          light: dfinityLogoLight,
+          dark: dfinityLogoDark,
+        },
+        id: "ii",
+        name: "Internet Identity",
+      }
+    );
+
     this.#identity = new AnonymousIdentity();
-  }
-
-  set config(config) {
-    this.#config = { ...this.#config, ...config };
-  }
-
-  get config() {
-    return this.#config;
   }
 
   async init() {
@@ -93,7 +81,7 @@ class InternetIdentity implements IConnector {
   async createActor<Service>(canisterId: string, idlFactory: any) {
     try {
       const agent = new HttpAgent({
-        ...this.#config,
+        ...this.config,
         identity: this.#identity,
       });
 
@@ -117,11 +105,12 @@ class InternetIdentity implements IConnector {
     }
   }
 
-  async connect() {
+  async connect(options?: ConnectOptions) {
     try {
       await new Promise<void>((resolve, reject) => {
         this.#client?.login({
-          identityProvider: this.#config.providerUrl,
+          identityProvider: this.config.providerUrl,
+          derivationOrigin: options?.derivationOrigin,
           onSuccess: resolve,
           onError: reject,
         });

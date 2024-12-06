@@ -13,10 +13,11 @@ export class SingleValueActionComponent extends AbstractActionComponent {
     protected _parent: Action,
     protected _label: string,
     protected _href: string,
+    protected _actionIndex: number,
     protected _parameters?: TypedActionParameter[],
     protected _parentComponent?: AbstractActionComponent,
   ) {
-    super(_parent, _label, _href, _parameters);
+    super(_parent, _label, _href, _actionIndex, _parameters);
   }
 
   get parentComponent() {
@@ -58,6 +59,7 @@ export class SingleValueActionComponent extends AbstractActionComponent {
       this._parent,
       this._label,
       this._href,
+      this._actionIndex,
       undefined,
       this,
     );

@@ -14,6 +14,7 @@ export type Config = {
   ledgerHost?: string;
   appName?: string;
   delegationModes?: Array<any>;
+  onConnectionUpdate?: () => void;
 };
 
 export enum CreateActorError {
@@ -55,30 +56,44 @@ export type InitResult = Result<
   CustomError<InitError>
 >;
 
-export interface IConnector {
-  init: () => Promise<InitResult>;
-  config: any;
-  meta: {
-    features: Array<string>;
-    icon: {
-      light: string;
-      dark: string;
-    };
-    id: string;
-    name: string;
+export interface Meta {
+  features: Array<string>;
+  icon: {
+    light: string;
+    dark: string;
   };
-  isConnected: () => Promise<boolean>;
-  createActor: <Service>(
+  id: string;
+  name: string;
+}
+
+export interface ConnectOptions {
+  delegationModes: Array<string>;
+  derivationOrigin?: string;
+}
+
+export abstract class BaseConnector {
+  config: Config;
+  meta: Meta;
+  principal?: string;
+  constructor(config: Config, meta: Meta) {
+    this.config = config;
+    this.meta = meta;
+  }
+
+  abstract init(): Promise<InitResult>;
+  abstract isConnected(): Promise<boolean>;
+  abstract createActor<Service>(
     canisterId: string,
     interfaceFactory: IDL.InterfaceFactory,
     config?: {}
-  ) => Promise<CreateActorResult<Service>>;
-  connect: (options?: {
-    delegationModes: Array<string>;
-  }) => Promise<ConnectResult>;
-  disconnect: () => Promise<DisconnectResult>;
-  principal?: string;
-  get identity(): Identity | undefined;
+  ): Promise<CreateActorResult<Service>>;
+  abstract connect(options?: ConnectOptions): Promise<ConnectResult>;
+  abstract disconnect(): Promise<DisconnectResult>;
+  abstract get identity(): Identity | undefined;
+
+  updateConfig(config: Config) {
+    this.config = config;
+  }
 }
 
 export enum BalanceError {
@@ -196,5 +211,5 @@ export interface IWalletConnector {
 }
 
 // type ProviderOptions = {
-//   connector: IConnector,
+//   connector: BaseConnector,
 // }

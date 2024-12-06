@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "icon": { "type": "string", "description": "STRIKE action icon" },
+    "homepage": { "type": "string", "format": "uri" },
+    "label": { "type": "string", "description": "STRIKE action label" },
+    "title": { "type": "string", "description": "STRIKE action title" },
+    "description": {
+      "type": "string",
+      "description": "STRIKE action description"
+    },
+    "canisterId": {
+      "type": "string",
+      "description": "Canister ID of the canister to connect"
+    },
+    "derivationOrigin": {
+      "type": "string",
+      "description": "Internet Identity derivation origin"
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "method": { "type": "string" },
+          "type": { "type": "string" },
+          "uiParameters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "label": { "type": "string" },
+                "candidType": { "type": "string" }
+              },
+              "required": ["name", "label", "candidType"]
+            }
+          },
+          "input": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "inputParameters": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "output": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": [
+          "label",
+          "method",
+          "type",
+          "uiParameters",
+          "input",
+          "inputParameters",
+          "output"
+        ]
+      }
+    }
+  },
+  "required": [
+    "icon",
+    "homepage",
+    "label",
+    "title",
+    "description",
+    "canisterId",
+    "actions"
+  ]
+}

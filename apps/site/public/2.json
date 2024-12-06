@@ -1,9 +1,0 @@
-{
-  "method": "get_owner",
-  "type": "query",
-  "parameters": [],
-  "signatures": {
-    "input": [],
-    "output": ["Principal"]
-  }
-}
