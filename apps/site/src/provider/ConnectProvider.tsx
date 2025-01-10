@@ -43,6 +43,9 @@ export default function ConnectProvider({
         new InternetIdentity(config),
         new BTCWalletConnector({ ...config, btcWallet: btcWallets[0] }),
         new BTCWalletConnector({ ...config, btcWallet: btcWallets[1] }),
+        new BTCWalletConnector({ ...config, btcWallet: btcWallets[2] }),
+        new BTCWalletConnector({ ...config, btcWallet: btcWallets[3] }),
+        new BTCWalletConnector({ ...config, btcWallet: btcWallets[4] }),
       ];
 
   const client = createClient({
