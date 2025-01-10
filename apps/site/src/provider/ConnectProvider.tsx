@@ -4,6 +4,7 @@ import { Connect2ICProvider } from '@oranjlabs/icp-wallet-adapter-react';
 import {
   createClient,
   BTCWalletConnector,
+  InternetIdentity,
 } from '@oranjlabs/icp-wallet-adapter';
 import '@oranjlabs/strike/index.css';
 import '@oranjlabs/icp-wallet-adapter-react/index.css';
@@ -34,12 +35,12 @@ export default function ConnectProvider({
     providerUrl: provider,
     send,
     siwbActorRef: actorRef,
-    btcWallet: btcWallets[0],
   };
 
   const providers = isServer
     ? []
     : [
+        new InternetIdentity(config),
         new BTCWalletConnector({ ...config, btcWallet: btcWallets[0] }),
         new BTCWalletConnector({ ...config, btcWallet: btcWallets[1] }),
       ];
