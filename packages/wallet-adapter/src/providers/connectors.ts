@@ -4,6 +4,14 @@ import type { Result } from "neverthrow";
 
 type CustomError<T> = { kind: T; message?: string };
 
+export interface BTCWalletConfig {
+  id: string;
+  name: string;
+  lightLogo: string;
+  darkLogo: string;
+  link: string;
+}
+
 export type Config = {
   whitelist: Array<string>;
   host: string;
@@ -13,6 +21,9 @@ export type Config = {
   ledgerCanisterId?: string;
   ledgerHost?: string;
   appName?: string;
+  btcWallet?: BTCWalletConfig;
+  send?: any;
+  siwbActorRef?: any;
   delegationModes?: Array<any>;
   onConnectionUpdate?: () => void;
 };
