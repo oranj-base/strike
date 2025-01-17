@@ -2,7 +2,7 @@
 export const host =
   process.env.NEXT_PUBLIC_DFX_NETWORK === 'ic'
     ? 'https://icp0.io'
-    : 'https://icp0.io';
+    : 'http://127.0.0.1:4943';
 
 export const provider =
   process.env.NEXT_PUBLIC_DFX_NETWORK === 'ic'

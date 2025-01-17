@@ -16,9 +16,12 @@ import { useMachine } from '@xstate/react';
 import { host, provider, btcWallets } from '../config';
 
 const isServer = typeof window === 'undefined';
-const actor = createSIWBActor('aw5qc-miaaa-aaaak-amupq-cai', {
-  agentOptions: { host },
-});
+const actor = createSIWBActor(
+  process.env.NEXT_PUBLIC_CANISTER_ID_SIWB_PROVIDER,
+  {
+    agentOptions: { host },
+  },
+);
 
 export default function ConnectProvider({
   children,
