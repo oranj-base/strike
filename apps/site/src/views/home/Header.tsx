@@ -49,15 +49,32 @@ export default function Header() {
               STRIKE
             </span>
           </a>
-          <div className="sm:flex hidden flex-row gap-[8px] font-medium items-center text-[14px] leading-[24px]">
-            <ExtensionIcon width={20} height={20} />
-            <a
-              href="https://chromewebstore.google.com/detail/strike-by-oranj/iomlailejogiahpdlmckpjdkipgpfccm "
-              target="_blank"
-            >
-              Get Chrome Extension
-            </a>
+          <div className="sm:flex hidden flex flex-row gap-[16px]">
+            <div className="flex flex-row gap-[8px] font-medium items-center text-[14px] leading-[24px]">
+              <ExtensionIcon width={20} height={20} />
+              <a
+                href="https://chromewebstore.google.com/detail/strike-by-oranj/iomlailejogiahpdlmckpjdkipgpfccm "
+                target="_blank"
+              >
+                Get Chrome Extension
+              </a>
+            </div>
+            <ConnectButton
+              style={{
+                borderRadius: 12,
+                padding: `8px 12px`,
+                borderColor: '#2B5ACC',
+                backgroundColor: '#3670FF',
+                fontWeight: 600,
+                fontSize: 14,
+                borderWidth: 1,
+                borderStyle: 'solid',
+                display: 'flex',
+                justifyContent: 'center',
+              }}
+            />
           </div>
+
           {menuVisible ? (
             <CrossIcon
               width={24}

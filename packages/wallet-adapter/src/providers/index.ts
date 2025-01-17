@@ -1,5 +1,6 @@
 import type { BaseConnector, IWalletConnector } from "./connectors";
 import { InternetIdentity } from "./internet-identity";
+import { BTCWalletConnector } from "./btcWalletConnector";
 // import { NFID } from "./nfid";
 // import { InfinityWallet } from "./bitfinity-wallet";
 // import { PlugWallet } from "./plug-wallet";
@@ -36,4 +37,4 @@ export function walletProviders(
   return [];
 }
 
-export { InternetIdentity };
+export { InternetIdentity, BTCWalletConnector };
