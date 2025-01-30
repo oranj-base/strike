@@ -13,7 +13,7 @@
     "apps/*"
   ],
   "scripts": {
-    "dev:site": "yarn workspace @ornajlabs/strike-site start",
+    "dev:site": "yarn workspace @oranjlabs/strike-site start",
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint"

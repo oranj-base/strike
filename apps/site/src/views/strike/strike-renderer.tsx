@@ -13,10 +13,11 @@ export default function StrikeRenderer({ url }: { url: string }) {
     agent,
   });
   const { action } = useAction({ url, adapter });
+  const { hostname } = new URL(action?.url || host);
   return (
     <>
       {action ? (
-        <Blink action={action} websiteText={action.canisterId} />
+        <Blink action={action} websiteText={hostname} />
       ) : null}
     </>
   );
