@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@oranjlabs/strike": "*",
+    "@oranjlabs/icp-wallet-adapter-react": "*",
+    "@oranjlabs/icp-wallet-adapter": "*",
     "@dfinity/agent": "^1.3",
     "@dfinity/auth-client": "^1.3",
     "@dfinity/candid": "^1.3",
