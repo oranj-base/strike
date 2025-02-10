@@ -22,5 +22,8 @@ export default defineConfig(({ mode }) => {
         buffer: 'buffer/',
       },
     },
+    define: {
+      global: 'globalThis',
+    }
   };
 });
