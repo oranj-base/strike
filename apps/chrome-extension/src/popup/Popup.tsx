@@ -19,7 +19,7 @@ export const Popup = () => {
   return (
     <div className="h-full flex flex-1 flex-col items-center px-4 pb-4">
       {/* <Header /> */}
-      <div className="flex flex-col mt-20 items-center h-full">
+      <div className="flex flex-col mt-20 items-center h-full w-full">
         <h1 className="text-highlight font-bold mb-2">Enable STRIKE</h1>
         <p className="text-tertiary text-subtext mb-8 text-center font-normal">
           Choose a wallet you would like to enable STRIKE for.

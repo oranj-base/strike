@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import InternetIdentityLogo from '../assets/InternetIdentityLogo';
+import XverseWalletLogo from '../assets/XverseWalletLogo';
 import PlugLogo from '../assets/PlugLogo';
 import ArrowFromSquareIcon from '../icons/ArrowFromSquareIcon';
 import { Checkbox } from './Checkbox';
@@ -7,6 +8,7 @@ import { Checkbox } from './Checkbox';
 enum Wallets {
   Plug = 'plug',
   InternetIdentity = 'ii',
+  Xverse = 'XverseProviders.BitcoinProvider'
 }
 
 interface WalletProps {
@@ -113,6 +115,7 @@ export const WalletSelector = ({
 
   const isInternetIdentity = selectedWallet === Wallets.InternetIdentity;
   const isPlug = selectedWallet === Wallets.Plug;
+  const isXverse = selectedWallet === Wallets.Xverse
 
   return (
     <div className="flex flex-col flex-1 gap-2 w-full">
@@ -121,7 +124,15 @@ export const WalletSelector = ({
         title="Internet Identity"
         icon={<InternetIdentityLogo />}
         onChange={(isChecked: boolean) =>
-          isChecked ? selectWallet(Wallets.InternetIdentity) : unselectWallet()
+          isChecked ? selectWallet(Wallets.InternetIdentity) : unselectWallet() 
+        }
+      />
+      <WalletSelect
+        isSelected={isXverse}
+        title="Xverse"
+        icon={<XverseWalletLogo />}
+        onChange={(isChecked: boolean) =>
+          isChecked ? selectWallet(Wallets.Xverse) : unselectWallet()
         }
       />
       <WalletSelect
