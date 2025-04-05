@@ -304,14 +304,17 @@ export const ActionContainer = ({
     };
 
     try {
-      const principal = await action.adapter.connect(context);
-      if (!principal) {
+      const identity = await action.adapter.connect(context);
+
+      if (!identity) {
         dispatch({ type: ExecutionType.RESET });
         return;
       }
       const actionData = await component
-        .get(principal)
+        .get(identity.getPrincipal().toString())
         .catch((e: Error) => ({ error: e.message }));
+
+      console.log('actionData', actionData);
 
       if (isPostRequestError(actionData)) {
         dispatch({

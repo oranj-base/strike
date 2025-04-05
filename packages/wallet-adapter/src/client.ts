@@ -2,7 +2,7 @@ import { createActor, Actor } from "xstate";
 import { HttpAgent } from "@dfinity/agent";
 import EventEmitter from "events";
 import { defaultProviders, type BaseConnector } from "./providers";
-import { createAuthMachine, type ConncetedEvent } from "./authMachine";
+import { createAuthMachine, type ConncetedEvent } from "./auth-machine";
 
 type Provider = BaseConnector;
 
@@ -76,10 +76,11 @@ class Client {
     this._service.send({ type: "DISCONNECT" });
   }
 
-  public get agent() {
+  public async agent() {
+    const identity = this.activeProvider?.identity;
     return new HttpAgent({
       host: this.config.host,
-      identity: this.activeProvider?.identity,
+      identity: identity,
     });
   }
 

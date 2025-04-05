@@ -49,7 +49,7 @@ export default function Header() {
               STRIKE
             </span>
           </a>
-          <div className="sm:flex hidden flex flex-row gap-[16px]">
+          <div className="sm:flex hidden flex-row gap-[16px]">
             <div className="flex flex-row gap-[8px] font-medium items-center text-[14px] leading-[24px]">
               <ExtensionIcon width={20} height={20} />
               <a
@@ -130,7 +130,7 @@ export default function Header() {
             Share actionable
             <div className="flex flex-row lg:justify-between sm:justify-center justify-between items-center">
               links
-              <button className="flex justify-center items-center sm:w-[80px] sm:h-[52px] w-[48px] h-[32px] bg-[#3670FF] text-white rounded-[12px] sm:mx-[16px] mx-[8px]">
+              <button className="inline-flex justify-center items-center sm:w-[80px] sm:h-[52px] w-[48px] h-[32px] bg-[#3670FF] text-white rounded-[12px] sm:mx-[16px] mx-[8px]">
                 <LinkIcon className="sm:w-[24px] sm:h-[24px] w-[12.3px] h-[12.3px]" />
               </button>
               with ease

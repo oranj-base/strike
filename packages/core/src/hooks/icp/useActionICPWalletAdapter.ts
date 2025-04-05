@@ -14,23 +14,23 @@ import { ActionConfig } from '../../api';
  * @see {Action}
  */
 export function useActionICPWalletAdapter({ agent }: { agent: HttpAgent }) {
-  const { isConnected, principal, connectAsync, activeProvider } = useConnect();
+  const { isConnected, connectAsync, activeProvider, identity } = useConnect();
   const { open } = useDialog();
 
   const adapter = useMemo(() => {
     return new ActionConfig(agent, {
       connect: async ({ derivationOrigin }) => {
         if (isConnected) {
-          return principal!;
+          return identity;
         }
 
         try {
           const { activeProvider } = await connectAsync({ derivationOrigin });
-          return activeProvider.principal ?? null;
+          return activeProvider.identity;
         } catch (error) {
           console.log(error);
           open();
-          return null;
+          return undefined;
         }
       },
       createActor: async (
@@ -55,7 +55,7 @@ export function useActionICPWalletAdapter({ agent }: { agent: HttpAgent }) {
         }
       },
     });
-  }, [agent, isConnected, principal, open, connectAsync, activeProvider]);
+  }, [agent, isConnected, identity, open, connectAsync, activeProvider]);
 
   return { adapter };
 }

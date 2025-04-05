@@ -9,27 +9,21 @@ import {
   ConnectError,
   CreateActorError,
   DisconnectError,
-  InitError,
   type Config,
   type BTCWalletConfig,
   BaseConnector,
-} from "./connectors";
+} from "./base-connector";
 
 const idleTimeout = 2 * 7 * 24 * 3600 * 1000;
 
 class BTCWalletConnector extends BaseConnector {
   #identity?: Identity;
   #principal?: string;
-  #client?: AuthClient;
   #send: any;
   #siwbActorRef: any;
   #wallet: BTCWalletConfig;
   get identity() {
     return this.#identity;
-  }
-
-  get client() {
-    return this.#client;
   }
 
   constructor(userConfig: Partial<Config> = {}) {
@@ -55,33 +49,12 @@ class BTCWalletConnector extends BaseConnector {
     this.#wallet = userConfig.btcWallet!;
   }
 
-  async init() {
-    try {
-      this.#client = await AuthClient.create({
-        storage: new SiwbStorage(),
-        keyType: "Ed25519",
-        idleOptions: {
-          idleTimeout,
-        },
-      });
-      const isConnected = await this.isConnected();
-      if (isConnected) {
-        this.#identity = this.#client.getIdentity();
-        this.#principal = this.#identity?.getPrincipal().toString();
-      }
-      return ok({ isConnected });
-    } catch (e) {
-      console.error(e);
-      return err({ kind: InitError.InitFailed });
-    }
-  }
-
   async isConnected() {
     try {
-      if (!this.#client) {
+      if (!this.authClient) {
         return false;
       }
-      return await this.#client!.isAuthenticated();
+      return await this.authClient!.isAuthenticated();
     } catch (e) {
       console.error(e);
       return false;
@@ -132,6 +105,7 @@ class BTCWalletConnector extends BaseConnector {
         );
       });
       console.info("Principal ", identity.getPrincipal());
+      this.#principal = (await identity.getPrincipal()).toString();
       this.#identity = identity;
       return ok(true);
     } catch (e) {
@@ -142,7 +116,7 @@ class BTCWalletConnector extends BaseConnector {
 
   async disconnect() {
     try {
-      await this.#client?.logout();
+      await this.authClient?.logout();
       return ok(true);
     } catch (e) {
       console.error(e);

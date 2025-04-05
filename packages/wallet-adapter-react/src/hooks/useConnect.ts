@@ -12,15 +12,15 @@ export const useConnect = (props: Props = {}) => {
   // TODO: handle
   const { onConnect = () => {}, onDisconnect = () => {} } = props;
   const { client } = useContext(Connect2ICContext);
-  const { principal, activeProvider, status } = useSelector(
+  const { principal, identity, activeProvider, status } = useSelector(
     client._service,
     (state) => ({
       principal: state.context.activeProvider?.principal,
+      identity: state.context.activeProvider?.identity,
       activeProvider: state.context.activeProvider,
       status: state.value,
     })
   );
-
   // TODO:
   // useEffect(() => {
   //   const unsub = client.on("connect", onConnect);
@@ -33,6 +33,7 @@ export const useConnect = (props: Props = {}) => {
 
   return {
     principal,
+    identity,
     activeProvider,
     status,
     isInitializing: client._service.getSnapshot().value === "initializing",

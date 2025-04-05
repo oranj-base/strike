@@ -1,11 +1,10 @@
-import type { BaseConnector, IWalletConnector } from "./connectors";
-import { InternetIdentity } from "./internet-identity";
-import { BTCWalletConnector } from "./btcWalletConnector";
-// import { NFID } from "./nfid";
-// import { InfinityWallet } from "./bitfinity-wallet";
-// import { PlugWallet } from "./plug-wallet";
+import type { BaseConnector } from "./base-connector";
+import type { IWalletConnector } from "./wallet-connector";
+import { InternetIdentity } from "./icp/internet-identity";
+import { BTCWalletConnector } from "./siwb-connector";
 
-export * from "./connectors";
+export * from "./base-connector";
+export * from "./wallet-connector";
 export type Provider = BaseConnector & Partial<IWalletConnector>;
 export type WalletProvider = BaseConnector & IWalletConnector;
 
@@ -23,12 +22,7 @@ export type Config = {
 export function defaultProviders(
   config: Config | undefined = {}
 ): Array<Provider> {
-  return [
-    new InternetIdentity(config),
-    // new NFID(config),
-    // new InfinityWallet(config),
-    // new PlugWallet(config),
-  ];
+  return [new InternetIdentity(config)];
 }
 
 export function walletProviders(

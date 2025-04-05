@@ -12,6 +12,8 @@ export default function StrikeRenderer({ url }: { url: string }) {
   const { adapter } = useActionICPWalletAdapter({
     agent,
   });
+
+  console.log('adapter', adapter);
   const { action } = useAction({ url, adapter });
   const { hostname } = new URL(action?.url || host);
   return (

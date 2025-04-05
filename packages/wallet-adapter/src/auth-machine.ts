@@ -41,7 +41,7 @@ export const createAuthMachine = (initialContext: RootContext) => {
     },
     actors: {
       init: fromPromise<
-        { activeProvider: Provider; principal: string },
+        { activeProvider: Provider; principal?: string },
         { providers: Provider[] }
       >(async ({ input: { providers } }) => {
         const initResult = await Promise.all(providers.map((p) => p.init()));
@@ -53,13 +53,14 @@ export const createAuthMachine = (initialContext: RootContext) => {
             })
         );
         const connectedProvider = await Promise.any(connectedProviders);
+        const principal = connectedProvider.principal;
         return {
           activeProvider: connectedProvider,
-          principal: connectedProvider.principal!,
+          principal: principal?.toString(),
         };
       }),
       handleConnectRequest: fromPromise<
-        { activeProvider: Provider; principal: string },
+        { activeProvider: Provider; principal?: string },
         {
           providerId?: string;
           derivationOrigin?: string;
@@ -79,14 +80,15 @@ export const createAuthMachine = (initialContext: RootContext) => {
         const result = await provider.connect();
 
         return result.match(
-          (connected) => {
+          async (connected) => {
             if (!connected) {
               throw new Error("Error while connecting");
             }
             localStorage.setItem("icp:provider", provider.meta.id);
+            const principal = provider.identity;
             return {
               activeProvider: provider,
-              principal: provider.principal!,
+              principal: principal?.toString(),
             };
           },
           (e) => {
