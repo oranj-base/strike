@@ -1,17 +1,10 @@
-import {
-  SignIdentity,
-  type ActorSubclass,
-  type Identity,
-} from "@dfinity/agent";
+import { type ActorSubclass } from "@dfinity/agent";
 import {
   AuthClient,
-  IdleManager,
   type AuthClientCreateOptions,
   type AuthClientLoginOptions,
-  type AuthClientStorage,
 } from "@dfinity/auth-client";
 import type { IDL } from "@dfinity/candid";
-import type { DelegationChain, PartialIdentity } from "@dfinity/identity";
 import type { Result } from "neverthrow";
 
 type CustomError<T> = { kind: T; message?: string };
@@ -103,6 +96,7 @@ export abstract class BaseConnector {
 
   abstract connect(options?: ConnectOptions): Promise<ConnectResult>;
   abstract disconnect(options?: DisconnectOptions): Promise<DisconnectResult>;
+
   async isConnected(): Promise<boolean> {
     if (!this.authClient) {
       return false;
@@ -112,14 +106,7 @@ export abstract class BaseConnector {
   }
 
   get principal() {
-    if (!this.authClient) {
-      return undefined;
-    }
-    const identity = this.authClient.getIdentity();
-    if (identity) {
-      return identity.getPrincipal();
-    }
-    return undefined;
+    return this.identity?.getPrincipal();
   }
 
   get identity() {

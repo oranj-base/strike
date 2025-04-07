@@ -1,10 +1,4 @@
-import {
-  Actor,
-  AnonymousIdentity,
-  HttpAgent,
-  type Identity,
-} from "@dfinity/agent";
-import { AuthClient, type AuthClientCreateOptions } from "@dfinity/auth-client";
+import { Actor, HttpAgent } from "@dfinity/agent";
 import { ok, err } from "neverthrow";
 
 import {

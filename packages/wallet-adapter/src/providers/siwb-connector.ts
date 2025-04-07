@@ -1,10 +1,7 @@
-import type { Identity } from "@dfinity/agent";
 import { Actor, HttpAgent } from "@dfinity/agent";
 import type { IDL } from "@dfinity/candid";
-import { AuthClient } from "@dfinity/auth-client";
 import { DelegationIdentity } from "@dfinity/identity";
 import { err, ok } from "neverthrow";
-import { SiwbStorage } from "@oranjbase/ic-siwb-js";
 import {
   ConnectError,
   CreateActorError,
@@ -17,14 +14,9 @@ import {
 const idleTimeout = 2 * 7 * 24 * 3600 * 1000;
 
 class BTCWalletConnector extends BaseConnector {
-  #identity?: Identity;
-  #principal?: string;
   #send: any;
   #siwbActorRef: any;
   #wallet: BTCWalletConfig;
-  get identity() {
-    return this.#identity;
-  }
 
   constructor(userConfig: Partial<Config> = {}) {
     super(
@@ -74,9 +66,9 @@ class BTCWalletConnector extends BaseConnector {
       }
       const agent = new HttpAgent({
         ...this.config,
-        identity: this.#identity,
+        identity: this.identity,
       });
-      const actor = await Actor.createActor<Service>(idlFactory, {
+      const actor = Actor.createActor<Service>(idlFactory, {
         agent,
         canisterId,
       });
@@ -105,8 +97,6 @@ class BTCWalletConnector extends BaseConnector {
         );
       });
       console.info("Principal ", identity.getPrincipal());
-      this.#principal = (await identity.getPrincipal()).toString();
-      this.#identity = identity;
       return ok(true);
     } catch (e) {
       console.error(e);
