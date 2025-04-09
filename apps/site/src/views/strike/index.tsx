@@ -30,7 +30,6 @@ export function StrikePage({ url: initialUrl }: { url: string }) {
             borderWidth: 1,
             borderStyle: 'solid',
           }}
-          children={undefined}
         />
       </header>
       <main className="flex flex-1 flex-col items-center justify-center px-2 py-4 md:px-8">

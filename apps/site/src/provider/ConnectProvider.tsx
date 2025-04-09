@@ -3,8 +3,12 @@
 import { Connect2ICProvider } from '@oranjlabs/icp-wallet-adapter-react';
 import {
   createClient,
-  BTCWalletConnector,
+  XverseConnector,
   InternetIdentity,
+  UnisatConnector,
+  OKXConnector,
+  WizzConnector,
+  OrangeConnector,
 } from '@oranjlabs/icp-wallet-adapter';
 import '@oranjlabs/strike/index.css';
 import '@oranjlabs/icp-wallet-adapter-react/index.css';
@@ -13,7 +17,7 @@ import {
   createActor as createSIWBActor,
 } from '@oranjbase/ic-siwb-js';
 import { useMachine } from '@xstate/react';
-import { host, provider, btcWallets } from '../config';
+import { host, provider } from '../config';
 
 const isServer = typeof window === 'undefined';
 const actor = createSIWBActor(
@@ -44,11 +48,21 @@ export default function ConnectProvider({
     ? []
     : [
         new InternetIdentity(config),
-        new BTCWalletConnector({ ...config, btcWallet: btcWallets[0] }),
-        new BTCWalletConnector({ ...config, btcWallet: btcWallets[1] }),
-        new BTCWalletConnector({ ...config, btcWallet: btcWallets[2] }),
-        new BTCWalletConnector({ ...config, btcWallet: btcWallets[3] }),
-        new BTCWalletConnector({ ...config, btcWallet: btcWallets[4] }),
+        new XverseConnector(config, {
+          siwbCaniserId: 'aw5qc-miaaa-aaaak-amupq-cai',
+        }),
+        new UnisatConnector(config, {
+          siwbCaniserId: 'aw5qc-miaaa-aaaak-amupq-cai',
+        }),
+        new OKXConnector(config, {
+          siwbCaniserId: 'aw5qc-miaaa-aaaak-amupq-cai',
+        }),
+        new WizzConnector(config, {
+          siwbCaniserId: 'aw5qc-miaaa-aaaak-amupq-cai',
+        }),
+        new OrangeConnector(config, {
+          siwbCaniserId: 'aw5qc-miaaa-aaaak-amupq-cai',
+        }),
       ];
 
   const client = createClient({

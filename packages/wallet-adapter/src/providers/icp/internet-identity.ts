@@ -9,6 +9,7 @@ import {
   type Config,
   type ConnectOptions,
   type DisconnectOptions,
+  ConnectorType,
 } from "../base-connector";
 
 import dfinityLogoLight from "../../assets/dfinity.svg";
@@ -16,24 +17,17 @@ import dfinityLogoDark from "../../assets/dfinity.svg";
 
 class InternetIdentity extends BaseConnector {
   constructor(config: Partial<Config> = {}) {
-    super(
-      {
-        dev: false,
-        whitelist: [],
-        host: "https://icp0.io",
-        providerUrl: "https://identity.ic0.app",
-        ...config,
+    super(config, {
+      id: "ii",
+      name: "Internet Identity",
+      type: ConnectorType.ICP,
+      features: [],
+      icon: {
+        light: dfinityLogoLight,
+        dark: dfinityLogoDark,
       },
-      {
-        features: [],
-        icon: {
-          light: dfinityLogoLight,
-          dark: dfinityLogoDark,
-        },
-        id: "ii",
-        name: "Internet Identity",
-      }
-    );
+      link: "https://identity.ic0.app/",
+    });
   }
 
   async createActor<Service>(canisterId: string, idlFactory: any) {
@@ -68,11 +62,25 @@ class InternetIdentity extends BaseConnector {
       if (!this.authClient) {
         return err({ kind: ConnectError.NotInitialized });
       }
-      await this.authClient.login(options);
+      await new Promise((resolve, reject) => {
+        this.authClient!.login({
+          ...options,
+          onSuccess: async () => {
+            resolve(true);
+          },
+          onError: async (error) => {
+            reject(error);
+          },
+          windowOpenerFeatures: `
+          left=${window.screen.width / 2 - 525 / 2},
+          top=${window.screen.height / 2 - 705 / 2},
+          toolbar=0,location=0,menubar=0,width=525,height=705`,
+        });
+      });
       return ok(true);
     } catch (e) {
       console.error(e);
-      return err({ kind: ConnectError.ConnectFailed });
+      return err({ kind: ConnectError.ConnectFailed, message: e });
     }
   }
 

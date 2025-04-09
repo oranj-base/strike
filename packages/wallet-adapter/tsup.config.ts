@@ -11,9 +11,19 @@ const commonCfg: Partial<Options> = {
 export default defineConfig([
   {
     ...commonCfg,
-    entry: ["src/index.ts", "src/providers/index.ts"],
+    entry: [
+      "src/index.ts",
+      "src/providers/index.ts",
+      "src/providers/btc/index.ts",
+      "src/providers/icp/index.ts",
+    ],
     dts: {
-      entry: ["src/index.ts", "src/providers/index.ts"],
+      entry: [
+        "src/index.ts",
+        "src/providers/index.ts",
+        "src/providers/btc/index.ts",
+        "src/providers/icp/index.ts",
+      ],
     },
     loader: {
       ".png": "dataurl",

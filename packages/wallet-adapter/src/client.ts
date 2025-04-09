@@ -1,25 +1,10 @@
 import { createActor, Actor } from "xstate";
 import { HttpAgent } from "@dfinity/agent";
 import EventEmitter from "events";
-import { defaultProviders, type BaseConnector } from "./providers";
+import { defaultProviders, type BaseConnector, type Config } from "./providers";
 import { createAuthMachine, type ConncetedEvent } from "./auth-machine";
 
 type Provider = BaseConnector;
-
-type SupporedProviders = "ii" | "plug" | "stoic" | "dfinity";
-
-// const authStates: MachineConfig<RootContext, any, RootEvent> = ;
-
-type Config = {
-  whitelist?: Array<string>;
-  host?: string;
-  dev?: boolean;
-  autoConnect?: boolean;
-  providerUrl?: string;
-  ledgerCanisterId?: string;
-  ledgerHost?: string;
-  appName?: string;
-};
 
 type ClientOptions = {
   providers: Array<Provider> | ((config: Config) => Array<Provider>);
@@ -36,44 +21,46 @@ type ClientOptions = {
 };
 
 class Client {
-  public _service: Actor<ReturnType<typeof createAuthMachine>>;
+  public service: Actor<ReturnType<typeof createAuthMachine>>;
   public config;
 
-  constructor(service: any, config: Config) {
-    this._service = service;
+  constructor(
+    service: Actor<ReturnType<typeof createAuthMachine>>,
+    config: Config
+  ) {
+    this.service = service;
     this.config = config;
   }
 
   connect(provider?: string) {
-    this._service.send({ type: "CONNECT", data: { provider } });
+    this.service.send({ type: "CONNECT", data: { provider } });
   }
 
   async connectAsync(
     props: { provider?: string; derivationOrigin?: string } | undefined
   ) {
     const { provider, derivationOrigin } = props || {};
-    this._service.send({
+    this.service.send({
       type: "CONNECT",
       data: { provider, derivationOrigin },
     });
 
     return new Promise<ConncetedEvent["data"]>((resolve, reject) => {
-      this._service.on("CONNECTED", (event) => {
+      this.service.on("CONNECTED", (event) => {
         resolve(event.data);
       });
-      this._service.on("ERROR", (event) => {
+      this.service.on("ERROR", (event) => {
         reject(event.data);
       });
     });
   }
 
   cancelConnect() {
-    this._service.send({ type: "CANCEL_CONNECT" });
+    this.service.send({ type: "CANCEL_CONNECT" });
   }
 
   public disconnect() {
-    console.log(this._service.getSnapshot().context);
-    this._service.send({ type: "DISCONNECT" });
+    this.service.send({ type: "DISCONNECT" });
   }
 
   public async agent() {
@@ -85,19 +72,19 @@ class Client {
   }
 
   public get providers() {
-    return this._service.getSnapshot().context.providers;
+    return this.service.getSnapshot().context.providers;
   }
 
   public get activeProvider() {
-    return this._service.getSnapshot().context.activeProvider;
+    return this.service.getSnapshot().context.activeProvider;
   }
 
   public get principal() {
-    return this._service.getSnapshot().context.principal;
+    return this.service.getSnapshot().context.principal;
   }
 
   public get status() {
-    return this._service.getSnapshot().value;
+    return this.service.getSnapshot().value;
   }
 }
 
@@ -105,13 +92,11 @@ const createClient = ({
   providers: p = defaultProviders(),
   globalProviderConfig = {},
 }: Partial<ClientOptions>) => {
-  const config = {
-    dev: true,
+  const config: Config = {
     autoConnect: true,
     host: "https://icp0.io",
     ...globalProviderConfig,
-    whitelist: globalProviderConfig.whitelist || [],
-    principal: undefined,
+    whitelist: globalProviderConfig.whitelist ?? [],
   };
   const providers = typeof p === "function" ? p(config) : p;
 

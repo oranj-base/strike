@@ -9,28 +9,23 @@ import type { Result } from "neverthrow";
 
 type CustomError<T> = { kind: T; message?: string };
 
-export interface BTCWalletConfig {
-  id: string;
-  name: string;
-  lightLogo: string;
-  darkLogo: string;
-  link: string;
-}
-
 export type Config = {
   whitelist: Array<string>;
   host: string;
-  dev: boolean;
-  autoConnect?: boolean;
+  autoConnect: boolean;
   providerUrl?: string;
   ledgerCanisterId?: string;
   ledgerHost?: string;
   appName?: string;
-  btcWallet?: BTCWalletConfig;
-  send?: any;
-  siwbActorRef?: any;
   delegationModes?: Array<any>;
   onConnectionUpdate?: () => void;
+};
+
+export const defaultConfig: Config = {
+  autoConnect: true,
+  host: "https://icp0.io",
+  providerUrl: "https://identity.ic0.app",
+  whitelist: [],
 };
 
 export enum CreateActorError {
@@ -61,7 +56,15 @@ export enum DisconnectError {
 
 export type DisconnectResult = Result<boolean, CustomError<DisconnectError>>;
 
+export enum ConnectorType {
+  ICP,
+  BTC,
+  ETH,
+  SOL,
+}
+
 export interface Meta {
+  type: ConnectorType;
   features: Array<string>;
   icon: {
     light: string;
@@ -69,6 +72,7 @@ export interface Meta {
   };
   id: string;
   name: string;
+  link: string;
 }
 
 export type ConnectOptions = AuthClientLoginOptions & {
@@ -85,8 +89,8 @@ export abstract class BaseConnector {
   meta: Meta;
   authClient?: AuthClient;
 
-  constructor(config: Config, meta: Meta) {
-    this.config = config;
+  constructor(config: Partial<Config>, meta: Meta) {
+    this.config = { ...defaultConfig, ...config };
     this.meta = meta;
   }
 
