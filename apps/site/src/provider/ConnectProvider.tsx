@@ -7,7 +7,6 @@ import {
   InternetIdentity,
   UnisatConnector,
   OKXConnector,
-  WizzConnector,
   OrangeConnector,
 } from '@oranjlabs/icp-wallet-adapter';
 import '@oranjlabs/strike/index.css';
@@ -55,9 +54,6 @@ export default function ConnectProvider({
           siwbCaniserId: 'aw5qc-miaaa-aaaak-amupq-cai',
         }),
         new OKXConnector(config, {
-          siwbCaniserId: 'aw5qc-miaaa-aaaak-amupq-cai',
-        }),
-        new WizzConnector(config, {
           siwbCaniserId: 'aw5qc-miaaa-aaaak-amupq-cai',
         }),
         new OrangeConnector(config, {

@@ -18,6 +18,8 @@ const adapter = (wallet: string) => {
     providers: defaultProviders({
       host,
       providerUrl: provider,
+      whitelist: [],
+      autoConnect: true,
     }),
     globalProviderConfig: {
       host,
