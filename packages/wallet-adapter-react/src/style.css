@@ -51,6 +51,7 @@
     animation: move-in 0.18s;
     max-width: 375px;
     width: 100%;
+    min-height: 375px;
     box-sizing: border-box;
     position: relative;
 }

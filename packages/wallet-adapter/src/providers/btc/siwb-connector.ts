@@ -21,7 +21,7 @@ import {
 } from "../base-connector";
 
 export type SIWBMeta = Omit<Meta, "type"> & {
-  siwbCaniserId: string;
+  siwbCanisterId: string;
   siwbActor?: ReturnType<typeof createSIWBActor>;
   siwbXActor?: XActor<typeof siwbMachine>;
 };
@@ -37,7 +37,7 @@ class SIWBConnector extends BaseConnector {
 
     const actor =
       meta.siwbActor ??
-      createSIWBActor(meta.siwbCaniserId, {
+      createSIWBActor(meta.siwbCanisterId, {
         agentOptions: { host: config.host },
       });
 

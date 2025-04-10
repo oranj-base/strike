@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import {
   Inter,
@@ -60,7 +61,9 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body className="bg-[#FAFAFA]">
-        <ConnectProvider>{children}</ConnectProvider>
+        <Suspense>
+          <ConnectProvider>{children}</ConnectProvider>
+        </Suspense>
       </body>
     </html>
   );

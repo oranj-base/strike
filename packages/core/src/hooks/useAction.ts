@@ -5,7 +5,7 @@ import { unfurlUrlToActionApiUrl } from '../utils/url-mapper.ts';
 
 interface UseActionOptions {
   url: string | URL;
-  adapter: ActionAdapter;
+  adapter?: ActionAdapter;
   securityRegistryRefreshInterval?: number;
 }
 
@@ -71,7 +71,7 @@ export function useAction({ url, adapter }: UseActionOptions) {
   }, [actionApiUrl]);
 
   useEffect(() => {
-    action?.setAdapter(adapter);
+    if (adapter) action?.setAdapter(adapter);
   }, [action, adapter]);
 
   return { action, isLoading };

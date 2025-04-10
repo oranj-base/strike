@@ -6,7 +6,7 @@
   "title": "Simple ownership",
   "description": "demo canister integration with STRIKE",
   "canisterId": "ea6rm-nyaaa-aaaak-ak2wa-cai",
-  "siwbCanisterId": "ea6rm-nyaaa-aaaak-ak2wa-cai",
+  "siwbCanisterId": "6sdye-jaaaa-aaaan-qzyvq-cai",
   "actions": [
     {
       "label": "Hello",

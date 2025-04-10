@@ -4,7 +4,7 @@ import { SIWBConnector, type SIWBMeta } from "./siwb-connector";
 export class UnisatConnector extends SIWBConnector {
   constructor(
     config: Partial<Config> = {},
-    meta: Partial<SIWBMeta> & Pick<SIWBMeta, "siwbCaniserId">
+    meta: Partial<SIWBMeta> & Pick<SIWBMeta, "siwbCanisterId">
   ) {
     super(config, {
       ...meta,

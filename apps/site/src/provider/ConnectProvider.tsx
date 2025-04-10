@@ -9,57 +9,50 @@ import {
   OKXConnector,
   OrangeConnector,
 } from '@oranjlabs/icp-wallet-adapter';
+import { useAction } from '@oranjlabs/strike';
 import '@oranjlabs/strike/index.css';
 import '@oranjlabs/icp-wallet-adapter-react/index.css';
-import {
-  siwbMachine,
-  createActor as createSIWBActor,
-} from '@oranjbase/ic-siwb-js';
-import { useMachine } from '@xstate/react';
 import { host, provider } from '../config';
+import { useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
 
 const isServer = typeof window === 'undefined';
-const actor = createSIWBActor(
-  process.env.NEXT_PUBLIC_CANISTER_ID_SIWB_PROVIDER,
-  {
-    agentOptions: { host },
-  },
-);
+
+function createProviders(config: any, siwbCanisterId: string) {
+  return [
+    new XverseConnector(config, { siwbCanisterId }),
+    new UnisatConnector(config, { siwbCanisterId }),
+    new OKXConnector(config, { siwbCanisterId }),
+    new OrangeConnector(config, { siwbCanisterId }),
+  ];
+}
 
 export default function ConnectProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [snapshot, send, actorRef] = useMachine(siwbMachine, {
-    input: { anonymousActor: actor },
-    inspect: (e) => console.debug(e),
-  });
+  const searchParams = useSearchParams();
+
+  const actionUrl = searchParams.get('url');
+
+  const { action } = useAction({ url: actionUrl, adapter: undefined });
+
+  const siwbCanisterId = useMemo(() => action?.siwbCanisterId, [action]);
 
   const config = {
     host,
     providerUrl: provider,
-    send,
-    siwbActorRef: actorRef,
   };
 
   const providers = isServer
     ? []
-    : [
-        new InternetIdentity(config),
-        new XverseConnector(config, {
-          siwbCaniserId: 'aw5qc-miaaa-aaaak-amupq-cai',
-        }),
-        new UnisatConnector(config, {
-          siwbCaniserId: 'aw5qc-miaaa-aaaak-amupq-cai',
-        }),
-        new OKXConnector(config, {
-          siwbCaniserId: 'aw5qc-miaaa-aaaak-amupq-cai',
-        }),
-        new OrangeConnector(config, {
-          siwbCaniserId: 'aw5qc-miaaa-aaaak-amupq-cai',
-        }),
-      ];
+    : !siwbCanisterId
+      ? [new InternetIdentity(config)]
+      : [
+          new InternetIdentity(config),
+          ...createProviders(config, siwbCanisterId),
+        ];
 
   const client = createClient({
     providers,
