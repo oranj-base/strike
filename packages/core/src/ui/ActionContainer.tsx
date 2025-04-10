@@ -314,8 +314,6 @@ export const ActionContainer = ({
         .get(identity.getPrincipal().toString())
         .catch((e: Error) => ({ error: e.message }));
 
-      console.log('actionData', actionData);
-
       if (isPostRequestError(actionData)) {
         dispatch({
           type: ExecutionType.SOFT_RESET,

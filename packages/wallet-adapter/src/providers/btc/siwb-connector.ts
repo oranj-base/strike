@@ -95,6 +95,10 @@ class SIWBConnector extends BaseConnector {
             (event: {
               data: DelegationIdentity | PromiseLike<DelegationIdentity>;
             }) => {
+              window.localStorage.setItem(
+                "lastConnectedWalletId",
+                this.meta.id
+              );
               resolve(event.data);
             }
           );
@@ -103,7 +107,6 @@ class SIWBConnector extends BaseConnector {
           });
         }
       );
-      console.log("hi", identity);
 
       this.authClient = await AuthClient.create({
         identity,

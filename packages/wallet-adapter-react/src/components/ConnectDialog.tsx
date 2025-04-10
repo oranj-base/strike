@@ -22,6 +22,10 @@ const ConnectDialog: React.FC<PropsWithChildren<Props>> = (props) => {
     undefined
   );
 
+  const [lastConnectedWallet, setLastConnectedWallet] = useState<
+    Meta | undefined
+  >(undefined);
+
   const [error, setError] = useState("");
   const [isSelectedWalletNotInstalled, setIsSelectedWalletNotInstalled] =
     useState(false);
@@ -43,6 +47,16 @@ const ConnectDialog: React.FC<PropsWithChildren<Props>> = (props) => {
       onClose();
     }
   }, [isConnected]);
+
+  useEffect(() => {
+    const lastConnectedWalletId = window.localStorage.getItem(
+      "lastConnectedWalletId"
+    );
+    const provider = providers.find(
+      (provider) => provider.meta.id === lastConnectedWalletId
+    );
+    if (provider) setLastConnectedWallet(provider.meta);
+  }, [providers]);
 
   useEffect(() => {
     if (dialog.isOpen) {
@@ -154,6 +168,34 @@ const ConnectDialog: React.FC<PropsWithChildren<Props>> = (props) => {
           )}
           {/* Wallets */}
           <div className="wallet-container">
+            {/* <div>
+              <div >Previously Used</div>
+              <div>
+                {lastConnectedWallet && (
+                  <button
+                    key={lastConnectedWallet.id}
+                    onClick={() => handleConnect(lastConnectedWallet)}
+                    className={`button-styles ${lastConnectedWallet.id}-styles`}
+                    {...props}
+                  >
+                    <img
+                      className={"img-styles"}
+                      src={
+                        dark
+                          ? lastConnectedWallet.icon.dark
+                          : lastConnectedWallet.icon.light
+                      }
+                    />
+                    <div>
+                      <span className="button-label">
+                        {lastConnectedWallet.name}
+                      </span>
+                    </div>
+                  </button>
+                )}
+              </div>
+            </div> */}
+
             <div className="wallet-container">
               {providers
                 .filter((provider) => provider.meta.type === ConnectorType.ICP)
@@ -165,18 +207,23 @@ const ConnectDialog: React.FC<PropsWithChildren<Props>> = (props) => {
                       className={`button-styles ${provider.meta.id}-styles`}
                       {...props}
                     >
-                      <img
-                        className={"img-styles"}
-                        src={
-                          dark
-                            ? provider.meta.icon.dark
-                            : provider.meta.icon.light
-                        }
-                      />
-                      <div>
+                      <div className="button-image-container">
+                        <img
+                          className={"img-styles"}
+                          src={
+                            dark
+                              ? provider.meta.icon.dark
+                              : provider.meta.icon.light
+                          }
+                        />
                         <span className="button-label">
                           {provider.meta.name}
                         </span>
+                      </div>
+                      <div className="button-image-title">
+                        {provider.meta.id === lastConnectedWallet?.id
+                          ? "LAST USED"
+                          : ""}
                       </div>
                     </button>
                   );
@@ -193,18 +240,23 @@ const ConnectDialog: React.FC<PropsWithChildren<Props>> = (props) => {
                       className={`button-styles ${provider.meta.id}-styles`}
                       {...props}
                     >
-                      <img
-                        className={"img-styles"}
-                        src={
-                          dark
-                            ? provider.meta.icon.dark
-                            : provider.meta.icon.light
-                        }
-                      />
-                      <div>
+                      <div className="button-image-container">
+                        <img
+                          className={"img-styles"}
+                          src={
+                            dark
+                              ? provider.meta.icon.dark
+                              : provider.meta.icon.light
+                          }
+                        />
                         <span className="button-label">
                           {provider.meta.name}
                         </span>
+                      </div>
+                      <div className="button-image-title">
+                        {provider.meta.id === lastConnectedWallet?.id
+                          ? "LAST USED"
+                          : ""}
                       </div>
                     </button>
                   );

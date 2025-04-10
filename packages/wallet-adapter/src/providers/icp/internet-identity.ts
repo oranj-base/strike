@@ -66,6 +66,7 @@ class InternetIdentity extends BaseConnector {
         this.authClient!.login({
           ...options,
           onSuccess: async () => {
+            window.localStorage.setItem("lastConnectedWalletId", "ii");
             resolve(true);
           },
           onError: async (error) => {

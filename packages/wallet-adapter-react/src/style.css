@@ -104,6 +104,20 @@
     }
 }
 
+.button-image-container{
+    display: flex;
+    align-items: center;
+    gap: 20px
+}
+
+.button-image-title {
+    font-size: 10px;
+    color: #A1A1A9;
+    background: rgba(0, 0, 0, 0.07);
+    padding: 2px 4px;
+    border-radius: 5px;
+}
+
 .button-styles {
     background: transparent;
     max-width: 100%;
@@ -117,6 +131,7 @@
     transition: transform 0.15s;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     background: rgba(0, 0, 0, 0.05);
 }
 
@@ -125,12 +140,9 @@
 }
 
 .button-label {
-    margin-top: 10px;
-    margin-bottom: 10px;
     font-size: 21px;
     font-weight: 300;
     color: #424242;
-    text-align: left;
 }
 
 .dark .button-label {
@@ -151,16 +163,6 @@
     background: #545454;
 }
 
-.button-styles > div {
-    display: flex;
-    padding: 0 15px;
-    border-radius: 10px;
-    font-weight: 400;
-    height: 100%;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-}
 
 .connect-button {
     font-size: 18px;

@@ -3,7 +3,6 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import {
-  ConnectButton,
   ConnectDialog,
 } from '@oranjlabs/icp-wallet-adapter-react';
 import { ICP_BLINK_PREFIX } from '@oranjlabs/strike';
@@ -59,20 +58,6 @@ export default function Header() {
                 Get Chrome Extension
               </a>
             </div>
-            <ConnectButton
-              style={{
-                borderRadius: 12,
-                padding: `8px 12px`,
-                borderColor: '#2B5ACC',
-                backgroundColor: '#3670FF',
-                fontWeight: 600,
-                fontSize: 14,
-                borderWidth: 1,
-                borderStyle: 'solid',
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            />
           </div>
 
           {menuVisible ? (
@@ -101,21 +86,6 @@ export default function Header() {
                   Get Chrome Extension
                 </a>
               </div>
-              <ConnectButton
-                style={{
-                  borderRadius: 12,
-                  padding: `8px 12px`,
-                  borderColor: '#2B5ACC',
-                  backgroundColor: '#3670FF',
-                  fontWeight: 600,
-                  fontSize: 14,
-                  borderWidth: 1,
-                  borderStyle: 'solid',
-                  width: '100%',
-                  display: 'flex',
-                  justifyContent: 'center',
-                }}
-              />
             </div>
           )}
         </div>
