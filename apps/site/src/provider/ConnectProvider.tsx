@@ -3,8 +3,10 @@
 import { Connect2ICProvider } from '@oranjlabs/icp-wallet-adapter-react';
 import {
   createClient,
-  XverseConnector,
   InternetIdentity,
+  Plug,
+  Nfid,
+  XverseConnector,
   UnisatConnector,
   OKXConnector,
   OrangeConnector,
@@ -14,7 +16,7 @@ import '@oranjlabs/strike/index.css';
 import '@oranjlabs/icp-wallet-adapter-react/index.css';
 import { host, provider } from '../config';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 
 const isServer = typeof window === 'undefined';
 
@@ -24,6 +26,14 @@ function createSiwbConnectors(config: any, siwbCanisterId: string) {
     new UnisatConnector(config, { siwbCanisterId }),
     new OKXConnector(config, { siwbCanisterId }),
     new OrangeConnector(config, { siwbCanisterId }),
+  ];
+}
+
+function createICPConnectors(config: any, canisterId: string) {
+  return [
+    new InternetIdentity(config),
+    new Plug(config, canisterId),
+    new Nfid(config),
   ];
 }
 
@@ -41,6 +51,8 @@ export default function ConnectProvider({
 
   const siwbCanisterId = useMemo(() => action?.siwbCanisterId, [action]);
 
+  const canisterId = useMemo(() => action?.canisterId, [action]);
+
   const config = {
     host,
     providerUrl: provider,
@@ -49,9 +61,9 @@ export default function ConnectProvider({
   const providers = isServer
     ? []
     : !siwbCanisterId
-      ? [new InternetIdentity(config)]
+      ? [...createICPConnectors(config, canisterId)]
       : [
-          new InternetIdentity(config),
+          ...createICPConnectors(config, canisterId),
           ...createSiwbConnectors(config, siwbCanisterId),
         ];
 

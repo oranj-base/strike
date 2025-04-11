@@ -7,6 +7,7 @@ import type { IWalletConnector } from "./wallet-connector";
 import { InternetIdentity } from "./icp";
 
 export * from "./btc";
+export * from './icp'
 
 export * from "./base-connector";
 export * from "./wallet-connector";
@@ -24,5 +25,3 @@ export function walletProviders(
 ): Array<WalletProvider> {
   return [];
 }
-
-export { InternetIdentity };
