@@ -70,7 +70,6 @@ class Nfid extends BaseConnector {
       await new Promise((resolve, reject) => {
         this.authClient!.login({
           identityProvider,
-          ...options,
           onSuccess: async () => {
             window.localStorage.setItem("lastConnectedWalletId", "nfid");
             resolve(true);

@@ -90,30 +90,8 @@ class Plug extends BaseConnector {
       }
       const nnsCanisterId = this.canisterId;
       const whitelist = [nnsCanisterId];
-      // @ts-ignore
       const connected = await window.ic.plug.isConnected();
-      // @ts-ignore
       if (!connected) await window.ic.plug.requestConnect({ whitelist });
-
-      // await new Promise((resolve, reject) => {
-      //   this.authClient!.login({
-      //     ...options,
-      //     onSuccess: async () => {
-      //       window.localStorage.setItem(
-      //         "lastConnectedWalletId",
-      //         "ic.infinityWallet"
-      //       );
-      //       resolve(true);
-      //     },
-      //     onError: async (error) => {
-      //       reject(error);
-      //     },
-      //     windowOpenerFeatures: `
-      //     left=${window.screen.width / 2 - 525 / 2},
-      //     top=${window.screen.height / 2 - 705 / 2},
-      //     toolbar=0,location=0,menubar=0,width=525,height=705`,
-      //   });
-      // });
       return ok(true);
     } catch (e) {
       console.error(e);
