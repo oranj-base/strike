@@ -1,6 +1,5 @@
 import React, {
   type PropsWithChildren,
-  useCallback,
   useEffect,
   useState,
 } from "react";
@@ -8,7 +7,6 @@ import { useDialog } from "../hooks";
 import { useProviders } from "../hooks";
 import { useConnect } from "../hooks";
 import { ConnectorType, type Meta } from "@oranjlabs/icp-wallet-adapter";
-import { err } from "neverthrow";
 
 type Props = {
   onClose?: () => void;
