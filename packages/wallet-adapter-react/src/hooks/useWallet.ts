@@ -11,7 +11,7 @@ import { Connect2ICContext } from "../context";
 export const useWallet = () => {
   const { client } = useContext(Connect2ICContext);
   const activeProvider = useSelector(
-    client._service,
+    client.service,
     (state) => state.context.activeProvider
   );
   const supportsWallet = !!activeProvider?.meta.features.includes("wallet");

@@ -1,4 +1,4 @@
-import { Actor, HttpAgent } from '@dfinity/agent';
+import { Actor, HttpAgent, type Identity } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 import { type Action } from './Action';
 import { AbstractActionComponent } from './Action/action-components';
@@ -19,7 +19,7 @@ export interface IncomingActionConfig {
 
 export interface ActionAdapter {
   agent: HttpAgent;
-  connect: (context: ActionContext) => Promise<string | null>;
+  connect: (context: ActionContext) => Promise<Identity | undefined>;
   createActor: (
     canisterId: string,
     idlFactory: IDL.InterfaceFactory,
@@ -52,7 +52,7 @@ export class ActionConfig implements ActionAdapter {
     try {
       return await this.adapter.connect(context);
     } catch {
-      return null;
+      return undefined;
     }
   }
 

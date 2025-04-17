@@ -12,15 +12,15 @@ export const useConnect = (props: Props = {}) => {
   // TODO: handle
   const { onConnect = () => {}, onDisconnect = () => {} } = props;
   const { client } = useContext(Connect2ICContext);
-  const { principal, activeProvider, status } = useSelector(
-    client._service,
+  const { principal, identity, activeProvider, status } = useSelector(
+    client.service,
     (state) => ({
       principal: state.context.activeProvider?.principal,
+      identity: state.context.activeProvider?.identity,
       activeProvider: state.context.activeProvider,
       status: state.value,
     })
   );
-
   // TODO:
   // useEffect(() => {
   //   const unsub = client.on("connect", onConnect);
@@ -33,13 +33,14 @@ export const useConnect = (props: Props = {}) => {
 
   return {
     principal,
+    identity,
     activeProvider,
     status,
-    isInitializing: client._service.getSnapshot().value === "initializing",
-    isConnected: client._service.getSnapshot().value === "connected",
-    isConnecting: client._service.getSnapshot().value === "connecting",
-    isDisconnecting: client._service.getSnapshot().value === "disconnecting",
-    isIdle: client._service.getSnapshot().value === "idle",
+    isInitializing: client.service.getSnapshot().value === "initializing",
+    isConnected: client.service.getSnapshot().value === "connected",
+    isConnecting: client.service.getSnapshot().value === "connecting",
+    isDisconnecting: client.service.getSnapshot().value === "disconnecting",
+    isIdle: client.service.getSnapshot().value === "idle",
     connect: (provider?: string) => client.connect(provider),
     connectAsync: async (
       props: { provider?: string; derivationOrigin?: string } | undefined

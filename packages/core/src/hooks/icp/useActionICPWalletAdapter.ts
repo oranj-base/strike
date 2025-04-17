@@ -1,7 +1,7 @@
 import { Actor, HttpAgent } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 import { useConnect, useDialog } from '@oranjlabs/icp-wallet-adapter-react';
-import { useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { ActionConfig } from '../../api';
 
@@ -14,23 +14,52 @@ import { ActionConfig } from '../../api';
  * @see {Action}
  */
 export function useActionICPWalletAdapter({ agent }: { agent: HttpAgent }) {
-  const { isConnected, principal, connectAsync, activeProvider } = useConnect();
-  const { open } = useDialog();
+  const { isConnected, activeProvider, connectAsync, identity } = useConnect();
+  const { open, isOpen } = useDialog();
+
+  const isOpenRef = useRef(isOpen);
+  const identityRef = useRef(identity);
+
+  // Keep the ref in sync with the actual state
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+  }, [isOpen]);
+
+  useEffect(() => {
+    identityRef.current = identity;
+  }, [identity]);
+
+  const checkStatus = useCallback(async () => {
+    await new Promise<void>((resolve) => {
+      const interval = setInterval(() => {
+        if (!isOpenRef.current) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 100);
+    });
+    return isOpenRef.current;
+  }, []);
 
   const adapter = useMemo(() => {
     return new ActionConfig(agent, {
       connect: async ({ derivationOrigin }) => {
         if (isConnected) {
-          return principal!;
+          return identity;
         }
 
         try {
-          const { activeProvider } = await connectAsync({ derivationOrigin });
-          return activeProvider.principal ?? null;
+          if (derivationOrigin) {
+            const { activeProvider } = await connectAsync({ derivationOrigin });
+            return activeProvider.identity;
+          } else {
+            open();
+            await checkStatus();
+            return identityRef.current;
+          }
         } catch (error) {
           console.log(error);
-          open();
-          return null;
+          return undefined;
         }
       },
       createActor: async (
@@ -55,7 +84,15 @@ export function useActionICPWalletAdapter({ agent }: { agent: HttpAgent }) {
         }
       },
     });
-  }, [agent, isConnected, principal, open, connectAsync, activeProvider]);
+  }, [
+    agent,
+    isConnected,
+    identity,
+    connectAsync,
+    open,
+    checkStatus,
+    activeProvider,
+  ]);
 
   return { adapter };
 }

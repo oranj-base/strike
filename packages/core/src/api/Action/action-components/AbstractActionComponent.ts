@@ -35,7 +35,6 @@ export abstract class AbstractActionComponent {
 
   public async post(principal: string) {
     const proxyUrl = proxify(this.href);
-    console.log(principal, proxyUrl.toString());
     const response = await fetch(proxyUrl, {
       method: 'POST',
       body: JSON.stringify(this.buildBody(principal)),

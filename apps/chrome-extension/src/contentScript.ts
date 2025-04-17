@@ -18,6 +18,8 @@ const adapter = (wallet: string) => {
     providers: defaultProviders({
       host,
       providerUrl: provider,
+      whitelist: [],
+      autoConnect: true,
     }),
     globalProviderConfig: {
       host,
@@ -46,12 +48,12 @@ const adapter = (wallet: string) => {
         client.status === 'connected' &&
         client.activeProvider.meta.id === wallet
       ) {
-        return client.activeProvider.principal!;
+        return client.activeProvider.identity;
       }
       const { activeProvider } = await client.connectAsync({
         provider: wallet,
       });
-      return activeProvider.principal ?? null;
+      return activeProvider.identity;
     },
   });
 };

@@ -67,6 +67,8 @@ export interface TypedAction<T extends ActionType = 'action'> {
   description: string;
   /** canister id of the action */
   canisterId: string;
+  /** canister id of the siwb */
+  siwbCanisterId: string;
   /** button text rendered to the user */
   label: string;
   /** UI state for the button being rendered to the user */
