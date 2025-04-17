@@ -15,7 +15,7 @@ const ConnectButton: React.FC<PropsWithChildren<Props>> = ({
   children,
 }) => {
   const dialog = useDialog();
-  const { disconnect, isConnected, connect } = useConnect({
+  const { disconnect, isConnected } = useConnect({
     onConnect,
     onDisconnect,
   });

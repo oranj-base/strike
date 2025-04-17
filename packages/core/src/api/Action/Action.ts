@@ -65,6 +65,10 @@ export class Action {
     return this._data.canisterId;
   }
 
+  public get siwbCanisterId() {
+    return this._data.siwbCanisterId;
+  }
+
   public get isChained() {
     return this._chainMetadata.isChained;
   }

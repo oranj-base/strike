@@ -3,16 +3,16 @@
 }
 
 .img-styles {
-    height: 55px;
-    width: 55px;
+    height: 40px;
+    width: 40px;
     padding: 10px;
     box-sizing: content-box;
 }
 
 @media all and (max-width: 300px) {
     .img-styles {
-        width: 11vw;
-        max-height: 11vw;
+        width: 40px;
+        max-height: 40px;
         height: auto;
         padding: 0;
         padding-right: 5px;
@@ -42,20 +42,39 @@
 .dialog-container {
     display: grid;
     grid-gap: 5px;
-    padding: 10px;
+    padding: 20px;
     background: #f4f4f4;
     border-radius: 15px;
     overflow: auto;
     grid-template-columns: 1fr;
     cursor: initial;
     animation: move-in 0.18s;
-    max-width: 420px;
+    max-width: 375px;
     width: 100%;
+    min-height: 375px;
     box-sizing: border-box;
+    position: relative;
 }
 
 .dark .dialog-container {
     background: rgb(35 35 39);
+}
+
+.dialog-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #424242;
+    text-align: center;
+    width: 100%;
+    padding-bottom: 20px;
+}
+
+.status-text {
+    font-size: 14px;
+    font-weight: 400;
+    color: #424242;
+    text-align: center;
+    width: 100%;
 }
 
 @keyframes fade-in {
@@ -85,11 +104,25 @@
     }
 }
 
+.button-image-container{
+    display: flex;
+    align-items: center;
+    gap: 20px
+}
+
+.button-image-title {
+    font-size: 10px;
+    color: #A1A1A9;
+    background: rgba(0, 0, 0, 0.07);
+    padding: 2px 4px;
+    border-radius: 5px;
+}
+
 .button-styles {
     background: transparent;
     max-width: 100%;
     width: 100%;
-    height: 75px;
+    height: 50px;
     padding: 10px;
     border: none;
     border-radius: 11px;
@@ -98,6 +131,8 @@
     transition: transform 0.15s;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    background: rgba(0, 0, 0, 0.05);
 }
 
 .dark .button-styles {
@@ -105,12 +140,9 @@
 }
 
 .button-label {
-    margin-top: 10px;
-    margin-bottom: 10px;
     font-size: 21px;
     font-weight: 300;
     color: #424242;
-    text-align: left;
 }
 
 .dark .button-label {
@@ -124,26 +156,13 @@
 }
 
 .button-styles:hover {
-    transform: scale(1.02);
-    font-weight: 800!important;
-    transition: all 0.2s;
-    background: white;
+    background: rgba(0, 0, 0, 0.07);
 }
 
 .dark .button-styles:hover {
     background: #545454;
 }
 
-.button-styles > div {
-    display: flex;
-    padding: 0 15px;
-    border-radius: 10px;
-    font-weight: 400;
-    height: 100%;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-}
 
 .connect-button {
     font-size: 18px;
@@ -161,3 +180,168 @@
     transform: scale(1.03);
     transition: all 0.4s;
 }
+
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #424242;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+    padding: 5px;
+    cursor: pointer;
+}
+
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #424242;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.wallet-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.connecting-container {
+    position: absolute;
+    top: 70px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: #f4f4f4;
+}
+
+
+
+.loading-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #424242;
+    text-align: center;
+    width: 100%;
+}
+
+.loading-description {
+    font-size: 12px;
+    font-weight: 400;
+    color: #504e4e;
+    text-align: center;
+    width: 100%;
+}
+
+.loading-image-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.loading-img {
+    height: 70px;
+    width: 70px;
+    border-radius: 100%;
+    box-sizing: content-box;
+    position: absolute;
+    left: 2px;
+    top: 2px;
+}
+.loader {
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    display: inline-block;
+    border-top: 4px solid #3670FF;
+    border-right: 4px solid transparent;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+  }
+  .loader::after {
+    content: '';  
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    border-bottom: 4px solid #FF3D00;
+    border-left: 4px solid transparent;
+  }
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  } 
+
+  .try-button {
+    background: transparent;
+    max-width: 50%;
+    width: 50%;
+    height: 50px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 11px;
+    outline: 0;
+    cursor: pointer;
+    transition: transform 0.15s;
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.05);
+    color: #3670FF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+  }
+
+  :disabled {
+    background: rgba(0, 0, 0, 0.05);
+    color: #424242;
+    cursor: not-allowed;
+  }
+
+  .not-installed {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+  }
