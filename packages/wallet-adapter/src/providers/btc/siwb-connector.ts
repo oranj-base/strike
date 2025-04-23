@@ -18,16 +18,18 @@ import {
   BaseConnector,
   ConnectorType,
   type Meta,
+  type ConnectOptions,
 } from "../base-connector";
 
 export type SIWBMeta = Omit<Meta, "type"> & {
-  siwbCanisterId: string;
   siwbActor?: ReturnType<typeof createSIWBActor>;
   siwbXActor?: XActor<typeof siwbMachine>;
 };
 
-class SIWBConnector extends BaseConnector {
-  private siwbXActor: XActor<typeof siwbMachine>;
+class SIWBConnector extends BaseConnector<
+  SIWBMeta & { type: ConnectorType.BTC }
+> {
+  private siwbXActor?: XActor<typeof siwbMachine>;
 
   constructor(config: Partial<Config>, meta: SIWBMeta) {
     super(config, {
@@ -35,19 +37,7 @@ class SIWBConnector extends BaseConnector {
       type: ConnectorType.BTC,
     });
 
-    const actor =
-      meta.siwbActor ??
-      createSIWBActor(meta.siwbCanisterId, {
-        agentOptions: { host: config.host },
-      });
-
-    this.siwbXActor =
-      meta.siwbXActor ??
-      createActor(siwbMachine, {
-        input: { anonymousActor: actor },
-      });
-
-    this.siwbXActor.start();
+    this.on = this.on.bind(this);
   }
 
   async isConnected() {
@@ -82,15 +72,47 @@ class SIWBConnector extends BaseConnector {
     }
   }
 
-  async connect() {
+  private async createSIWBXActor(canisterId: string) {
     try {
-      this.siwbXActor.send({
+      const actor =
+        this.meta.siwbActor ??
+        createSIWBActor(canisterId, {
+          agentOptions: { host: this.config.host },
+        });
+
+      this.siwbXActor =
+        this.meta.siwbXActor ??
+        createActor(siwbMachine, {
+          input: { anonymousActor: actor },
+        });
+
+      this.siwbXActor.subscribe((s) => console.log(s));
+
+      this.siwbXActor.start();
+    } catch (e) {
+      console.error(e);
+      return { error: { kind: CreateActorError.CreateActorFailed } };
+    }
+  }
+
+  async connect(options: ConnectOptions) {
+    if (!options.siwbCanisterId) {
+      return err({
+        kind: ConnectError.ConnectFailed,
+        message: "siwbCanisterId is required",
+      });
+    }
+
+    await this.createSIWBXActor(options.siwbCanisterId);
+
+    try {
+      this.siwbXActor?.send({
         type: "CONNECT",
         providerKey: this.meta.id as WalletProviderKey,
       });
       const identity = await new Promise<DelegationIdentity>(
         (resolve, reject) => {
-          this.siwbXActor.on(
+          this.siwbXActor?.on(
             "AUTHENTICATED",
             (event: {
               data: DelegationIdentity | PromiseLike<DelegationIdentity>;
@@ -102,7 +124,8 @@ class SIWBConnector extends BaseConnector {
               resolve(event.data);
             }
           );
-          this.siwbXActor.on("ERROR", (e) => {
+          this.siwbXActor?.on("ERROR", (e) => {
+            console.error("Error in SIWB XState", e);
             reject(e.data);
           });
         }
@@ -132,12 +155,15 @@ class SIWBConnector extends BaseConnector {
     }
   }
 
-  on(...args: Parameters<typeof this.siwbXActor.on>) {
+  on(...args: Parameters<NonNullable<typeof this.siwbXActor>["on"]>) {
+    if (!this.siwbXActor) {
+      throw new Error("siwbXActor is not initialized");
+    }
     return this.siwbXActor.on(...args);
   }
 
   public get status() {
-    return this.siwbXActor.getSnapshot().value;
+    return this.siwbXActor?.getSnapshot().value;
   }
 }
 

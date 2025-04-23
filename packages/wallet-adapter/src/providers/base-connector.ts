@@ -78,18 +78,20 @@ export interface Meta {
 export type ConnectOptions = AuthClientLoginOptions & {
   delegationModes: Array<string>;
   derivationOrigin?: string;
+  canisterId?: string;
+  siwbCanisterId?: string;
 };
 
 export type DisconnectOptions = {
   returnTo?: string;
 };
 
-export abstract class BaseConnector {
+export abstract class BaseConnector<M = Meta> {
   config: Config;
-  meta: Meta;
+  meta: M;
   authClient?: AuthClient;
 
-  constructor(config: Partial<Config>, meta: Meta) {
+  constructor(config: Partial<Config>, meta: M) {
     this.config = { ...defaultConfig, ...config };
     this.meta = meta;
   }

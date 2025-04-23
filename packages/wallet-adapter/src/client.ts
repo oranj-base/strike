@@ -37,12 +37,20 @@ class Client {
   }
 
   async connectAsync(
-    props: { provider?: string; derivationOrigin?: string } | undefined
+    props:
+      | {
+          provider?: string;
+          derivationOrigin?: string;
+          canisterId?: string;
+          siwbCanisterId?: string;
+        }
+      | undefined
   ) {
-    const { provider, derivationOrigin } = props || {};
+    const { provider, derivationOrigin, canisterId, siwbCanisterId } =
+      props || {};
     this.service.send({
       type: "CONNECT",
-      data: { provider, derivationOrigin },
+      data: { provider, derivationOrigin, canisterId, siwbCanisterId },
     });
 
     return new Promise<ConncetedEvent["data"]>((resolve, reject) => {

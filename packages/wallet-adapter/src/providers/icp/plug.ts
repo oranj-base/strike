@@ -40,8 +40,7 @@ const nnsPartialInterfaceFactory = ({ IDL }: { IDL: any }) => {
 };
 
 class Plug extends BaseConnector {
-  private canisterId: string;
-  constructor(config: Partial<Config> = {}, canisterId: string) {
+  constructor(config: Partial<Config> = {}) {
     super(config, {
       id: "ic.plug",
       name: "Plug",
@@ -53,7 +52,6 @@ class Plug extends BaseConnector {
       },
       link: "https://chromewebstore.google.com/detail/plug/cfbfdhimifdmdehjmkdobpcjfefblkjm",
     });
-    this.canisterId = canisterId;
   }
 
   async createActor<Service>(canisterId: string, idlFactory: any) {
@@ -88,7 +86,7 @@ class Plug extends BaseConnector {
       if (!this.authClient) {
         return err({ kind: ConnectError.NotInitialized });
       }
-      const nnsCanisterId = this.canisterId;
+      const nnsCanisterId = options?.canisterId ?? "";
       const whitelist = [nnsCanisterId];
       const connected = await window.ic.plug.isConnected();
       if (!connected) await window.ic.plug.requestConnect({ whitelist });

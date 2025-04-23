@@ -1,5 +1,6 @@
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   console.log('on message', msg, sender);
+
   if (!sender.tab || !sender.tab.id) {
     return null;
   }
@@ -28,16 +29,16 @@ async function handleWalletCommunication(
       world: 'MAIN',
       target: { tabId: tabId },
       func:
-        wallet === 'solflare'
+        wallet === 'XverseProviders.BitcoinProvider'
           ? async () => {
               // @ts-ignore
-              const provider = window.solflare;
+              const provider = window.XverseProviders.BitcoinProvider;
               const res = await provider.connect();
               return provider.publicKey.toString();
             }
           : async () => {
               // @ts-ignore
-              const provider = window.solana;
+              const provider = window.unisat;
               const res = await provider.connect();
               return res.publicKey.toString();
             },
@@ -98,3 +99,10 @@ async function handleWalletCommunication(
     return res[0].result;
   }
 }
+
+console.log('Background script running');
+
+// Add any background functionality you might need here
+chrome.runtime.onInstalled.addListener(() => {
+  console.log('Extension installed');
+});

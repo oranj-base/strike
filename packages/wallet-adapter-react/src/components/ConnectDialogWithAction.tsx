@@ -4,19 +4,19 @@ import React, {
   useState,
   useMemo,
 } from "react";
-import { useSearchParams } from "next/navigation";
 import { useDialog } from "../hooks";
 import { useProviders } from "../hooks";
 import { useConnect } from "../hooks";
 import { ConnectorType, type Meta } from "@oranjlabs/icp-wallet-adapter";
-import { Action, useAction } from "@oranjlabs/strike";
+import { Action } from "@oranjlabs/strike";
 
 type Props = {
   onClose?: () => void;
   dark?: boolean;
+  action?: Action;
 };
 
-const ConnectDialog: React.FC<PropsWithChildren<Props>> = (props) => {
+const ConnectDialogWithAction: React.FC<PropsWithChildren<Props>> = (props) => {
   const dialog = useDialog();
   const providers = useProviders();
   const [selectedWallet, setSelectedWallet] = useState<Meta | undefined>(
@@ -39,18 +39,8 @@ const ConnectDialog: React.FC<PropsWithChildren<Props>> = (props) => {
       setError("");
     },
     dark,
+    action,
   } = props;
-
-  const searchParams = useSearchParams();
-
-  const actionUrl = searchParams.get("url");
-
-  const { action } = useAction({
-    url: actionUrl ?? "",
-    adapter: undefined,
-    // Only fetch if action is not already set
-    skip: actionUrl === null || actionUrl === undefined,
-  });
 
   const siwbCanisterId = useMemo(() => action?.siwbCanisterId, [action]);
 
@@ -362,4 +352,4 @@ const ConnectDialog: React.FC<PropsWithChildren<Props>> = (props) => {
   ) : null;
 };
 
-export default ConnectDialog;
+export default ConnectDialogWithAction;

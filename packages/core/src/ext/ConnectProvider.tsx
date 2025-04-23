@@ -1,24 +1,25 @@
 'use client';
 
-import { Connect2ICProvider } from '@oranjlabs/icp-wallet-adapter-react';
 import {
   createClient,
   InternetIdentity,
-  Plug,
   Nfid,
-  XverseConnector,
-  UnisatConnector,
   OKXConnector,
   OrangeConnector,
+  Plug,
+  UnisatConnector,
+  XverseConnector,
 } from '@oranjlabs/icp-wallet-adapter';
-import { useAction } from '@oranjlabs/strike';
-import '@oranjlabs/strike/index.css';
+import { Connect2ICProviderWithAction } from '@oranjlabs/icp-wallet-adapter-react';
 import '@oranjlabs/icp-wallet-adapter-react/index.css';
-import { host, provider } from '../config';
-import { useSearchParams } from 'next/navigation';
+import '@oranjlabs/strike/index.css';
 import { useMemo } from 'react';
 
 const isServer = typeof window === 'undefined';
+
+export const host = 'https://icp0.io';
+
+export const provider = 'https://identity.ic0.app';
 
 function createSiwbConnectors(config: any) {
   return [
@@ -35,18 +36,12 @@ function createICPConnectors(config: any) {
 
 export default function ConnectProvider({
   children,
+  action,
 }: {
   children: React.ReactNode;
+  action: any;
 }) {
-  const searchParams = useSearchParams();
-
-  const actionUrl =
-    searchParams.get('url') ?? 'https://strike.oranj.co/actions.json';
-
-  const { action } = useAction({ url: actionUrl, adapter: undefined });
-
   const siwbCanisterId = useMemo(() => action?.siwbCanisterId, [action]);
-
   const config = {
     host,
     providerUrl: provider,
@@ -65,5 +60,9 @@ export default function ConnectProvider({
     },
   });
 
-  return <Connect2ICProvider client={client}>{children}</Connect2ICProvider>;
+  return (
+    <Connect2ICProviderWithAction client={client} action={action}>
+      {children}
+    </Connect2ICProviderWithAction>
+  );
 }

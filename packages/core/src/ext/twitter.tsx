@@ -6,10 +6,11 @@ import {
   type ActionCallbacksConfig,
 } from '../api/index.ts';
 import { type SecurityLevel } from '../shared/index.ts';
-import { ActionContainer, type StylePreset } from '../ui/index.ts';
+import { ActionContainerWithOldAction, type StylePreset } from '../ui/index.ts';
 import { noop } from '../utils/constants.ts';
 import { isInterstitial } from '../utils/interstitial-url.ts';
 import { unfurlUrlToActionApiUrl } from '../utils/url-mapper.ts';
+import ConnectProvider from './ConnectProvider.tsx';
 
 type ObserverSecurityLevel = SecurityLevel;
 
@@ -184,14 +185,17 @@ function createAction({
 
   actionRoot.render(
     <div onClick={(e) => e.stopPropagation()}>
-      <ActionContainer
-        stylePreset={resolveXStylePreset()}
-        action={action}
-        websiteUrl={originalUrl.toString()}
-        websiteText={originalUrl.hostname}
-        callbacks={callbacks}
-        securityLevel={options.securityLevel}
-      />
+      <ConnectProvider action={action}>
+        <ActionContainerWithOldAction
+          stylePreset={resolveXStylePreset()}
+          action={action}
+          websiteUrl={originalUrl.toString()}
+          websiteText={originalUrl.hostname}
+          callbacks={callbacks}
+          securityLevel={options.securityLevel}
+        />
+      </ConnectProvider>
+      ,
     </div>,
   );
 
