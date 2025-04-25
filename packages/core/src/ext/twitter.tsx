@@ -1,4 +1,3 @@
-import { ConnectButton } from '@oranjlabs/icp-wallet-adapter-react';
 import { createRoot } from 'react-dom/client';
 import {
   Action,
@@ -195,7 +194,7 @@ function createAction({
           callbacks={callbacks}
           securityLevel={options.securityLevel}
         />
-        <ConnectButton />
+        {/* <ConnectButton /> */}
       </ConnectProvider>
       ,
     </div>,

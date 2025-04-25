@@ -43,7 +43,7 @@ const ConnectDialog: React.FC<PropsWithChildren<Props>> = (props) => {
 
   const searchParams = useSearchParams();
 
-  const actionUrl = searchParams.get("url");
+  const actionUrl = searchParams?.get("url") || undefined;
 
   const { action } = useAction({
     url: actionUrl ?? "",

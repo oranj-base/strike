@@ -14,11 +14,12 @@ import {
 import { useAction } from '@oranjlabs/strike';
 import '@oranjlabs/strike/index.css';
 import '@oranjlabs/icp-wallet-adapter-react/index.css';
-import { host, provider } from '../config';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
 
 const isServer = typeof window === 'undefined';
+const host = 'https://icp0.io';
+const provider = 'https://identity.ic0.app';
 
 function createSiwbConnectors(config: any) {
   return [
@@ -38,9 +39,7 @@ export default function ConnectProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const searchParams = useSearchParams();
-
-  const actionUrl = searchParams.get('url') ?? '';
+  const actionUrl = 'icp-action:https://strike.oranj.co/actions.json';
 
   const { action } = useAction({ url: actionUrl, adapter: undefined });
 
