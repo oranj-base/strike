@@ -59,12 +59,26 @@ const adapter = (wallet: string) => {
 };
 
 function initTwitterObserver() {
+  // chrome.runtime.sendMessage(
+  //   { type: 'connect', wallet: 'XverseProviders.BitcoinProvider' },
+  //   (response) => {
+  //     if (chrome.runtime.lastError) {
+  //       console.error('Error getting Xverse wallet:', chrome.runtime.lastError);
+  //       return;
+  //     }
+  //     if (response) {
+  //       console.log('Xverse wallet:', response);
+  //       // @ts-ignore
+  //       window.XverseProviders.BitcoinProvider = response;
+  //       // You can use the response here
+  //     } else {
+  //       console.log('No response from Xverse wallet');
+  //     }
+  //   },
+  // );
   chrome.storage.local.get('strikeProvider', async (result) => {
     const storedWallet: string = result?.strikeProvider ?? 'ii';
     console.debug(`Initializing twitter observer with wallet: ${storedWallet}`);
-
-    // @ts-ignore
-    console.log(window.unisat);
     setupTwitterObserver(adapter(storedWallet));
   });
 }

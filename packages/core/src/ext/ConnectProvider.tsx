@@ -31,7 +31,7 @@ function createSiwbConnectors(config: any) {
 }
 
 function createICPConnectors(config: any) {
-  return [new InternetIdentity(config), new Plug(config), new Nfid(config)];
+return [new InternetIdentity(config), new Plug(config), new Nfid(config)];
 }
 
 export default function ConnectProvider({
@@ -45,6 +45,7 @@ export default function ConnectProvider({
   const config = {
     host,
     providerUrl: provider,
+    isExtension: true,
   };
 
   const providers = isServer

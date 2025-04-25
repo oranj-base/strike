@@ -19,6 +19,7 @@ export type Config = {
   appName?: string;
   delegationModes?: Array<any>;
   onConnectionUpdate?: () => void;
+  isExtension?: boolean;
 };
 
 export const defaultConfig: Config = {

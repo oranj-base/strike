@@ -7,6 +7,8 @@ import {
   createActor as createSIWBActor,
   type WalletProviderKey,
 } from "@oranjbase/ic-siwb-js";
+
+import { siwbMachine as siwbExtensionMachine } from "../provider-maker/state-machine";
 import { err, ok } from "neverthrow";
 import { createActor, Actor as XActor } from "xstate";
 
@@ -29,13 +31,16 @@ export type SIWBMeta = Omit<Meta, "type"> & {
 class SIWBConnector extends BaseConnector<
   SIWBMeta & { type: ConnectorType.BTC }
 > {
-  private siwbXActor?: XActor<typeof siwbMachine>;
+  private siwbXActor?: XActor<typeof siwbMachine | typeof siwbExtensionMachine>;
+  private isExtension: boolean;
 
   constructor(config: Partial<Config>, meta: SIWBMeta) {
     super(config, {
       ...meta,
       type: ConnectorType.BTC,
     });
+
+    this.isExtension = config.isExtension ?? false;
 
     this.on = this.on.bind(this);
   }
@@ -82,7 +87,7 @@ class SIWBConnector extends BaseConnector<
 
       this.siwbXActor =
         this.meta.siwbXActor ??
-        createActor(siwbMachine, {
+        createActor(this.isExtension ? siwbExtensionMachine : siwbMachine, {
           input: { anonymousActor: actor },
         });
 
@@ -102,6 +107,8 @@ class SIWBConnector extends BaseConnector<
         message: "siwbCanisterId is required",
       });
     }
+
+    console.log("~~~~~~~~~~~~~~~~~~~~", options.siwbCanisterId);
 
     await this.createSIWBXActor(options.siwbCanisterId);
 

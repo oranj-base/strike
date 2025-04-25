@@ -107,7 +107,7 @@ const ConnectDialogWithAction: React.FC<PropsWithChildren<Props>> = (props) => {
       canisterId: iCanisterId,
       siwbCanisterId: iSiwbCanisterId,
     }).catch((err) => {
-      if (err.error.message.includes("not found")) {
+      if (err.error.message === "Provider not found") {
         setIsSelectedWalletNotInstalled(true);
         setError(err.error.message);
       } else {
@@ -136,7 +136,6 @@ const ConnectDialogWithAction: React.FC<PropsWithChildren<Props>> = (props) => {
       ? siwbCanisterId
       : undefined;
 
-    console.log("------------", iCanisterId, iSiwbCanisterId);
     connectAsync({
       provider: selectedWallet?.id,
       canisterId: iCanisterId,
