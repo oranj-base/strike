@@ -1,11 +1,15 @@
 import { type Config } from "../base-connector";
-import { SIWBConnector } from "./siwb-connector";
+import { SIWBConnector, type SIWBMeta } from "./siwb-connector";
 
 import xverseLogoLight from "../../assets/xverse.svg";
 import xverseLogoDark from "../../assets/xverse.svg";
 export class XverseConnector extends SIWBConnector {
-  constructor(config: Partial<Config> = {}) {
+  constructor(
+    config: Partial<Config> = {},
+    meta: Partial<SIWBMeta> & Pick<SIWBMeta, "siwbCanisterId">
+  ) {
     super(config, {
+      ...meta,
       id: "XverseProviders.BitcoinProvider",
       name: "Xverse",
       features: ["bitcoin"],

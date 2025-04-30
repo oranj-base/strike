@@ -41,16 +41,13 @@ class Client {
       | {
           provider?: string;
           derivationOrigin?: string;
-          canisterId?: string;
-          siwbCanisterId?: string;
         }
       | undefined
   ) {
-    const { provider, derivationOrigin, canisterId, siwbCanisterId } =
-      props || {};
+    const { provider, derivationOrigin } = props || {};
     this.service.send({
       type: "CONNECT",
-      data: { provider, derivationOrigin, canisterId, siwbCanisterId },
+      data: { provider, derivationOrigin },
     });
 
     return new Promise<ConncetedEvent["data"]>((resolve, reject) => {

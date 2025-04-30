@@ -1,15 +1,8 @@
-import React, {
-  type PropsWithChildren,
-  useEffect,
-  useState,
-  useMemo,
-} from "react";
-import { useSearchParams } from "next/navigation";
+import React, { type PropsWithChildren, useEffect, useState } from "react";
 import { useDialog } from "../hooks";
 import { useProviders } from "../hooks";
 import { useConnect } from "../hooks";
 import { ConnectorType, type Meta } from "@oranjlabs/icp-wallet-adapter";
-import { Action, useAction } from "@oranjlabs/strike";
 
 type Props = {
   onClose?: () => void;
@@ -40,21 +33,6 @@ const ConnectDialog: React.FC<PropsWithChildren<Props>> = (props) => {
     },
     dark,
   } = props;
-
-  const searchParams = useSearchParams();
-
-  const actionUrl = searchParams?.get("url") || undefined;
-
-  const { action } = useAction({
-    url: actionUrl ?? "",
-    adapter: undefined,
-    // Only fetch if action is not already set
-    skip: actionUrl === null || actionUrl === undefined,
-  });
-
-  const siwbCanisterId = useMemo(() => action?.siwbCanisterId, [action]);
-
-  const canisterId = useMemo(() => action?.canisterId, [action]);
 
   const { isConnected, isConnecting, connectAsync } = useConnect();
 
@@ -102,20 +80,9 @@ const ConnectDialog: React.FC<PropsWithChildren<Props>> = (props) => {
 
   const handleConnect = (meta: Meta) => {
     setSelectedWallet(meta);
-    const iCanisterId = meta.id === "ic.plug" ? canisterId : undefined;
-    const iSiwbCanisterId = [
-      "XverseProviders.BitcoinProvider",
-      "unisat",
-      "okxwallet.bitcoin",
-      "OrangecryptoProviders.BitcoinProvider",
-    ].includes(meta.id)
-      ? siwbCanisterId
-      : undefined;
 
     connectAsync({
       provider: meta.id,
-      canisterId: iCanisterId,
-      siwbCanisterId: iSiwbCanisterId,
     }).catch((err) => {
       if (err.error.message.includes("not found")) {
         setIsSelectedWalletNotInstalled(true);
@@ -135,22 +102,8 @@ const ConnectDialog: React.FC<PropsWithChildren<Props>> = (props) => {
   const handleTryAgain = () => {
     setError("");
     if (!selectedWallet) return;
-    const iCanisterId =
-      selectedWallet?.id === "ic.plug" ? canisterId : undefined;
-    const iSiwbCanisterId = [
-      "XverseProviders.BitcoinProvider",
-      "unisat",
-      "okxwallet.bitcoin",
-      "OrangecryptoProviders.BitcoinProvider",
-    ].includes(selectedWallet?.id)
-      ? siwbCanisterId
-      : undefined;
-
-    console.log("------------", iCanisterId, iSiwbCanisterId);
     connectAsync({
       provider: selectedWallet?.id,
-      canisterId: iCanisterId,
-      siwbCanisterId: iSiwbCanisterId,
     }).catch((err) => {
       setError(err.error.message);
     });

@@ -1,3 +1,4 @@
+import { ConnectButton } from '@oranjlabs/icp-wallet-adapter-react';
 import { createRoot } from 'react-dom/client';
 import {
   Action,
@@ -6,7 +7,7 @@ import {
   type ActionCallbacksConfig,
 } from '../api/index.ts';
 import { type SecurityLevel } from '../shared/index.ts';
-import { ActionContainerWithOldAction, type StylePreset } from '../ui/index.ts';
+import { ActionContainer, type StylePreset } from '../ui/index.ts';
 import { noop } from '../utils/constants.ts';
 import { isInterstitial } from '../utils/interstitial-url.ts';
 import { unfurlUrlToActionApiUrl } from '../utils/url-mapper.ts';
@@ -62,6 +63,7 @@ const normalizeOptions = (
 
 export function setupTwitterObserver(
   config: ActionAdapter,
+  isActive: boolean,
   callbacks: Partial<ActionCallbacksConfig> = {},
   options: Partial<ObserverOptions> = DEFAULT_OPTIONS,
 ) {
@@ -78,9 +80,13 @@ export function setupTwitterObserver(
         if (node.nodeType !== Node.ELEMENT_NODE) {
           return;
         }
-        handleNewNode(node as Element, config, callbacks, mergedOptions).catch(
-          noop,
-        );
+        handleNewNode(
+          node as Element,
+          config,
+          isActive,
+          callbacks,
+          mergedOptions,
+        ).catch(noop);
       }
     }
   });
@@ -90,6 +96,7 @@ export function setupTwitterObserver(
 async function handleNewNode(
   node: Element,
   config: ActionAdapter,
+  isActive: boolean,
   callbacks: Partial<ActionCallbacksConfig>,
   options: NormalizedObserverOptions,
 ) {
@@ -155,25 +162,41 @@ async function handleNewNode(
     }
   }
 
-  addMargin(container).replaceChildren(
-    createAction({
-      originalUrl: actionUrl,
-      action,
-      callbacks,
-      options,
-      isInterstitial: interstitialData.isInterstitial,
-    }),
-  );
+  if (isActive)
+    addMargin(container).replaceChildren(
+      createAction({
+        originalUrl: actionUrl,
+        action,
+        isActive,
+        callbacks,
+        options,
+        isInterstitial: interstitialData.isInterstitial,
+      }),
+    );
+  else {
+    addMargin(container).appendChild(
+      createAction({
+        originalUrl: actionUrl,
+        action,
+        isActive,
+        callbacks,
+        options,
+        isInterstitial: interstitialData.isInterstitial,
+      }),
+    );
+  }
 }
 
 function createAction({
   originalUrl,
   action,
+  isActive,
   callbacks,
   options,
 }: {
   originalUrl: URL;
   action: Action;
+  isActive: boolean;
   callbacks: Partial<ActionCallbacksConfig>;
   options: NormalizedObserverOptions;
   isInterstitial: boolean;
@@ -183,22 +206,35 @@ function createAction({
 
   const actionRoot = createRoot(container);
 
-  actionRoot.render(
-    <div onClick={(e) => e.stopPropagation()}>
-      <ConnectProvider action={action}>
-        <ActionContainerWithOldAction
-          stylePreset={resolveXStylePreset()}
-          action={action}
-          websiteUrl={originalUrl.toString()}
-          websiteText={originalUrl.hostname}
-          callbacks={callbacks}
-          securityLevel={options.securityLevel}
-        />
-        {/* <ConnectButton /> */}
-      </ConnectProvider>
-      ,
-    </div>,
-  );
+  if (isActive)
+    actionRoot.render(
+      <div onClick={(e) => e.stopPropagation()}>
+        <ConnectProvider
+          siwbCanisterId={action.siwbCanisterId}
+          canisterId={action.canisterId}
+        >
+          <ActionContainer
+            stylePreset={resolveXStylePreset()}
+            action={action}
+            websiteUrl={originalUrl.toString()}
+            websiteText={originalUrl.hostname}
+            callbacks={callbacks}
+            securityLevel={options.securityLevel}
+          />
+        </ConnectProvider>
+      </div>,
+    );
+  else
+    actionRoot.render(
+      <div onClick={(e) => e.stopPropagation()}>
+        <ConnectProvider
+          siwbCanisterId={action.siwbCanisterId}
+          canisterId={action.canisterId}
+        >
+          <ConnectButton isDisconected={true} />
+        </ConnectProvider>
+      </div>,
+    );
 
   return container;
 }

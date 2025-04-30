@@ -64,10 +64,8 @@ function initTwitterObserver() {
     console.debug(
       `Initializing twitter observer with initial status: ${isActive}`,
     );
-    if (isActive === 'on') {
-      console.debug('Twitter observer is enabled.');
-      setupTwitterObserver(adapter('ii'));
-    }
+    console.debug('Twitter observer is enabled.');
+    setupTwitterObserver(adapter('ii'), isActive === 'on');
   });
 }
 

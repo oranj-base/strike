@@ -1,12 +1,16 @@
 import { type Config } from "../base-connector";
-import { SIWBConnector } from "./siwb-connector";
+import { SIWBConnector, type SIWBMeta } from "./siwb-connector";
 
 import okxLogoLight from "../../assets/okx.png";
 import okxLogoDark from "../../assets/okx.png";
 
 export class OKXConnector extends SIWBConnector {
-  constructor(config: Partial<Config> = {}) {
+  constructor(
+    config: Partial<Config> = {},
+    meta: Partial<SIWBMeta> & Pick<SIWBMeta, "siwbCanisterId">
+  ) {
     super(config, {
+      ...meta,
       id: "okxwallet.bitcoin",
       name: "OKX",
       features: ["bitcoin"],

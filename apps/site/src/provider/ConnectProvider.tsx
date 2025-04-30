@@ -16,21 +16,25 @@ import '@oranjlabs/strike/index.css';
 import '@oranjlabs/icp-wallet-adapter-react/index.css';
 import { host, provider } from '../config';
 import { useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 const isServer = typeof window === 'undefined';
 
-function createSiwbConnectors(config: any) {
+function createSiwbConnectors(config: any, siwbCanisterId: string) {
   return [
-    new XverseConnector(config),
-    new UnisatConnector(config),
-    new OKXConnector(config),
-    new OrangeConnector(config),
+    new XverseConnector(config, { siwbCanisterId }),
+    new UnisatConnector(config, { siwbCanisterId }),
+    new OKXConnector(config, { siwbCanisterId }),
+    new OrangeConnector(config, { siwbCanisterId }),
   ];
 }
 
-function createICPConnectors(config: any) {
-  return [new InternetIdentity(config), new Plug(config), new Nfid(config)];
+function createICPConnectors(config: any, canisterId: string) {
+  return [
+    new InternetIdentity(config),
+    new Plug(config, { canisterId }),
+    new Nfid(config),
+  ];
 }
 
 export default function ConnectProvider({
@@ -38,24 +42,25 @@ export default function ConnectProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const searchParams = useSearchParams();
-
-  const actionUrl = searchParams.get('url') ?? '';
-
-  const { action } = useAction({ url: actionUrl, adapter: undefined });
-
-  const siwbCanisterId = useMemo(() => action?.siwbCanisterId, [action]);
+  const [siwbCanisterId, setSiwbCanisterId] = useState<string | undefined>(
+    undefined,
+  );
+  const [canisterId, setCanisterId] = useState<string | undefined>(undefined);
 
   const config = {
     host,
     providerUrl: provider,
   };
 
-  const providers = isServer
-    ? []
-    : !siwbCanisterId
-      ? [...createICPConnectors(config)]
-      : [...createICPConnectors(config), ...createSiwbConnectors(config)];
+  const providers =
+    isServer || !canisterId
+      ? []
+      : !siwbCanisterId
+        ? [...createICPConnectors(config, canisterId)]
+        : [
+            ...createICPConnectors(config, canisterId),
+            ...createSiwbConnectors(config, siwbCanisterId),
+          ];
 
   const client = createClient({
     providers,
@@ -64,5 +69,13 @@ export default function ConnectProvider({
     },
   });
 
-  return <Connect2ICProvider client={client}>{children}</Connect2ICProvider>;
+  return (
+    <Connect2ICProvider
+      client={client}
+      setSiwbCanisterId={setSiwbCanisterId}
+      setCanisterId={setCanisterId}
+    >
+      {children}
+    </Connect2ICProvider>
+  );
 }

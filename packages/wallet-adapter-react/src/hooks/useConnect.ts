@@ -47,8 +47,6 @@ export const useConnect = (props: Props = {}) => {
         | {
             provider?: string;
             derivationOrigin?: string;
-            canisterId?: string;
-            siwbCanisterId?: string;
           }
         | undefined
     ) => client.connectAsync(props),

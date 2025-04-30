@@ -1,12 +1,16 @@
 import { type Config } from "../base-connector";
-import { SIWBConnector } from "./siwb-connector";
+import { SIWBConnector, type SIWBMeta } from "./siwb-connector";
 
 import unisatLogoLight from "../../assets/unisat.png";
 import unisatLogoDark from "../../assets/unisat.png";
 
 export class UnisatConnector extends SIWBConnector {
-  constructor(config: Partial<Config> = {}) {
+  constructor(
+    config: Partial<Config> = {},
+    meta: Partial<SIWBMeta> & Pick<SIWBMeta, "siwbCanisterId">
+  ) {
     super(config, {
+      ...meta,
       id: "unisat",
       name: "Unisat",
       features: ["bitcoin"],

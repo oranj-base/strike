@@ -26,12 +26,13 @@ import {
 export type SIWBMeta = Omit<Meta, "type"> & {
   siwbActor?: ReturnType<typeof createSIWBActor>;
   siwbXActor?: XActor<typeof siwbMachine>;
+  siwbCanisterId: string;
 };
 
 class SIWBConnector extends BaseConnector<
   SIWBMeta & { type: ConnectorType.BTC }
 > {
-  private siwbXActor?: XActor<typeof siwbMachine | typeof siwbExtensionMachine>;
+  private siwbXActor: XActor<typeof siwbMachine | typeof siwbExtensionMachine>;
   private isExtension: boolean;
 
   constructor(config: Partial<Config>, meta: SIWBMeta) {
@@ -42,7 +43,19 @@ class SIWBConnector extends BaseConnector<
 
     this.isExtension = config.isExtension ?? false;
 
-    this.on = this.on.bind(this);
+    const actor =
+      this.meta.siwbActor ??
+      createSIWBActor(this.meta.siwbCanisterId, {
+        agentOptions: { host: this.config.host },
+      });
+
+    this.siwbXActor =
+      this.meta.siwbXActor ??
+      createActor(this.isExtension ? siwbExtensionMachine : siwbMachine, {
+        input: { anonymousActor: actor },
+      });
+
+    this.siwbXActor.start();
   }
 
   async isConnected() {
@@ -77,41 +90,7 @@ class SIWBConnector extends BaseConnector<
     }
   }
 
-  private async createSIWBXActor(canisterId: string) {
-    try {
-      const actor =
-        this.meta.siwbActor ??
-        createSIWBActor(canisterId, {
-          agentOptions: { host: this.config.host },
-        });
-
-      this.siwbXActor =
-        this.meta.siwbXActor ??
-        createActor(this.isExtension ? siwbExtensionMachine : siwbMachine, {
-          input: { anonymousActor: actor },
-        });
-
-      this.siwbXActor.subscribe((s) => console.log(s));
-
-      this.siwbXActor.start();
-    } catch (e) {
-      console.error(e);
-      return { error: { kind: CreateActorError.CreateActorFailed } };
-    }
-  }
-
-  async connect(options: ConnectOptions) {
-    if (!options.siwbCanisterId) {
-      return err({
-        kind: ConnectError.ConnectFailed,
-        message: "siwbCanisterId is required",
-      });
-    }
-
-    console.log("~~~~~~~~~~~~~~~~~~~~", options.siwbCanisterId);
-
-    await this.createSIWBXActor(options.siwbCanisterId);
-
+  async connect() {
     try {
       this.siwbXActor?.send({
         type: "CONNECT",
