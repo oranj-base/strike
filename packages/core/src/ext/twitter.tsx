@@ -63,7 +63,6 @@ const normalizeOptions = (
 
 export function setupTwitterObserver(
   config: ActionAdapter,
-  isActive: boolean,
   callbacks: Partial<ActionCallbacksConfig> = {},
   options: Partial<ObserverOptions> = DEFAULT_OPTIONS,
 ) {
@@ -80,13 +79,9 @@ export function setupTwitterObserver(
         if (node.nodeType !== Node.ELEMENT_NODE) {
           return;
         }
-        handleNewNode(
-          node as Element,
-          config,
-          isActive,
-          callbacks,
-          mergedOptions,
-        ).catch(noop);
+        handleNewNode(node as Element, config, callbacks, mergedOptions).catch(
+          noop,
+        );
       }
     }
   });
@@ -96,7 +91,6 @@ export function setupTwitterObserver(
 async function handleNewNode(
   node: Element,
   config: ActionAdapter,
-  isActive: boolean,
   callbacks: Partial<ActionCallbacksConfig>,
   options: NormalizedObserverOptions,
 ) {
@@ -162,41 +156,25 @@ async function handleNewNode(
     }
   }
 
-  if (isActive)
-    addMargin(container).replaceChildren(
-      createAction({
-        originalUrl: actionUrl,
-        action,
-        isActive,
-        callbacks,
-        options,
-        isInterstitial: interstitialData.isInterstitial,
-      }),
-    );
-  else {
-    addMargin(container).appendChild(
-      createAction({
-        originalUrl: actionUrl,
-        action,
-        isActive,
-        callbacks,
-        options,
-        isInterstitial: interstitialData.isInterstitial,
-      }),
-    );
-  }
+  addMargin(container).replaceChildren(
+    createAction({
+      originalUrl: actionUrl,
+      action,
+      callbacks,
+      options,
+      isInterstitial: interstitialData.isInterstitial,
+    }),
+  );
 }
 
 function createAction({
   originalUrl,
   action,
-  isActive,
   callbacks,
   options,
 }: {
   originalUrl: URL;
   action: Action;
-  isActive: boolean;
   callbacks: Partial<ActionCallbacksConfig>;
   options: NormalizedObserverOptions;
   isInterstitial: boolean;
@@ -206,35 +184,24 @@ function createAction({
 
   const actionRoot = createRoot(container);
 
-  if (isActive)
-    actionRoot.render(
-      <div onClick={(e) => e.stopPropagation()}>
-        <ConnectProvider
-          siwbCanisterId={action.siwbCanisterId}
-          canisterId={action.canisterId}
-        >
-          <ActionContainer
-            stylePreset={resolveXStylePreset()}
-            action={action}
-            websiteUrl={originalUrl.toString()}
-            websiteText={originalUrl.hostname}
-            callbacks={callbacks}
-            securityLevel={options.securityLevel}
-          />
-        </ConnectProvider>
-      </div>,
-    );
-  else
-    actionRoot.render(
-      <div onClick={(e) => e.stopPropagation()}>
-        <ConnectProvider
-          siwbCanisterId={action.siwbCanisterId}
-          canisterId={action.canisterId}
-        >
-          <ConnectButton isDisconected={true} />
-        </ConnectProvider>
-      </div>,
-    );
+  actionRoot.render(
+    <div onClick={(e) => e.stopPropagation()}>
+      <ConnectProvider
+        siwbCanisterId={action.siwbCanisterId}
+        canisterId={action.canisterId}
+      >
+        <ActionContainer
+          stylePreset={resolveXStylePreset()}
+          action={action}
+          websiteUrl={originalUrl.toString()}
+          websiteText={originalUrl.hostname}
+          callbacks={callbacks}
+          securityLevel={options.securityLevel}
+        />
+        <ConnectButton isExtension={true} />
+      </ConnectProvider>
+    </div>,
+  );
 
   return container;
 }

@@ -4,6 +4,7 @@
 
 body {
   width: 320px;
+  height: 250px;
   margin: 0;
   font-family: Inter, Roboto, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
