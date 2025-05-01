@@ -63,9 +63,10 @@ export class BitcoinProviderMaker {
             return;
           }
           if (response && response.error) {
-            reject(new Error(response.error));
+            reject(new Error(response.error.message ?? response.error));
             return;
           }
+
           resolve(response as T);
         }
       );
@@ -291,16 +292,13 @@ export class MessageBasedWalletProvider implements IWalletProvider {
         { type, wallet: this.providerKey, payload },
         (response) => {
           if (chrome.runtime.lastError) {
-            console.error("Error in sendMessage:", chrome.runtime.lastError);
             reject(new Error(chrome.runtime.lastError.message));
             return;
           }
           if (response && response.error) {
-            console.error("Error in response:", type, response.error);
             reject(new Error(response.error));
             return;
           }
-          console.log("Response from sendMessage:", response);
           resolve(response as T);
         }
       );
@@ -325,7 +323,6 @@ export class MessageBasedWalletProvider implements IWalletProvider {
 
   async requestAccounts(): Promise<string[]> {
     const accounts = await this.sendMessage<string[]>("requestAccounts", {});
-    console.log("------------Account Result----------", accounts);
     if (accounts && accounts.length > 0) {
       this.defaultAddress = accounts[0];
     }
@@ -486,8 +483,6 @@ export async function getRegisterExtension(providerKey?: WalletProviderKey) {
   let network: NetworkItem | undefined = undefined;
   let addresses: string[] = [];
 
-  console.log("________________Provider)_____________________", provider);
-
   const wp = provider;
   const accountChange = (accounts: string[]) => {
     if (isPageHidden()) {
@@ -536,8 +531,6 @@ export async function getRegisterExtension(providerKey?: WalletProviderKey) {
       (wp as IWalletProvider).removeListener("networkChanged", networkChange);
     }
   }
-
-  console.log("--------------------------Result______", address, addresses);
 
   return { provider, providerKey, address, network, addresses };
 }

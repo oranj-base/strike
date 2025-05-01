@@ -60,8 +60,12 @@ const adapter = (wallet: string) => {
 
 function initTwitterObserver() {
   chrome.storage.local.get('strke', async (result) => {
+    const isActive: string = result?.strke ?? 'off';
+    console.debug(
+      `Initializing twitter observer with initial status: ${isActive}`,
+    );
     console.debug('Twitter observer is enabled.');
-    setupTwitterObserver(adapter('ii'));
+    setupTwitterObserver(adapter('ii'), isActive === 'on');
   });
 }
 

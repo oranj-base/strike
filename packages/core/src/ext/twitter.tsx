@@ -63,6 +63,7 @@ const normalizeOptions = (
 
 export function setupTwitterObserver(
   config: ActionAdapter,
+  isActive: boolean,
   callbacks: Partial<ActionCallbacksConfig> = {},
   options: Partial<ObserverOptions> = DEFAULT_OPTIONS,
 ) {
@@ -79,9 +80,13 @@ export function setupTwitterObserver(
         if (node.nodeType !== Node.ELEMENT_NODE) {
           return;
         }
-        handleNewNode(node as Element, config, callbacks, mergedOptions).catch(
-          noop,
-        );
+        handleNewNode(
+          node as Element,
+          config,
+          isActive,
+          callbacks,
+          mergedOptions,
+        ).catch(noop);
       }
     }
   });
@@ -91,6 +96,7 @@ export function setupTwitterObserver(
 async function handleNewNode(
   node: Element,
   config: ActionAdapter,
+  isActive: boolean,
   callbacks: Partial<ActionCallbacksConfig>,
   options: NormalizedObserverOptions,
 ) {
@@ -156,15 +162,16 @@ async function handleNewNode(
     }
   }
 
-  addMargin(container).replaceChildren(
-    createAction({
-      originalUrl: actionUrl,
-      action,
-      callbacks,
-      options,
-      isInterstitial: interstitialData.isInterstitial,
-    }),
-  );
+  if (isActive)
+    addMargin(container).replaceChildren(
+      createAction({
+        originalUrl: actionUrl,
+        action,
+        callbacks,
+        options,
+        isInterstitial: interstitialData.isInterstitial,
+      }),
+    );
 }
 
 function createAction({

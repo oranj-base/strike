@@ -137,8 +137,6 @@ async function handleWalletCommunication(
 
     return res[0].result;
   } else if (type === 'getAccounts' || type === 'requestAccounts') {
-    console.log('getting accounts for', wallet);
-
     // Convert purposes to a JSON string to ensure it's serializable
     const purposesJson =
       payload && payload.purposes ? JSON.stringify(payload.purposes) : null;
@@ -176,12 +174,17 @@ async function handleWalletCommunication(
           accounts = await provider.getAccounts(purposes);
         } else if (provider.request) {
           accounts = await provider.request(
-            walletKey.includes('Xverse') ? 'getAccounts' : 'requestAccounts',
+            walletKey.includes('Xverse')
+              ? 'getAccounts'
+              : walletKey.includes('Orange')
+                ? 'getAddresses'
+                : 'requestAccounts',
             { purposes: purposes },
           );
         } else if (provider.connect) {
           accounts = await provider.connect();
         }
+        console.log('accounts', accounts);
 
         return accounts;
       },
@@ -190,6 +193,18 @@ async function handleWalletCommunication(
 
     if (res[0].result && res[0].result.error) {
       return { error: res[0].result.error };
+    }
+
+    if (res[0].result.result.addresses) {
+      res[0].result.result = res[0].result.result.addresses.map(
+        (address: any) => {
+          return {
+            address: address.address,
+            publicKey: address.publicKey,
+            purpose: address.purpose,
+          };
+        },
+      );
     }
 
     return res[0].result;
@@ -213,7 +228,11 @@ async function handleWalletCommunication(
         }
 
         // Sign message
-        if (provider.signMessage && !walletKey.includes('Xverse')) {
+        if (
+          provider.signMessage &&
+          !walletKey.includes('Xverse') &&
+          !walletKey.includes('Orange')
+        ) {
           return await provider.signMessage(message);
         } else if (provider.request) {
           const result = await provider.request('signMessage', {
@@ -230,8 +249,6 @@ async function handleWalletCommunication(
 
     return res[0].result;
   } else if (type === 'sendBitcoin') {
-    console.log('sending bitcoin', payload);
-
     // Convert recipients to a JSON string to ensure it's serializable
     const recipientsJson =
       payload && payload.recipients ? JSON.stringify(payload.recipients) : null;
@@ -286,7 +303,6 @@ async function handleWalletCommunication(
 
     return res[0].result;
   } else if (type === 'getNetwork') {
-    console.log('getting network for', wallet);
     const res = await chrome.scripting.executeScript({
       world: 'MAIN',
       target: { tabId },
@@ -317,8 +333,6 @@ async function handleWalletCommunication(
       },
       args: [wallet],
     });
-
-    console.log('get network result _________________', res[0].result);
 
     return res[0].result;
   } else if (type === 'getBalance') {
@@ -378,7 +392,6 @@ async function handleWalletCommunication(
 
         // Try different methods to get public key
         let publicKey;
-        console.log('get public key', provider);
 
         if (provider.getPublicKey) {
           // Direct method call if available
