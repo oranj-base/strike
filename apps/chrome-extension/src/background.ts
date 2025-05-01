@@ -15,7 +15,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     msg.type !== 'getSupportedMethods' &&
     msg.type !== 'pushTx' &&
     msg.type !== 'pushPsbt' &&
-    msg.type !== 'fetchAndValidateFile'
+    msg.type !== 'fetchAndValidateFile' &&
+    msg.type !== 'requestConnect'
   ) {
     return null;
   }
@@ -413,6 +414,32 @@ async function handleWalletCommunication(
       return { error: result[0].result.error };
     }
     return result[0].result?.result;
+  } else if (type === 'requestConnect') {
+    const res = await chrome.scripting.executeScript({
+      world: 'MAIN',
+      target: { tabId },
+      func: async (walletKey, whitelist) => {
+        // Get provider
+        const keys = walletKey.split('.');
+        let provider = window as any;
+        for (const key of keys) {
+          if (provider) {
+            provider = provider[key];
+          }
+        }
+        if (!provider) {
+          throw new Error(`Provider not found`);
+        }
+        // Request connection
+        const result = await provider.requestConnect(whitelist);
+        return result;
+      },
+      args: [wallet, payload.whitelist],
+    });
+    if (res[0].result && res[0].result.error) {
+      return { error: res[0].result.error };
+    }
+    return res[0].result;
   }
 
   // Implement other wallet operations as needed following the same pattern

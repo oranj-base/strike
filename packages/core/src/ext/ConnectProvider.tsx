@@ -6,7 +6,7 @@ import {
   Nfid,
   OKXConnector,
   OrangeConnector,
-  Plug,
+  PlugForExtension,
   UnisatConnector,
   XverseConnector,
 } from '@oranjlabs/icp-wallet-adapter';
@@ -32,7 +32,7 @@ function createSiwbConnectors(config: any, siwbCanisterId: string) {
 function createICPConnectors(config: any, canisterId: string) {
   return [
     new InternetIdentity(config),
-    new Plug(config, { canisterId }),
+    new PlugForExtension(config, { canisterId }),
     new Nfid(config),
   ];
 }
