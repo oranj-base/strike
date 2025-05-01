@@ -1,0 +1,41 @@
+name: Publish Chrome Extension
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Dependencies
+        run: npm install axios
+
+      - name: Build React App
+        run: npm run build
+
+      - name: Prepare Extension for Publishing
+        run: |
+          # Copy the manifest.json and other static files to the build directory
+          cp -r public/* build/
+
+          # Zip the contents of the build directory
+          cd build && zip -r ../extension.zip .
+
+      - name: Publish to Chrome Web Store
+        env:
+          CHROME_CLIENT_ID: ${{ secrets.CHROME_CLIENT_ID }}
+          CHROME_CLIENT_SECRET: ${{ secrets.CHROME_CLIENT_SECRET }}
+          CHROME_REFRESH_TOKEN: ${{ secrets.CHROME_REFRESH_TOKEN }}
+          CHROME_EXTENSION_ID: ${{ secrets.CHROME_EXTENSION_ID }}
+        run: node src/publish-chrome-extension.js
