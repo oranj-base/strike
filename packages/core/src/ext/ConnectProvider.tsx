@@ -1,24 +1,24 @@
 'use client';
 
-import { Connect2ICProvider } from '@oranjlabs/icp-wallet-adapter-react';
 import {
   createClient,
   InternetIdentity,
-  Plug,
   Nfid,
-  XverseConnector,
-  UnisatConnector,
   OKXConnector,
   OrangeConnector,
+  PlugForExtension,
+  UnisatConnector,
+  XverseConnector,
 } from '@oranjlabs/icp-wallet-adapter';
-import { useAction } from '@oranjlabs/strike';
-import '@oranjlabs/strike/index.css';
+import { Connect2ICProvider } from '@oranjlabs/icp-wallet-adapter-react';
 import '@oranjlabs/icp-wallet-adapter-react/index.css';
-import { host, provider } from '../config';
-import { useSearchParams } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import '@oranjlabs/strike/index.css';
 
 const isServer = typeof window === 'undefined';
+
+export const host = 'https://icp0.io';
+
+export const provider = 'https://identity.ic0.app';
 
 function createSiwbConnectors(config: any, siwbCanisterId: string) {
   return [
@@ -32,24 +32,24 @@ function createSiwbConnectors(config: any, siwbCanisterId: string) {
 function createICPConnectors(config: any, canisterId: string) {
   return [
     new InternetIdentity(config),
-    new Plug(config, { canisterId }),
+    new PlugForExtension(config, { canisterId }),
     new Nfid(config),
   ];
 }
 
 export default function ConnectProvider({
   children,
+  siwbCanisterId,
+  canisterId,
 }: {
   children: React.ReactNode;
+  siwbCanisterId?: string;
+  canisterId?: string;
 }) {
-  const [siwbCanisterId, setSiwbCanisterId] = useState<string | undefined>(
-    undefined,
-  );
-  const [canisterId, setCanisterId] = useState<string | undefined>(undefined);
-
   const config = {
     host,
     providerUrl: provider,
+    isExtension: true,
   };
 
   const providers =
@@ -72,8 +72,8 @@ export default function ConnectProvider({
   return (
     <Connect2ICProvider
       client={client}
-      setSiwbCanisterId={setSiwbCanisterId}
-      setCanisterId={setCanisterId}
+      setSiwbCanisterId={() => {}}
+      setCanisterId={() => {}}
     >
       {children}
     </Connect2ICProvider>

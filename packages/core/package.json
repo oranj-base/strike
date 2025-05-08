@@ -54,7 +54,8 @@
     "dist"
   ],
   "dependencies": {
-    "clsx": "^2.1.1"
+    "clsx": "^2.1.1",
+    "@oranjlabs/icp-wallet-adapter-react": "*"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
