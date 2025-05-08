@@ -1,5 +1,4 @@
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  console.log('on message', msg, sender);
 
   if (
     !sender.tab &&
@@ -91,7 +90,6 @@ async function handleWalletCommunication(
 
   // Handle tab-based operations
   if (type === 'connect') {
-    console.log('connecting wallet', wallet);
     const res = await chrome.scripting.executeScript({
       world: 'MAIN',
       target: { tabId },
@@ -185,7 +183,6 @@ async function handleWalletCommunication(
         } else if (provider.connect) {
           accounts = await provider.connect();
         }
-        console.log('accounts', accounts);
 
         return accounts;
       },

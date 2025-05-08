@@ -9,25 +9,21 @@ function Popup() {
   // Load saved state on mount
   useEffect(() => {
     chrome.storage.local.get(['strke'], (result) => {
-      console.log('Loaded state:', result.strke);
       setIsEnabled(result.strke === 'on');
     });
   }, []);
 
   // Update storage when toggle changes
   const handleToggleChange = (enabled: boolean) => {
-    console.log('Toggle changed to:', enabled);
     setIsEnabled(enabled);
 
     const value = enabled ? 'on' : 'off';
     chrome.storage.local.set({ strke: value }, () => {
-      console.log('Saved state:', value);
 
       // Reload current active tab
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs[0]?.id) {
           chrome.tabs.reload(tabs[0].id);
-          console.log('Reloading tab:', tabs[0].url);
         }
       });
     });

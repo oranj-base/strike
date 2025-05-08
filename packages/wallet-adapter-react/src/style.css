@@ -163,7 +163,6 @@
     background: #545454;
 }
 
-
 .connect-button {
     font-size: 18px;
     background: rgb(35 35 39);
@@ -179,25 +178,6 @@
 .connect-button:hover {
     transform: scale(1.03);
     transition: all 0.4s;
-}
-
-.connect-button-extension {
-    font-size: 14px;
-    background: #1d9bf0;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    display: flex;
-    align-items: center;
-    border-radius: 40px;
-    cursor: pointer;
-    position: absolute;
-    top: 30px;
-    right: 30px;
-}
-.connect-button-extension:hover {
-    transform: scale(1.03);
-    transition: all 0.2s;
 }
 
 .close-button {

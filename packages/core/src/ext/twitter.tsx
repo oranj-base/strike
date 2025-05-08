@@ -205,7 +205,15 @@ function createAction({
           callbacks={callbacks}
           securityLevel={options.securityLevel}
         />
-        <ConnectButton isExtension={true} />
+        <div style={{ position: 'absolute', top: '30px', right: '30px' }}>
+          <ConnectButton
+            style={{
+              fontSize: '14px',
+              background: '#1d9bf0',
+              padding: '5px 10px',
+            }}
+          />
+        </div>
       </ConnectProvider>
     </div>,
   );

@@ -84,7 +84,7 @@ async function publishExtension(accessToken) {
 
 (async () => {
   try {
-    const zipPath = path.resolve(__dirname, '../extension.zip'); // Adjust the path if needed
+    const zipPath = path.resolve(__dirname, '../extension.zip');
     const accessToken = await getAccessToken();
     await uploadExtension(accessToken, zipPath);
     await publishExtension(accessToken);

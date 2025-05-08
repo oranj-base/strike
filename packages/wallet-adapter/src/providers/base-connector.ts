@@ -22,7 +22,7 @@ export type Config = {
   isExtension?: boolean;
 };
 
-export const defaultConfig: Config = {
+export const defaultConfig: Config = { 
   autoConnect: true,
   host: "https://icp0.io",
   providerUrl: "https://identity.ic0.app",

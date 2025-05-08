@@ -7,7 +7,6 @@ interface UseActionOptions {
   url: string | URL;
   adapter?: ActionAdapter;
   securityRegistryRefreshInterval?: number;
-  skip?: boolean;
 }
 
 function useActionApiUrl(url: string | URL) {
@@ -36,13 +35,12 @@ function useActionApiUrl(url: string | URL) {
   return { actionApiUrl: apiUrl };
 }
 
-export function useAction({ url, adapter, skip = false }: UseActionOptions) {
+export function useAction({ url, adapter }: UseActionOptions) {
   const { actionApiUrl } = useActionApiUrl(url);
   const [action, setAction] = useState<Action | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (skip) return;
     setIsLoading(true);
     if (!actionApiUrl) {
       return;
