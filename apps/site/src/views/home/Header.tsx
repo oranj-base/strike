@@ -4,8 +4,8 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import {
   ConnectDialog,
-} from '@oranjlabs/icp-wallet-adapter-react';
-import { ICP_BLINK_PREFIX } from '@oranjlabs/strike';
+} from '@oranjbase/icp-wallet-adapter-react';
+import { ICP_BLINK_PREFIX } from '@oranjbase/strike';
 import {
   StrikeLogo,
   LinkIcon,

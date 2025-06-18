@@ -1,7 +1,7 @@
 {
-  "name": "@oranjlabs/strike-chrome-extension",
+  "name": "@oranjbase/strike-chrome-extension",
   "displayName": "STRIKE by Oranj",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "author": "Edward Lee",
   "description": "Enable Internet Computer Blinks on Twitter, with support for Internet Identity and Plug.",
   "private": true,
@@ -24,8 +24,9 @@
     "zip": "npm run build && node src/zip.js"
   },
   "dependencies": {
-    "@oranjlabs/icp-wallet-adapter": "*",
-    "@oranjlabs/strike": "*",
+    "@oranjbase/icp-wallet-adapter": "*",
+    "@oranjbase/strike": "*",
+    "axios": "^1.9.0",
     "buffer": "^6.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

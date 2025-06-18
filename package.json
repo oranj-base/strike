@@ -1,5 +1,5 @@
 {
-  "name": "oranjlabs-strike",
+  "name": "oranjbase-strike",
   "version": "0.7.0",
   "license": "Apache-2.0",
   "private": true,
@@ -13,7 +13,7 @@
     "apps/*"
   ],
   "scripts": {
-    "dev:site": "yarn workspace @oranjlabs/strike-site dev",
+    "dev:site": "yarn workspace @oranjbase/strike-site dev",
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint"
