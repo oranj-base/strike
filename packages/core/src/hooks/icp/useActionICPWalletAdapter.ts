@@ -1,6 +1,6 @@
 import { Actor, HttpAgent } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
-import { useConnect, useDialog } from '@oranjlabs/icp-wallet-adapter-react';
+import { useConnect, useDialog } from '@oranjbase/icp-wallet-adapter-react';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import { ActionConfig } from '../../api';
