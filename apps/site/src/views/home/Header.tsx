@@ -2,9 +2,7 @@
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import {
-  ConnectDialog,
-} from '@oranjbase/icp-wallet-adapter-react';
+import { ConnectDialog } from '@oranjbase/icp-wallet-adapter-react';
 import { ICP_BLINK_PREFIX } from '@oranjbase/strike';
 import {
   StrikeLogo,
@@ -131,7 +129,7 @@ export default function Header() {
         </div>
       </div>
       <div className="w-full sm:block hidden">
-        <div className="lg:h-[777px] w-full flex md:flex-row flex-col gap-[20px]">
+        <div className="md:h-[777px] w-full flex md:flex-row flex-col gap-[20px]">
           <StrikeSlider />
         </div>
       </div>

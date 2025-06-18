@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --swiper-wrapper-transition-timing-function: linear !important;
+}
