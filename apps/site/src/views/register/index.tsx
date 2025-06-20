@@ -1,43 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import CanisterRegistryForm from './CanisterRegistryForm';
 
 export function CanisterRegistry() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    telegram: '',
-    twitter: '',
-    projectName: '',
-    canisterDescription: '',
-    canisterId: '',
-    strikeCardLink: '',
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleClearAll = () => {
-    setFormData({
-      name: '',
-      email: '',
-      telegram: '',
-      twitter: '',
-      projectName: '',
-      canisterDescription: '',
-      canisterId: '',
-      strikeCardLink: '',
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (formData: any) => {
     console.log('Form submitted:', formData);
     // TODO: Add API call to submit the form
   };
