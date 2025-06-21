@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 export default function Step() {
   return (
     <section className="flex flex-col md:gap-[96px] gap-[48px] font-medium lg:py-[96px] py-[48px] lg:px-[160px] px-[20px]">
@@ -70,14 +68,6 @@ export default function Step() {
             </p>
           </div>
         </div>
-      </div>
-
-      <div className="flex items-center justify-center w-full">
-        <Link href="/register">
-          <button className="rounded-md text-base leading-4 bg-[#3670FF] text-white p-4 font-semibold font-inter hover:brightness-125 text-white/90">
-            Click Here to register your canister
-          </button>
-        </Link>
       </div>
     </section>
   );
