@@ -1,0 +1,228 @@
+import { useState } from 'react';
+
+interface FormData {
+  name: string;
+  email: string;
+  telegram: string;
+  twitter: string;
+  projectName: string;
+  canisterDescription: string;
+  canisterId: string;
+  strikeCardLink: string;
+}
+
+interface CanisterRegistryFormProps {
+  onSubmit: (data: FormData) => void;
+}
+
+const CanisterRegistryForm = ({ onSubmit }: CanisterRegistryFormProps) => {
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    email: '',
+    telegram: '',
+    twitter: '',
+    projectName: '',
+    canisterDescription: '',
+    canisterId: '',
+    strikeCardLink: '',
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleClearAll = () => {
+    setFormData({
+      name: '',
+      email: '',
+      telegram: '',
+      twitter: '',
+      projectName: '',
+      canisterDescription: '',
+      canisterId: '',
+      strikeCardLink: '',
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="w-full">
+      <div className="flex flex-col space-y-4">
+        <div className="flex flex-col">
+          <label
+            htmlFor="name"
+            className="mb-1 text-sm font-medium text-gray-500"
+          >
+            Name <span className="text-red-500">*</span>
+          </label>
+          <input
+            required
+            id="name"
+            name="name"
+            type="text"
+            value={formData.name}
+            onChange={handleChange}
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label
+            htmlFor="email"
+            className="mb-1 text-sm font-medium text-gray-500"
+          >
+            Email <span className="text-red-500">*</span>
+          </label>
+          <input
+            required
+            id="email"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label
+            htmlFor="telegram"
+            className="mb-1 text-sm font-medium text-gray-500"
+          >
+            Telegram
+          </label>
+          <input
+            id="telegram"
+            name="telegram"
+            type="text"
+            value={formData.telegram}
+            onChange={handleChange}
+            placeholder="@username"
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label
+            htmlFor="twitter"
+            className="mb-1 text-sm font-medium text-gray-500"
+          >
+            Twitter
+          </label>
+          <input
+            id="twitter"
+            name="twitter"
+            type="text"
+            value={formData.twitter}
+            onChange={handleChange}
+            placeholder="@username"
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label
+            htmlFor="projectName"
+            className="mb-1 text-sm font-medium text-gray-500"
+          >
+            Project Name <span className="text-red-500">*</span>
+          </label>
+          <input
+            required
+            id="projectName"
+            name="projectName"
+            type="text"
+            value={formData.projectName}
+            onChange={handleChange}
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label
+            htmlFor="canisterDescription"
+            className="mb-1 text-sm font-medium text-gray-500"
+          >
+            Briefly explain your canister{' '}
+            <span className="text-red-500">*</span>
+          </label>
+          <textarea
+            required
+            id="canisterDescription"
+            name="canisterDescription"
+            value={formData.canisterDescription}
+            onChange={handleChange}
+            rows={4}
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label
+            htmlFor="canisterId"
+            className="mb-1 text-sm font-medium text-gray-500"
+          >
+            Canister ID <span className="text-red-500">*</span>
+          </label>
+          <input
+            required
+            id="canisterId"
+            name="canisterId"
+            type="text"
+            value={formData.canisterId}
+            onChange={handleChange}
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label
+            htmlFor="strikeCardLink"
+            className="mb-1 text-sm font-medium text-gray-500"
+          >
+            Strike Card Link <span className="text-red-500">*</span>
+          </label>
+          <input
+            required
+            id="strikeCardLink"
+            name="strikeCardLink"
+            type="text"
+            value={formData.strikeCardLink}
+            onChange={handleChange}
+            placeholder="https://..."
+            className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+
+        <div className="flex justify-between mt-4">
+          <button
+            type="button"
+            onClick={handleClearAll}
+            className="px-4 py-2 text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500"
+          >
+            Clear All
+          </button>
+
+          <button
+            type="submit"
+            className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </form>
+  );
+};
+
+export default CanisterRegistryForm;
