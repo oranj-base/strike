@@ -20,29 +20,13 @@ export type PlugMeta = Omit<Meta, "type"> & {
   canisterId: string;
 };
 
-const nnsPartialInterfaceFactory = ({ IDL }: { IDL: any }) => {
-  const BlockHeight = IDL.Nat64;
-  const Stats = IDL.Record({
-    latest_transaction_block_height: BlockHeight,
-    seconds_since_last_ledger_sync: IDL.Nat64,
-    sub_accounts_count: IDL.Nat64,
-    hardware_wallet_accounts_count: IDL.Nat64,
-    accounts_count: IDL.Nat64,
-    earliest_transaction_block_height: BlockHeight,
-    transactions_count: IDL.Nat64,
-    block_height_synced_up_to: IDL.Opt(IDL.Nat64),
-    latest_transaction_timestamp_nanos: IDL.Nat64,
-    earliest_transaction_timestamp_nanos: IDL.Nat64,
-  });
-  return IDL.Service({
-    get_stats: IDL.Func([], [Stats], ["query"]),
-  });
-};
-
-class Plug extends BaseConnector {
-  private canisterId: string;
-  constructor(config: Partial<Config> = {}, canisterId: string) {
+class Plug extends BaseConnector<PlugMeta & { type: ConnectorType.ICP }> {
+  constructor(
+    config: Partial<Config> = {},
+    meta: Partial<PlugMeta> & Pick<PlugMeta, "canisterId">
+  ) {
     super(config, {
+      ...meta,
       id: "ic.plug",
       name: "Plug",
       type: ConnectorType.ICP,
@@ -53,7 +37,6 @@ class Plug extends BaseConnector {
       },
       link: "https://chromewebstore.google.com/detail/plug/cfbfdhimifdmdehjmkdobpcjfefblkjm",
     });
-    this.canisterId = canisterId;
   }
 
   async createActor<Service>(canisterId: string, idlFactory: any) {
@@ -88,7 +71,7 @@ class Plug extends BaseConnector {
       if (!this.authClient) {
         return err({ kind: ConnectError.NotInitialized });
       }
-      const nnsCanisterId = this.canisterId;
+      const nnsCanisterId = this.meta.canisterId;
       const whitelist = [nnsCanisterId];
       const connected = await window.ic.plug.isConnected();
       if (!connected) await window.ic.plug.requestConnect({ whitelist });

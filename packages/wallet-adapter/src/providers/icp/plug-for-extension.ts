@@ -10,23 +10,54 @@ import {
   type ConnectOptions,
   type DisconnectOptions,
   ConnectorType,
+  type Meta,
 } from "../base-connector";
 
-import dfinityLogoLight from "../../assets/dfinity.svg";
-import dfinityLogoDark from "../../assets/dfinity.svg";
+import plugLogoLight from "../../assets/plugDark.svg";
+import plugLogoDark from "../../assets/plugLight.svg";
 
-class InternetIdentity extends BaseConnector {
-  constructor(config: Partial<Config> = {}) {
+type PlugMeta = Omit<Meta, "type"> & {
+  canisterId: string;
+};
+
+class PlugForExtension extends BaseConnector<
+  PlugMeta & { type: ConnectorType.ICP }
+> {
+  constructor(
+    config: Partial<Config> = {},
+    meta: Partial<PlugMeta> & Pick<PlugMeta, "canisterId">
+  ) {
     super(config, {
-      id: "ii",
-      name: "Internet Identity",
+      ...meta,
+      id: "ic.plug",
+      name: "Plug",
       type: ConnectorType.ICP,
       features: [],
       icon: {
-        light: dfinityLogoLight,
-        dark: dfinityLogoDark,
+        light: plugLogoLight,
+        dark: plugLogoDark,
       },
-      link: "https://identity.ic0.app/",
+      link: "https://chromewebstore.google.com/detail/plug/cfbfdhimifdmdehjmkdobpcjfefblkjm",
+    });
+  }
+
+  private async sendMessage<T>(type: string, payload: any = {}): Promise<T> {
+    return new Promise((resolve, reject) => {
+      chrome.runtime.sendMessage(
+        { type, wallet: "ic.plug", payload },
+        (response) => {
+          if (chrome.runtime.lastError) {
+            reject(new Error(chrome.runtime.lastError.message));
+            return;
+          }
+          if (response && response.error) {
+            reject(new Error(response.error.message ?? response.error));
+            return;
+          }
+
+          resolve(response as T);
+        }
+      );
     });
   }
 
@@ -62,22 +93,16 @@ class InternetIdentity extends BaseConnector {
       if (!this.authClient) {
         return err({ kind: ConnectError.NotInitialized });
       }
-      await new Promise((resolve, reject) => {
-        this.authClient!.login({
-          derivationOrigin: options?.derivationOrigin,
-          onSuccess: async () => {
-            window.localStorage.setItem("lastConnectedWalletId", "ii");
-            resolve(true);
-          },
-          onError: async (error) => {
-            reject(error);
-          },
-          windowOpenerFeatures: `
-          left=${window.screen.width / 2 - 525 / 2},
-          top=${window.screen.height / 2 - 705 / 2},
-          toolbar=0,location=0,menubar=0,width=525,height=705`,
-        });
-      });
+      const nnsCanisterId = this.meta.canisterId;
+      const whitelist = [nnsCanisterId];
+      // const connected = await window.ic.plug.isConnected();
+      const { result: response } = await this.sendMessage<{
+        result: {
+          signature: string;
+          address: string;
+          messageHash: string;
+        };
+      }>("requestConnect", { whitelist });
       return ok(true);
     } catch (e) {
       console.error(e);
@@ -90,6 +115,8 @@ class InternetIdentity extends BaseConnector {
       if (!this.authClient) {
         return err({ kind: DisconnectError.NotInitialized });
       }
+      // @ts-ignore
+      await window.ic.plug.disconnect();
       await this.authClient.logout(options);
       return ok(true);
     } catch (e) {
@@ -99,4 +126,4 @@ class InternetIdentity extends BaseConnector {
   }
 }
 
-export { InternetIdentity };
+export { PlugForExtension };

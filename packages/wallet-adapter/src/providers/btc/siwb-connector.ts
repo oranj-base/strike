@@ -7,6 +7,8 @@ import {
   createActor as createSIWBActor,
   type WalletProviderKey,
 } from "@oranjbase/ic-siwb-js";
+
+import { siwbMachine as siwbExtensionMachine } from "../provider-maker/state-machine";
 import { err, ok } from "neverthrow";
 import { createActor, Actor as XActor } from "xstate";
 
@@ -18,16 +20,20 @@ import {
   BaseConnector,
   ConnectorType,
   type Meta,
+  type ConnectOptions,
 } from "../base-connector";
 
 export type SIWBMeta = Omit<Meta, "type"> & {
-  siwbCanisterId: string;
   siwbActor?: ReturnType<typeof createSIWBActor>;
   siwbXActor?: XActor<typeof siwbMachine>;
+  siwbCanisterId: string;
 };
 
-class SIWBConnector extends BaseConnector {
-  private siwbXActor: XActor<typeof siwbMachine>;
+class SIWBConnector extends BaseConnector<
+  SIWBMeta & { type: ConnectorType.BTC }
+> {
+  private siwbXActor: XActor<typeof siwbMachine | typeof siwbExtensionMachine>;
+  private isExtension: boolean;
 
   constructor(config: Partial<Config>, meta: SIWBMeta) {
     super(config, {
@@ -35,15 +41,17 @@ class SIWBConnector extends BaseConnector {
       type: ConnectorType.BTC,
     });
 
+    this.isExtension = config.isExtension ?? false;
+
     const actor =
-      meta.siwbActor ??
-      createSIWBActor(meta.siwbCanisterId, {
-        agentOptions: { host: config.host },
+      this.meta.siwbActor ??
+      createSIWBActor(this.meta.siwbCanisterId, {
+        agentOptions: { host: this.config.host },
       });
 
     this.siwbXActor =
-      meta.siwbXActor ??
-      createActor(siwbMachine, {
+      this.meta.siwbXActor ??
+      createActor(this.isExtension ? siwbExtensionMachine : siwbMachine, {
         input: { anonymousActor: actor },
       });
 
@@ -84,13 +92,13 @@ class SIWBConnector extends BaseConnector {
 
   async connect() {
     try {
-      this.siwbXActor.send({
+      this.siwbXActor?.send({
         type: "CONNECT",
         providerKey: this.meta.id as WalletProviderKey,
       });
       const identity = await new Promise<DelegationIdentity>(
         (resolve, reject) => {
-          this.siwbXActor.on(
+          this.siwbXActor?.on(
             "AUTHENTICATED",
             (event: {
               data: DelegationIdentity | PromiseLike<DelegationIdentity>;
@@ -102,7 +110,8 @@ class SIWBConnector extends BaseConnector {
               resolve(event.data);
             }
           );
-          this.siwbXActor.on("ERROR", (e) => {
+          this.siwbXActor?.on("ERROR", (e) => {
+            console.error("Error in SIWB XState", e);
             reject(e.data);
           });
         }
@@ -132,12 +141,15 @@ class SIWBConnector extends BaseConnector {
     }
   }
 
-  on(...args: Parameters<typeof this.siwbXActor.on>) {
+  on(...args: Parameters<NonNullable<typeof this.siwbXActor>["on"]>) {
+    if (!this.siwbXActor) {
+      throw new Error("siwbXActor is not initialized");
+    }
     return this.siwbXActor.on(...args);
   }
 
   public get status() {
-    return this.siwbXActor.getSnapshot().value;
+    return this.siwbXActor?.getSnapshot().value;
   }
 }
 

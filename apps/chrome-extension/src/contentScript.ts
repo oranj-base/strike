@@ -59,10 +59,13 @@ const adapter = (wallet: string) => {
 };
 
 function initTwitterObserver() {
-  chrome.storage.local.get('strikeProvider', (result) => {
-    const storedWallet: string = result?.strikeProvider ?? 'ii';
-    console.debug(`Initializing twitter observer with wallet: ${storedWallet}`);
-    setupTwitterObserver(adapter(storedWallet));
+  chrome.storage.local.get('strke', async (result) => {
+    const isActive: string = result?.strke ?? 'off';
+    console.debug(
+      `Initializing twitter observer with initial status: ${isActive}`,
+    );
+    console.debug('Twitter observer is enabled.');
+    setupTwitterObserver(adapter('ii'), isActive === 'on');
   });
 }
 

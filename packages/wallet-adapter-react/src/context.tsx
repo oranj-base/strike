@@ -16,29 +16,40 @@ const Connect2ICContext = createContext<{
     close: () => void;
     isOpen: boolean;
   };
+  setSiwbCanisterId?: (canisterId: string) => void;
+  setCanisterId?: (canisterId: string) => void;
 }>({} as any);
 
 type Props = {
   client: Client;
+  setSiwbCanisterId?: (canisterId: string) => void;
+  setCanisterId?: (canisterId: string) => void;
 };
 
 const Connect2ICProvider: React.FC<PropsWithChildren<Props>> = ({
   children,
   client,
+  setSiwbCanisterId,
+  setCanisterId,
 }) => {
   const [open, setOpen] = useState<boolean>(false);
 
-  const dialog = useMemo(() => ({
-    open: () => setOpen(true),
-    close: () => setOpen(false),
-    isOpen: open,
-  }), [open]);
+  const dialog = useMemo(
+    () => ({
+      open: () => setOpen(true),
+      close: () => setOpen(false),
+      isOpen: open,
+    }),
+    [open]
+  );
 
   return (
     <Connect2ICContext.Provider
       value={{
         client,
         dialog,
+        setSiwbCanisterId,
+        setCanisterId,
       }}
     >
       {children}
