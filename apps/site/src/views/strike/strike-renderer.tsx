@@ -2,8 +2,8 @@
 
 import React, { useContext, useEffect } from 'react';
 import { HttpAgent } from '@dfinity/agent';
-import { Blink, useAction, useActionICPWalletAdapter } from '@oranjlabs/strike';
-import { useClient } from '@oranjlabs/icp-wallet-adapter-react';
+import { Blink, useAction, useActionICPWalletAdapter } from '@oranjbase/strike';
+import { useClient } from '@oranjbase/icp-wallet-adapter-react';
 
 import { host } from '@/config';
 

@@ -6,33 +6,33 @@
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": ["dist/**"]
     },
-    "@oranjlabs/icp-wallet-adapter#build": {
+    "@oranjbase/icp-wallet-adapter#build": {
       "outputs": ["dist/**"]
     },
-    "@oranjlabs/icp-wallet-adapter-react#build": {
-      "dependsOn": ["@oranjlabs/icp-wallet-adapter#build"],
+    "@oranjbase/icp-wallet-adapter-react#build": {
+      "dependsOn": ["@oranjbase/icp-wallet-adapter#build"],
       "outputs": ["dist/**"]
     },
-    "@oranjlabs/strike#build": {
+    "@oranjbase/strike#build": {
       "dependsOn": [
-        "@oranjlabs/icp-wallet-adapter#build",
-        "@oranjlabs/icp-wallet-adapter-react#build"
+        "@oranjbase/icp-wallet-adapter#build",
+        "@oranjbase/icp-wallet-adapter-react#build"
       ],
       "outputs": ["dist/**"]
     },
-    "@oranjlabs/strike-site#build": {
+    "@oranjbase/strike-site#build": {
       "dependsOn": [
-        "@oranjlabs/icp-wallet-adapter#build",
-        "@oranjlabs/icp-wallet-adapter-react#build",
-        "@oranjlabs/strike#build"
+        "@oranjbase/icp-wallet-adapter#build",
+        "@oranjbase/icp-wallet-adapter-react#build",
+        "@oranjbase/strike#build"
       ],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
-    "@oranjlabs/strike-chrome-extension": {
+    "@oranjbase/strike-chrome-extension": {
       "dependsOn": [
-        "@oranjlabs/icp-wallet-adapter#build",
-        "@oranjlabs/icp-wallet-adapter-react#build",
-        "@oranjlabs/strike#build"
+        "@oranjbase/icp-wallet-adapter#build",
+        "@oranjbase/icp-wallet-adapter-react#build",
+        "@oranjbase/strike#build"
       ],
       "outputs": ["build/**"]
     },

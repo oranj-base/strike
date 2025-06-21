@@ -3,7 +3,7 @@ import {
   type BaseConnector,
   type IWalletConnector,
   TransferError,
-} from "@oranjlabs/icp-wallet-adapter";
+} from "@oranjbase/icp-wallet-adapter";
 import { err } from "neverthrow";
 
 import { useConnect } from "./useConnect";

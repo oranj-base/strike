@@ -2,7 +2,7 @@ import React, { type PropsWithChildren, useEffect, useState } from "react";
 import { useDialog } from "../hooks";
 import { useProviders } from "../hooks";
 import { useConnect } from "../hooks";
-import { ConnectorType, type Meta } from "@oranjlabs/icp-wallet-adapter";
+import { ConnectorType, type Meta } from "@oranjbase/icp-wallet-adapter";
 
 type Props = {
   onClose?: () => void;

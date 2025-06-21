@@ -1,5 +1,5 @@
 {
-  "name": "@oranjlabs/strike",
+  "name": "@oranjbase/strike",
   "author": "Edward Lee <edward@oranj.co>",
   "version": "0.0.1",
   "license": "Apache-2.0",
@@ -54,8 +54,9 @@
     "dist"
   ],
   "dependencies": {
-    "clsx": "^2.1.1",
-    "@oranjlabs/icp-wallet-adapter-react": "*"
+    "@dfinity/agent": "^2.4.1",
+    "@oranjbase/icp-wallet-adapter-react": "*",
+    "clsx": "^2.1.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
@@ -77,11 +78,11 @@
     "typescript": "^5.5.3"
   },
   "peerDependencies": {
-    "@dfinity/agent": "^1.3",
-    "@dfinity/auth-client": "^1.3",
-    "@dfinity/candid": "^1.3",
-    "@dfinity/identity": "^1.3",
-    "@dfinity/principal": "^1.3",
+    "@dfinity/agent": "^2.4.1",
+    "@dfinity/auth-client": "^2.4.1",
+    "@dfinity/candid": "^2.4.1",
+    "@dfinity/identity": "^2.4.1",
+    "@dfinity/principal": "^2.4.1",
     "react": ">=18",
     "react-dom": ">=18"
   }

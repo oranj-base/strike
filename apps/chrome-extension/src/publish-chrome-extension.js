@@ -1,6 +1,6 @@
-const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
+import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
 
 // Load environment variables
 const CLIENT_ID = process.env.CHROME_CLIENT_ID;
@@ -84,7 +84,8 @@ async function publishExtension(accessToken) {
 
 (async () => {
   try {
-    const zipPath = path.resolve(__dirname, '../extension.zip');
+    const __dirname = path.resolve();
+    const zipPath = path.resolve('./build.zip');
     const accessToken = await getAccessToken();
     await uploadExtension(accessToken, zipPath);
     await publishExtension(accessToken);

@@ -4,7 +4,7 @@ import React, {
   useState,
   type PropsWithChildren,
 } from "react";
-import type { Client } from "@oranjlabs/icp-wallet-adapter";
+import type { Client } from "@oranjbase/icp-wallet-adapter";
 
 import "./style.css";
 import { ConnectDialog } from "./components";

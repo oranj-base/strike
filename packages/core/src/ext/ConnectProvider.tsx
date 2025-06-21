@@ -9,10 +9,10 @@ import {
   PlugForExtension,
   UnisatConnector,
   XverseConnector,
-} from '@oranjlabs/icp-wallet-adapter';
-import { Connect2ICProvider } from '@oranjlabs/icp-wallet-adapter-react';
-import '@oranjlabs/icp-wallet-adapter-react/index.css';
-import '@oranjlabs/strike/index.css';
+} from '@oranjbase/icp-wallet-adapter';
+import { Connect2ICProvider } from '@oranjbase/icp-wallet-adapter-react';
+import '@oranjbase/icp-wallet-adapter-react/index.css';
+import '@oranjbase/strike/index.css';
 
 const isServer = typeof window === 'undefined';
 

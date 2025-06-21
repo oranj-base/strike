@@ -2,9 +2,9 @@
 import {
   ConnectButton,
   ConnectDialog,
-} from '@oranjlabs/icp-wallet-adapter-react';
-import '@oranjlabs/strike/index.css';
-import '@oranjlabs/icp-wallet-adapter-react/index.css';
+} from '@oranjbase/icp-wallet-adapter-react';
+import '@oranjbase/strike/index.css';
+import '@oranjbase/icp-wallet-adapter-react/index.css';
 
 import StrikeRenderer from './strike-renderer';
 import { StrikeLogo } from '@/assets';

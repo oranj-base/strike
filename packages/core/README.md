@@ -1,4 +1,4 @@
-# @oranjlabs/strike &mdash; the [Actions](https://github.com/dialectlabs/actions) Interface
+# @oranjbase/strike &mdash; the [Actions](https://github.com/dialectlabs/actions) Interface
 
 ## Usage
 
@@ -14,8 +14,8 @@
 - `custom` - clean slate, no colors, radii at all, use CSS Variables to style. See [Overriding Theme](#overriding-theme).
 
 ```tsx
-import '@oranjlabs/strike/index.css';
-import { Blink } from "@oranjlabs/strike";
+import '@oranjbase/strike/index.css';
+import { Blink } from "@oranjbase/strike";
 
 <Blink stylePreset="x-dark" ... />
 ```
@@ -80,7 +80,7 @@ In your CSS, you can override the following CSS Variables to customize the look 
 }
 ```
 
-> be sure to import these overrides after @oranjlabs/strike styles (or by [CSS Specificity](https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity) as suggested above)
+> be sure to import these overrides after @oranjbase/strike styles (or by [CSS Specificity](https://developer.mozilla.org/en-US/docs/Web/CSS/Specificity) as suggested above)
 
 ### Chrome Extension
 
@@ -88,8 +88,8 @@ Package provides an entrypoint function with styled for X Blink components
 
 ```ts
 // contentScript.ts
-import { setupTwitterObserver } from "@oranjlabs/strike/ext/twitter";
-import { ActionConfig } from "@oranjlabs/strike";
+import { setupTwitterObserver } from "@oranjbase/strike/ext/twitter";
+import { ActionConfig } from "@oranjbase/strike";
 
 // your RPC_URL is used to create a connection to confirm the transaction after action execution
 setupTwitterObserver(new ActionConfig(RPC_URL, {
@@ -99,7 +99,7 @@ setupTwitterObserver(new ActionConfig(RPC_URL, {
 
 // or
 
-import { type ActionAdapter } from "@oranjlabs/strike";
+import { type ActionAdapter } from "@oranjbase/strike";
 
 class MyActionAdapter implements ActionAdapter {
   async createActor(tx: string) { ... }

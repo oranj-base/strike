@@ -2,8 +2,8 @@
 import type { Metadata, ResolvingMetadata } from 'next';
 
 // DO NOT IMPORT FROM core directly
-import { unfurlUrlToActionApiUrl } from '@oranjlabs/strike/utils';
-import { Action } from '@oranjlabs/strike/api';
+import { unfurlUrlToActionApiUrl } from '@oranjbase/strike/utils';
+import { Action } from '@oranjbase/strike/api';
 
 import { StrikePage } from '@/views';
 

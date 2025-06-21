@@ -1,6 +1,6 @@
 'use client';
 
-import { Connect2ICProvider } from '@oranjlabs/icp-wallet-adapter-react';
+import { Connect2ICProvider } from '@oranjbase/icp-wallet-adapter-react';
 import {
   createClient,
   InternetIdentity,
@@ -10,10 +10,10 @@ import {
   UnisatConnector,
   OKXConnector,
   OrangeConnector,
-} from '@oranjlabs/icp-wallet-adapter';
-import { useAction } from '@oranjlabs/strike';
-import '@oranjlabs/strike/index.css';
-import '@oranjlabs/icp-wallet-adapter-react/index.css';
+} from '@oranjbase/icp-wallet-adapter';
+import { useAction } from '@oranjbase/strike';
+import '@oranjbase/strike/index.css';
+import '@oranjbase/icp-wallet-adapter-react/index.css';
 import { host, provider } from '../config';
 import { useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';

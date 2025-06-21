@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   type BaseConnector,
   type IWalletConnector,
-} from "@oranjlabs/icp-wallet-adapter";
+} from "@oranjbase/icp-wallet-adapter";
 
 import { useConnect } from "./useConnect";
 import { useWallet } from "./useWallet";

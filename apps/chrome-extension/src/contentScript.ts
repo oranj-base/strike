@@ -1,6 +1,6 @@
-import '@oranjlabs/strike/index.css';
-import { ActionConfig, setupTwitterObserver } from '@oranjlabs/strike';
-import { createClient, defaultProviders } from '@oranjlabs/icp-wallet-adapter';
+import '@oranjbase/strike/index.css';
+import { ActionConfig, setupTwitterObserver } from '@oranjbase/strike';
+import { createClient, defaultProviders } from '@oranjbase/icp-wallet-adapter';
 import type { IDL } from '@dfinity/candid';
 
 export const host =
