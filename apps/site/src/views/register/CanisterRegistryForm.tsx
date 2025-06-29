@@ -6,7 +6,7 @@ interface FormData {
   telegram: string;
   twitter: string;
   projectName: string;
-  canisterDescription: string;
+  description: string;
   canisterId: string;
   strikeCardLink: string;
 }
@@ -22,7 +22,7 @@ const CanisterRegistryForm = ({ onSubmit }: CanisterRegistryFormProps) => {
     telegram: '',
     twitter: '',
     projectName: '',
-    canisterDescription: '',
+    description: '',
     canisterId: '',
     strikeCardLink: '',
   });
@@ -44,7 +44,7 @@ const CanisterRegistryForm = ({ onSubmit }: CanisterRegistryFormProps) => {
       telegram: '',
       twitter: '',
       projectName: '',
-      canisterDescription: '',
+      description: '',
       canisterId: '',
       strikeCardLink: '',
     });
@@ -150,7 +150,7 @@ const CanisterRegistryForm = ({ onSubmit }: CanisterRegistryFormProps) => {
 
         <div className="flex flex-col">
           <label
-            htmlFor="canisterDescription"
+            htmlFor="description"
             className="mb-1 text-sm font-medium text-gray-500"
           >
             Briefly explain your canister{' '}
@@ -158,9 +158,9 @@ const CanisterRegistryForm = ({ onSubmit }: CanisterRegistryFormProps) => {
           </label>
           <textarea
             required
-            id="canisterDescription"
-            name="canisterDescription"
-            value={formData.canisterDescription}
+            id="description"
+            name="description"
+            value={formData.description}
             onChange={handleChange}
             rows={4}
             className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"

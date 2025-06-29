@@ -10,6 +10,7 @@ import {
 } from 'next/font/google';
 import ConnectProvider from '@/provider/ConnectProvider';
 import './globals.css';
+import { BackendProvider } from './context';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -47,9 +48,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html
       lang="en"
@@ -62,7 +63,9 @@ export default function RootLayout({
       </head>
       <body className="bg-[#FAFAFA]">
         <Suspense>
-          <ConnectProvider>{children}</ConnectProvider>
+          <ConnectProvider>
+            <BackendProvider>{children}</BackendProvider>
+          </ConnectProvider>
         </Suspense>
       </body>
     </html>
