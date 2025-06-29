@@ -93,7 +93,7 @@ export function CanisterRegistry() {
         <Button
           asChild
           variant="default"
-          className="transition-all hover:shadow-md"
+          className="transition-all hover:shadow-md text-white"
         >
           <Link href="/register/manage">Manage Registry (Admin)</Link>
         </Button>

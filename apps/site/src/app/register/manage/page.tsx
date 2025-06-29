@@ -3,7 +3,36 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useBackend } from '@/app/context';
 import { Registry } from '@/backend/types';
-import { Principal } from '@dfinity/principal';
+
+// Import Shadcn UI components
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Loader2 } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 type StatusType = 'Submitted' | 'Blocked' | 'Trusted' | 'All';
 
@@ -36,9 +65,8 @@ export default function ManageRegistryPage() {
     fetchRegistriesByStatus(selectedStatus);
   }, [selectedStatus]);
 
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    // @ts-ignore
-    setSelectedStatus(e.target.value);
+  const handleStatusChange = (value: string) => {
+    setSelectedStatus(value as StatusType);
   };
 
   const handleRowClick = useCallback((registry: Registry) => {
@@ -85,238 +113,253 @@ export default function ManageRegistryPage() {
     }
   }, [selectedRegistry, selectedStatus, actor]);
 
+  const getStatusBadge = (status: string | null) => {
+    if (!status) {
+      return <Badge variant="outline">Unknown</Badge>;
+    }
+    switch (status) {
+      case 'Trusted':
+        return (
+          <Badge
+            className="bg-green-600 text-white border-none"
+            variant="default"
+          >
+            {status}
+          </Badge>
+        );
+      case 'Blocked':
+        return (
+          <Badge
+            className="bg-red-600 text-white border-none"
+            variant="destructive"
+          >
+            {status}
+          </Badge>
+        );
+      case 'Submitted':
+        return (
+          <Badge
+            className="bg-yellow-400 text-black border-none"
+            variant="secondary"
+          >
+            {status}
+          </Badge>
+        );
+      default:
+        return (
+          <Badge
+            className="bg-gray-400 text-white border-none"
+            variant="outline"
+          >
+            {status}
+          </Badge>
+        );
+    }
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 max-w-7xl">
       <h1 className="text-3xl font-bold mb-6">Manage Registries</h1>
 
-      <div className="mb-6">
-        <label
-          htmlFor="status"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
-          Filter by Status
-        </label>
-        <select
-          id="status"
-          value={selectedStatus}
-          onChange={handleStatusChange}
-          className="mt-1 block w-64 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-        >
-          <option value="All">All </option>
-          <option value="Submitted">Submitted</option>
-          <option value="Trusted">Trusted</option>
-          <option value="Blocked">Blocked</option>
-        </select>
-      </div>
-
-      <div className="overflow-x-auto bg-white rounded-lg shadow relative">
-        {isFetchingRegistries && (
-          <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center z-10">
-            <div className="flex flex-col items-center">
-              <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em]">
-                <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-                  Loading...
-                </span>
-              </div>
-              <p className="mt-2 text-gray-700">Loading registries...</p>
+      <Card className="mb-6">
+        <CardContent className="pt-6">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="w-full sm:w-auto">
+              <label
+                htmlFor="status"
+                className="text-sm font-medium mb-2 block"
+              >
+                Filter by Status
+              </label>
+              <Select value={selectedStatus} onValueChange={handleStatusChange}>
+                <SelectTrigger className="w-full sm:w-[200px]">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="All">All</SelectItem>
+                  <SelectItem value="Submitted">Submitted</SelectItem>
+                  <SelectItem value="Trusted">Trusted</SelectItem>
+                  <SelectItem value="Blocked">Blocked</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
-        )}
+        </CardContent>
+      </Card>
 
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Canister ID
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Project Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {(!registries || registries?.length === 0) && (
-              <tr>
-                <td
-                  colSpan={3}
-                  className="px-6 py-4 text-center text-sm text-gray-500"
-                >
-                  No registries found with this status
-                </td>
-              </tr>
-            )}
-            {registries?.map((registry, index) => {
-              return (
-                <tr
-                  key={'registry' + index}
-                  onClick={() => handleRowClick(registry)}
-                  className={`cursor-pointer hover:bg-gray-100`}
-                >
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {registry.canisterId.toString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {registry.projectName}
-                  </td>
-                  <td
-                    className={`px-6 py-4 whitespace-nowrap text-sm ${
-                      registry.status === 'Trusted'
-                        ? 'text-green-600'
-                        : registry.status === 'Blocked'
-                          ? 'text-red-600'
-                          : registry.status === 'Submitted'
-                            ? 'text-yellow-600'
-                            : ''
-                    }`}
+      <Card className="shadow-md">
+        <CardContent className="p-0 relative">
+          {isFetchingRegistries && (
+            <div className="absolute inset-0 bg-white/70 dark:bg-slate-900/70 flex items-center justify-center z-10 rounded-md">
+              <div className="flex flex-col items-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Loading registries...
+                </p>
+              </div>
+            </div>
+          )}
+
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Canister ID</TableHead>
+                  <TableHead>Project Name</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {(!registries || registries?.length === 0) && (
+                  <TableRow>
+                    <TableCell
+                      colSpan={3}
+                      className="text-center py-8 text-muted-foreground"
+                    >
+                      No registries found with this status
+                    </TableCell>
+                  </TableRow>
+                )}
+                {registries?.map((registry, index) => (
+                  <TableRow
+                    key={`registry-${index}`}
+                    onClick={() => handleRowClick(registry)}
+                    className="cursor-pointer hover:bg-muted/50"
                   >
-                    {registry.status}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Detail Modal */}
-      {isModalOpen && selectedRegistry && (
-        <div className="fixed inset-0 overflow-y-auto z-50 flex items-center justify-center">
-          <div
-            className="fixed inset-0 bg-black opacity-50"
-            onClick={closeModal}
-          ></div>
-          <div className="bg-white p-6 rounded-lg shadow-xl z-10 max-w-2xl w-full mx-4 relative">
-            <button
-              onClick={closeModal}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
-            >
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-
-            <h2 className="text-2xl font-bold mb-4">
-              {selectedRegistry.projectName}
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-gray-500">Canister ID</p>
-                <p className="font-medium">
-                  {selectedRegistry.canisterId.toString()}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-500">Project Name</p>
-                <p className="font-medium">{selectedRegistry.projectName}</p>
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-500">Name</p>
-                <p className="font-medium">{selectedRegistry.name}</p>
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-500">Email</p>
-                <p className="font-medium">{selectedRegistry.email}</p>
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-500">Telegram</p>
-                <p className="font-medium">{selectedRegistry.telegram}</p>
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-500">Twitter</p>
-                <p className="font-medium">{selectedRegistry.twitter}</p>
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-500">Status</p>
-                <p
-                  className={`font-medium ${
-                    selectedRegistry.status === 'Trusted'
-                      ? 'text-green-600'
-                      : selectedRegistry.status === 'Blocked'
-                        ? 'text-red-600'
-                        : 'text-yellow-600'
-                  }`}
-                >
-                  {selectedRegistry.status || 'Pending'}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-sm text-gray-500">Created At</p>
-                <p className="font-medium">
-                  {selectedRegistry.createdAt.toLocaleString()}
-                </p>
-              </div>
-
-              <div className="col-span-2">
-                <p className="text-sm text-gray-500">Added By</p>
-                <p className="font-medium break-all">
-                  {selectedRegistry.addedBy.toString()}
-                </p>
-              </div>
-
-              <div className="col-span-2">
-                <p className="text-sm text-gray-500">Strike Card Link</p>
-                <a
-                  href={selectedRegistry.strikeCardLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-medium text-blue-600 hover:underline"
-                >
-                  {selectedRegistry.strikeCardLink}
-                </a>
-              </div>
-
-              <div className="col-span-2">
-                <p className="text-sm text-gray-500">Description</p>
-                <p className="font-medium">{selectedRegistry.description}</p>
-              </div>
-            </div>
-
-            <div className="mt-6 flex flex-wrap justify-end gap-3">
-              <button
-                onClick={handleBlock}
-                disabled={isLoading}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50 transition-colors"
-              >
-                {isLoading ? 'Processing...' : 'Block'}
-              </button>
-              <button
-                onClick={handleApprove}
-                disabled={isLoading}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50 transition-colors"
-              >
-                {isLoading ? 'Processing...' : 'Approve'}
-              </button>
-              <button
-                onClick={closeModal}
-                className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
-              >
-                Close
-              </button>
-            </div>
+                    <TableCell className="font-mono text-sm">
+                      {registry.canisterId.toString()}
+                    </TableCell>
+                    <TableCell>{registry.projectName}</TableCell>
+                    <TableCell>{getStatusBadge(registry.status)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
-        </div>
-      )}
+        </CardContent>
+      </Card>
+
+      {/* Registry Detail Dialog */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="sm:max-w-2xl max-h-[90vh]">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">
+              {selectedRegistry?.projectName}
+            </DialogTitle>
+          </DialogHeader>
+
+          <ScrollArea className="max-h-[60vh] pr-4">
+            {selectedRegistry && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-2">
+                <div>
+                  <p className="text-sm text-muted-foreground">Canister ID</p>
+                  <p className="font-medium font-mono text-sm break-all">
+                    {selectedRegistry.canisterId.toString()}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-muted-foreground">Project Name</p>
+                  <p className="font-medium">{selectedRegistry.projectName}</p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-muted-foreground">Name</p>
+                  <p className="font-medium">{selectedRegistry.name}</p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-muted-foreground">Email</p>
+                  <p className="font-medium">{selectedRegistry.email}</p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-muted-foreground">Telegram</p>
+                  <p className="font-medium">{selectedRegistry.telegram}</p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-muted-foreground">Twitter</p>
+                  <p className="font-medium">{selectedRegistry.twitter}</p>
+                </div>
+
+                <div>
+                  <p className="text-sm text-muted-foreground">Status</p>
+                  <div className="mt-1">
+                    {getStatusBadge(selectedRegistry.status)}
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm text-muted-foreground">Created At</p>
+                  <p className="font-medium">
+                    {selectedRegistry.createdAt.toLocaleString()}
+                  </p>
+                </div>
+
+                <div className="col-span-1 sm:col-span-2">
+                  <p className="text-sm text-muted-foreground">Added By</p>
+                  <p className="font-medium break-all font-mono text-sm">
+                    {selectedRegistry.addedBy.toString()}
+                  </p>
+                </div>
+
+                <div className="col-span-1 sm:col-span-2">
+                  <p className="text-sm text-muted-foreground">
+                    Strike Card Link
+                  </p>
+                  <a
+                    href={selectedRegistry.strikeCardLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-primary hover:underline break-all"
+                  >
+                    {selectedRegistry.strikeCardLink}
+                  </a>
+                </div>
+
+                <div className="col-span-1 sm:col-span-2">
+                  <p className="text-sm text-muted-foreground">Description</p>
+                  <p className="font-medium">{selectedRegistry.description}</p>
+                </div>
+              </div>
+            )}
+          </ScrollArea>
+
+          <DialogFooter className="flex flex-col-reverse sm:flex-row gap-2 mt-4">
+            <Button variant="outline" onClick={closeModal}>
+              Close
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleBlock}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing
+                </>
+              ) : (
+                'Block'
+              )}
+            </Button>
+            <Button
+              variant="default"
+              onClick={handleApprove}
+              disabled={isLoading}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing
+                </>
+              ) : (
+                'Approve'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
