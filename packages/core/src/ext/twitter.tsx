@@ -1,4 +1,4 @@
-import { ConnectButton } from '@oranjlabs/icp-wallet-adapter-react';
+import { ConnectButton } from '@oranjbase/icp-wallet-adapter-react';
 import { createRoot } from 'react-dom/client';
 import {
   Action,
