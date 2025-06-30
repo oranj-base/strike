@@ -1,8 +1,4 @@
-import React, {
-  type PropsWithChildren,
-  useEffect,
-  useState,
-} from "react";
+import React, { type PropsWithChildren, useEffect, useState } from "react";
 import { useDialog } from "../hooks";
 import { useProviders } from "../hooks";
 import { useConnect } from "../hooks";
@@ -84,8 +80,11 @@ const ConnectDialog: React.FC<PropsWithChildren<Props>> = (props) => {
 
   const handleConnect = (meta: Meta) => {
     setSelectedWallet(meta);
-    connectAsync({ provider: meta.id }).catch((err) => {
-      if (err.error.message === "Provider not found") {
+
+    connectAsync({
+      provider: meta.id,
+    }).catch((err) => {
+      if (err.error.message.includes("not found")) {
         setIsSelectedWalletNotInstalled(true);
         setError(err.error.message);
       } else {
@@ -102,7 +101,10 @@ const ConnectDialog: React.FC<PropsWithChildren<Props>> = (props) => {
 
   const handleTryAgain = () => {
     setError("");
-    connectAsync({ provider: selectedWallet?.id }).catch((err) => {
+    if (!selectedWallet) return;
+    connectAsync({
+      provider: selectedWallet?.id,
+    }).catch((err) => {
       setError(err.error.message);
     });
   };
@@ -166,34 +168,6 @@ const ConnectDialog: React.FC<PropsWithChildren<Props>> = (props) => {
           )}
           {/* Wallets */}
           <div className="wallet-container">
-            {/* <div>
-              <div >Previously Used</div>
-              <div>
-                {lastConnectedWallet && (
-                  <button
-                    key={lastConnectedWallet.id}
-                    onClick={() => handleConnect(lastConnectedWallet)}
-                    className={`button-styles ${lastConnectedWallet.id}-styles`}
-                    {...props}
-                  >
-                    <img
-                      className={"img-styles"}
-                      src={
-                        dark
-                          ? lastConnectedWallet.icon.dark
-                          : lastConnectedWallet.icon.light
-                      }
-                    />
-                    <div>
-                      <span className="button-label">
-                        {lastConnectedWallet.name}
-                      </span>
-                    </div>
-                  </button>
-                )}
-              </div>
-            </div> */}
-
             <div className="wallet-container">
               {providers
                 .filter((provider) => provider.meta.type === ConnectorType.ICP)

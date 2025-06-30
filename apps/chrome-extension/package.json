@@ -3,7 +3,7 @@
   "displayName": "STRIKE by Oranj",
   "version": "1.0.1",
   "author": "Edward Lee",
-  "description": "Enable Internet Computer Blinks on Twitter, with support for Internet Identity and Plug.",
+  "description": "Enable Internet Computer Blinks on Twitter",
   "private": true,
   "type": "module",
   "license": "MIT",
@@ -28,6 +28,8 @@
     "@oranjbase/strike": "*",
     "axios": "^1.9.0",
     "buffer": "^6.0.3",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

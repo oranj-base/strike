@@ -15,7 +15,12 @@ export type RootContext = {
 
 export type ConnectEvent = {
   type: "CONNECT";
-  data: { provider?: string; derivationOrigin?: string };
+  data: {
+    provider?: string;
+    derivationOrigin?: string;
+    canisterId?: string;
+    siwbCanisterId?: string;
+  };
 };
 export type CancelConnectEvent = { type: "CANCEL_CONNECT" };
 export type DisconnectEvent = { type: "DISCONNECT" };
@@ -56,40 +61,60 @@ export const handleConnectRequest = fromPromise<
   {
     providerId?: string;
     derivationOrigin?: string;
+    canisterId?: string;
+    siwbCanisterId?: string;
     providers: Provider[];
   }
->(async ({ input: { providerId, derivationOrigin, providers } }) => {
-  const provider2Connect =
-    providerId ?? (localStorage.getItem("icp:provider") as string);
-  if (!provider2Connect) {
-    throw new Error("Provider not found");
+>(
+  async ({
+    input: {
+      providerId,
+      derivationOrigin,
+      canisterId,
+      siwbCanisterId,
+      providers,
+    },
+  }) => {
+    const provider2Connect =
+      providerId ?? (localStorage.getItem("icp:provider") as string);
+
+    if (!provider2Connect) {
+      throw new Error("Provider not found");
+    }
+
+    const provider = providers.find((p) => p.meta.id === provider2Connect);
+    if (!provider) {
+      throw new Error("Provider not found");
+    }
+
+    // await provider.createSIWBXActor(siwbCanisterId)
+
+    const result = await provider.connect({
+      delegationModes: [],
+      derivationOrigin,
+      canisterId,
+      siwbCanisterId,
+    });
+
+    if (result.isErr()) {
+      throw new Error(result.error.message ?? JSON.stringify(result.error));
+    }
+
+    const connected = result.value;
+
+    if (!connected) {
+      throw new Error("Error while connecting");
+    }
+
+    localStorage.setItem("icp:provider", provider.meta.id);
+    const principal = provider.identity;
+
+    return {
+      activeProvider: provider,
+      principal: principal?.toString(),
+    };
   }
-
-  const provider = providers.find((p) => p.meta.id === provider2Connect);
-  if (!provider) {
-    throw new Error("Provider not found");
-  }
-
-  const result = await provider.connect();
-
-  if (result.isErr()) {
-    throw new Error(result.error.message ?? JSON.stringify(result.error));
-  }
-
-  const connected = result.value;
-
-  if (!connected) {
-    throw new Error("Error while connecting");
-  }
-
-  localStorage.setItem("icp:provider", provider.meta.id);
-  const principal = provider.identity;
-
-  return {
-    activeProvider: provider,
-    principal: principal?.toString(),
-  };
-});
+);
 
 export const handleDisconnectRequest = fromPromise<
   DisconnectResult,
@@ -160,6 +185,8 @@ export const createAuthMachine = (initialContext: RootContext) => {
           input: ({ event, context }) => ({
             providerId: (event as ConnectEvent).data.provider,
             derivationOrigin: (event as ConnectEvent).data.derivationOrigin,
+            canisterId: (event as ConnectEvent).data.canisterId,
+            siwbCanisterId: (event as ConnectEvent).data.siwbCanisterId,
             providers: context.providers,
           }),
           onDone: {

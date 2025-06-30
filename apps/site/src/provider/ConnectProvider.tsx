@@ -16,7 +16,7 @@ import '@oranjbase/strike/index.css';
 import '@oranjbase/icp-wallet-adapter-react/index.css';
 import { host, provider } from '../config';
 import { useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 const isServer = typeof window === 'undefined';
 
@@ -32,7 +32,7 @@ function createSiwbConnectors(config: any, siwbCanisterId: string) {
 function createICPConnectors(config: any, canisterId: string) {
   return [
     new InternetIdentity(config),
-    new Plug(config, canisterId),
+    new Plug(config, { canisterId }),
     new Nfid(config),
   ];
 }
@@ -42,30 +42,25 @@ export default function ConnectProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const searchParams = useSearchParams();
-
-  const actionUrl =
-    searchParams.get('url') ?? 'https://strike.oranj.co/actions.json';
-
-  const { action } = useAction({ url: actionUrl, adapter: undefined });
-
-  const siwbCanisterId = useMemo(() => action?.siwbCanisterId, [action]);
-
-  const canisterId = useMemo(() => action?.canisterId, [action]);
+  const [siwbCanisterId, setSiwbCanisterId] = useState<string | undefined>(
+    undefined,
+  );
+  const [canisterId, setCanisterId] = useState<string | undefined>(undefined);
 
   const config = {
     host,
     providerUrl: provider,
   };
 
-  const providers = isServer
-    ? []
-    : !siwbCanisterId
-      ? [...createICPConnectors(config, canisterId)]
-      : [
-          ...createICPConnectors(config, canisterId),
-          ...createSiwbConnectors(config, siwbCanisterId),
-        ];
+  const providers =
+    isServer || !canisterId
+      ? []
+      : !siwbCanisterId
+        ? [...createICPConnectors(config, canisterId)]
+        : [
+            ...createICPConnectors(config, canisterId),
+            ...createSiwbConnectors(config, siwbCanisterId),
+          ];
 
   const client = createClient({
     providers,
@@ -74,5 +69,13 @@ export default function ConnectProvider({
     },
   });
 
-  return <Connect2ICProvider client={client}>{children}</Connect2ICProvider>;
+  return (
+    <Connect2ICProvider
+      client={client}
+      setSiwbCanisterId={setSiwbCanisterId}
+      setCanisterId={setCanisterId}
+    >
+      {children}
+    </Connect2ICProvider>
+  );
 }
