@@ -8,7 +8,12 @@ import {
 } from '@dfinity/agent';
 
 // Imports and re-exports candid interface
-import { _SERVICE, idlFactory } from './strike_backend.did.js';
+import {
+  _SERVICE,
+  idlFactory,
+  Pagination,
+  StrikeStatus,
+} from './strike_backend.did.js';
 import { Principal } from '@dfinity/principal';
 import { asRegistry, asStrikeSearch, Registry } from './types';
 export { idlFactory } from './strike_backend.did.js';
@@ -69,19 +74,24 @@ export const createActor = (canisterId, options = {}) => {
   const actor = createRawActor(canisterId, options);
   return {
     ...actor,
+    get_admins: async () => {
+      const result = await actor.get_admins();
+      return result;
+    },
     add_registry: async (args: Registry) => {
-      const result = await actor.add_registry(
-        typeof args.canisterId === 'string'
-          ? Principal.fromText(args.canisterId)
-          : args.canisterId,
-        args.name,
-        args.email,
-        [args.telegram],
-        [args.twitter],
-        args.projectName,
-        args.description,
-        [args.strikeCardLink],
-      );
+      const result = await actor.add_registry({
+        canister_id:
+          typeof args.canisterId === 'string'
+            ? Principal.fromText(args.canisterId)
+            : args.canisterId,
+        name: args.name,
+        email: args.email,
+        telegram: [args.telegram],
+        twitter: [args.twitter],
+        project_name: args.projectName,
+        description: args.description,
+        website_url: [args.strikeCardLink],
+      });
       if ('Ok' in result) {
         return { success: true };
       } else {
@@ -105,11 +115,11 @@ export const createActor = (canisterId, options = {}) => {
         return { success: false, error: 'Something went wrong' };
       }
     },
-    get_registry_by_status: async (args: {
+    get_registries: async (args: {
       status: 'Submitted' | 'Trusted' | 'Blocked' | 'All';
+      pagination: Pagination;
     }) => {
-      // Map string status to StrikeStatus tuple or empty array
-      const statusObj: [] | [any] =
+      const statusObj: [] | [StrikeStatus] =
         args.status === 'All'
           ? []
           : args.status === 'Blocked'
@@ -118,11 +128,36 @@ export const createActor = (canisterId, options = {}) => {
               ? [{ Submitted: null }]
               : [{ Trusted: null }];
 
-      const result = await actor.get_registry_by_status(statusObj);
-      if (Array.isArray(result) && result.length > 0) {
-        return result.map((item) => asRegistry(item));
+      const result = await actor.get_registries({
+        status: statusObj,
+        pagination: args.pagination,
+      });
+      return {
+        total: result.total,
+        items: result.items.map((item) => asRegistry(item)),
+      };
+    },
+    update_registry_status: async (args: {
+      canisterId: Principal | string;
+      status: 'Submitted' | 'Trusted' | 'Blocked';
+    }) => {
+      const result = await actor.update_registry_status({
+        canister_id:
+          typeof args.canisterId === 'string'
+            ? Principal.fromText(args.canisterId)
+            : args.canisterId,
+        status:
+          args.status === 'Blocked'
+            ? { Blocked: null }
+            : args.status === 'Submitted'
+              ? { Submitted: null }
+              : { Trusted: null },
+      });
+
+      if ('Ok' in result) {
+        return { success: true };
       } else {
-        return undefined;
+        return { success: false, error: result.Err };
       }
     },
   };

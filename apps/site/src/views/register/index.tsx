@@ -2,7 +2,6 @@
 
 import { useBackend } from '@/app/context';
 import CanisterRegistryForm from './CanisterRegistryForm';
-import { useConnect, useDialog } from '@oranjbase/icp-wallet-adapter-react';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 import {
@@ -12,34 +11,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ExternalLink, AlertCircle } from 'lucide-react';
-
-const isLocal = process.env.NEXT_PUBLIC_DFX_NETWORK === 'local';
+import { ExternalLink } from 'lucide-react';
 
 export function CanisterRegistry() {
   const { actor, identity } = useBackend();
-  const { isConnected } = useConnect();
-  const { open } = useDialog();
 
   const handleSubmit = async (formData: any) => {
-    if (!isConnected && !isLocal) {
-      open();
-      return;
-    }
-    if (isLocal && !identity) {
-      toast.custom(
-        <Alert
-          variant="destructive"
-          className="border-red-500 bg-red-50 text-red-900 dark:bg-red-950 dark:text-red-50"
-        >
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>Please connect wallet first.</AlertDescription>
-        </Alert>,
-        {
-          position: 'bottom-center',
-        },
-      );
+    if (!identity) {
+      toast.error('Please connect wallet first.');
       return;
     }
 

@@ -16,15 +16,18 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Menu, ChevronDown, User, LogOut } from 'lucide-react';
 import { ConnectButton, useConnect } from '@oranjbase/icp-wallet-adapter-react';
 import { StrikeLogo } from '@/assets';
+import toast from 'react-hot-toast';
 
 export default function Header() {
   const pathname = usePathname();
-  const { actor, identity } = useBackend();
-  const { isConnected, disconnect } = useConnect();
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const { isAdmin, identity } = useBackend();
+  const { disconnect } = useConnect();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const isAuthenticated = useMemo(() => isConnected, [isConnected]);
+  const isAuthenticated = useMemo(
+    () => identity?.getPrincipal.toString() !== undefined,
+    [identity],
+  );
   const principal = useMemo(() => {
     if (!identity) return null;
     return identity.getPrincipal();
@@ -37,20 +40,14 @@ export default function Header() {
     { href: '/docs', label: 'Documentation' },
   ];
 
-  const adminLinks = [{ href: '/manage', label: 'Manage Registries' }];
+  const adminLinks = [
+    { href: '/manage', label: 'Manage Registries' },
+    { href: '/admin', label: 'Manage Admins' },
+  ];
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
-
-  useEffect(() => {
-    const load = async () => {
-      if (!identity) return;
-      const res = await actor.is_admin(identity.getPrincipal());
-      setIsAdmin(res);
-    };
-    load();
-  }, [identity]);
 
   const getUserInitials = () => {
     if (!principal) return 'U';
@@ -68,6 +65,11 @@ export default function Header() {
     disconnect();
   };
 
+  const handleCopyText = (text: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success('Principal copied to clipboard!');
+  };
+
   if (pathname === '/') return <></>;
 
   return (
@@ -75,7 +77,7 @@ export default function Header() {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md shadow-sm`}
       >
-        <div className=" gap-[64px] container mx-auto px-5d py-3  items-center justify-between flex sm:flex-row flex-col md:gap-[20px] sm:justify-between lg:px-[160px] px-[20px]">
+        <div className=" container max-w-[1440px] mx-auto flex items-center justify-between px-5 py-3">
           <Link href="/" className="flex items-center text-black">
             <StrikeLogo width={24} height={24} />
             <span className="text-xl font-syne font-bold text-primary uppercase">
@@ -144,7 +146,17 @@ export default function Header() {
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuItem className="font-mono text-xs opacity-70">
                     <User className="mr-2 h-4 w-4" />
-                    <span className="truncate">{principal?.toString()}</span>
+                    <span
+                      className="truncate cursor-pointer"
+                      title="Copy Principal"
+                      onClick={() => {
+                        if (principal) {
+                          handleCopyText(principal.toString());
+                        }
+                      }}
+                    >
+                      {principal?.toString()}
+                    </span>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={logout}>
                     <LogOut className="mr-2 h-4 w-4" />
@@ -210,7 +222,14 @@ export default function Header() {
                 <div className="border-t mt-2 pt-4">
                   {isAuthenticated ? (
                     <>
-                      <div className="px-3 py-2 flex items-center gap-3">
+                      <div
+                        className="px-3 py-2 flex items-center gap-3"
+                        onClick={() => {
+                          if (principal) {
+                            handleCopyText(principal.toString());
+                          }
+                        }}
+                      >
                         <Avatar className="h-8 w-8">
                           <AvatarFallback className="bg-primary text-white">
                             {getUserInitials()}
@@ -247,7 +266,7 @@ export default function Header() {
           </Sheet>
         </div>
       </header>
-      <div className="h-10"> </div>
+      <div className="h-20"> </div>
     </>
   );
 }

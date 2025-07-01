@@ -14,6 +14,8 @@ type BackendContextProps = {
   actor: ReturnType<typeof createActor>;
   setIdentity: (identity: SignIdentity | null) => void;
   identity: Identity | null;
+  isAdmin: boolean;
+  isCheckingAdmin: boolean;
 };
 
 const DFX_URL =
@@ -39,6 +41,9 @@ export function BackendProvider({ children }: { children: React.ReactNode }) {
     }),
   );
 
+  const [isAdmin, setIsAmdin] = useState(false);
+  const [isCheckingAdmin, setIsCheckingAdmini] = useState(true);
+
   const { identity: icpIdentity } = useConnect();
   const [identity, setIdentity] = useState<SignIdentity | Identity | null>(
     null,
@@ -52,6 +57,7 @@ export function BackendProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (identity) {
+      setIsCheckingAdmini(true);
       if (isTestIdentity(identity) && identity instanceof Ed25519KeyIdentity) {
         const storage = new IdbStorage();
         storage.set(KEY_STORAGE_KEY, JSON.stringify(identity.toJSON()));
@@ -60,13 +66,18 @@ export function BackendProvider({ children }: { children: React.ReactNode }) {
       (async () => {
         Actor.agentOf(actor as unknown as Actor)?.replaceIdentity?.(identity);
         setActor(actor);
+        const adminStatus = await actor.is_admin(identity.getPrincipal());
+        setIsAmdin(adminStatus);
+        setIsCheckingAdmini(false);
       })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [identity]);
 
   return (
-    <BackendContext.Provider value={{ agent, actor, identity, setIdentity }}>
+    <BackendContext.Provider
+      value={{ agent, actor, identity, setIdentity, isAdmin, isCheckingAdmin }}
+    >
       {children}
       <DevAuthModal />
     </BackendContext.Provider>

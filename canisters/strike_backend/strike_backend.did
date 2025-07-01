@@ -1,3 +1,19 @@
+type AddRegistryParams = record {
+  website_url : opt text;
+  twitter : opt text;
+  name : text;
+  canister_id : principal;
+  description : text;
+  email : text;
+  project_name : text;
+  telegram : opt text;
+};
+type GetRegistriesParams = record {
+  status : opt StrikeStatus;
+  pagination : Pagination;
+};
+type PaginatedResponse = record { total : nat32; items : vec StrikeRegistry };
+type Pagination = record { page : nat32; pageSize : nat32 };
 type Result = variant { Ok; Err : text };
 type StrikeRegistry = record {
   status : StrikeStatus;
@@ -14,22 +30,17 @@ type StrikeRegistry = record {
   telegram : opt text;
 };
 type StrikeStatus = variant { Blocked; Submitted; Trusted };
+type UpdateRegistryStatusParams = record {
+  status : StrikeStatus;
+  canister_id : principal;
+};
 service : () -> {
   add_admin : (principal) -> (Result);
-  add_registry : (
-      principal,
-      text,
-      text,
-      opt text,
-      opt text,
-      text,
-      text,
-      opt text,
-    ) -> (Result);
-  get_registry : () -> (vec StrikeRegistry) query;
-  get_registry_by_status : (opt StrikeStatus) -> (vec StrikeRegistry) query;
+  add_registry : (AddRegistryParams) -> (Result);
+  get_admins : () -> (vec principal);
+  get_registries : (GetRegistriesParams) -> (PaginatedResponse) query;
   get_strike_by_canister_id : (principal) -> (opt StrikeRegistry) query;
   is_admin : (principal) -> (bool) query;
   remove_admin : (principal) -> (Result);
-  update_registry_status : (principal, StrikeStatus) -> (Result);
+  update_registry_status : (UpdateRegistryStatusParams) -> (Result);
 }

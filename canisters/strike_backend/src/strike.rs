@@ -1,23 +1,15 @@
-mod admins;
-mod guards;
-mod lifecycle;
-mod memory;
-mod serializer;
-#[cfg(test)]
-mod test;
-
 use candid::{CandidType, Decode, Encode, Principal};
-use ic_cdk::{caller, query, update};
+use ic_cdk::caller;
 use ic_stable_structures::{storable::Bound, Storable};
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 
-use crate::guards::*;
 use crate::memory::REGISTRY;
+use crate::types::{Paginate, PaginatedResponse, Pagination};
 
 #[derive(Serialize, Deserialize, CandidType, Debug, PartialEq, Clone, Copy)]
 #[repr(u8)]
-enum StrikeStatus {
+pub enum StrikeStatus {
     Submitted,
     Trusted,
     Blocked,
@@ -25,31 +17,43 @@ enum StrikeStatus {
 
 /// Represents a registry entry for a canister in the Strike system
 #[derive(Serialize, Deserialize, CandidType, Debug)]
-struct StrikeRegistry {
-    /// Unique identifier of the canister
-    canister_id: Principal,
-    /// Optional hash of the canister's module
-    module_hash: Option<String>,
-    /// Name of the developer or organization
-    name: String,
-    /// Contact email
-    email: String,
-    /// Optional Telegram contact
-    telegram: Option<String>,
-    /// Optional Twitter handle
-    twitter: Option<String>,
-    /// Name of the project
-    project_name: String,
-    /// Description of the project/canister
-    description: String,
-    /// Optional website URL
-    website_url: Option<String>,
-    /// Timestamp when this registry was created
-    created_at: u64,
-    /// Principal who added this registry
-    added_by: Principal,
-    /// Current status of this registry
-    status: StrikeStatus,
+pub struct StrikeRegistry {
+    pub canister_id: Principal,
+    pub module_hash: Option<String>,
+    pub name: String,
+    pub email: String,
+    pub telegram: Option<String>,
+    pub twitter: Option<String>,
+    pub project_name: String,
+    pub description: String,
+    pub website_url: Option<String>,
+    pub created_at: u64,
+    pub added_by: Principal,
+    pub status: StrikeStatus,
+}
+
+#[derive(CandidType, Deserialize)]
+pub struct AddRegistryParams {
+    pub canister_id: Principal,
+    pub name: String,
+    pub email: String,
+    pub telegram: Option<String>,
+    pub twitter: Option<String>,
+    pub project_name: String,
+    pub description: String,
+    pub website_url: Option<String>,
+}
+
+#[derive(CandidType, Deserialize)]
+pub struct UpdateRegistryStatusParams {
+    pub canister_id: Principal,
+    pub status: StrikeStatus,
+}
+
+#[derive(CandidType, Deserialize)]
+pub struct GetRegistriesParams {
+    pub status: Option<StrikeStatus>,
+    pub pagination: Pagination,
 }
 
 impl Storable for StrikeRegistry {
@@ -64,28 +68,11 @@ impl Storable for StrikeRegistry {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-/// Returns a registry entry for a specified canister ID
-///
-/// # Arguments
-/// * `canister_id` - The Principal ID of the canister to look up
-#[query]
-fn get_strike_by_canister_id(canister_id: Principal) -> Option<StrikeRegistry> {
-    REGISTRY.with(|s| s.borrow().get(&canister_id))
+pub fn get_strike_by_canister_id(principal: Principal) -> Option<StrikeRegistry> {
+    REGISTRY.with(|s| s.borrow().get(&principal))
 }
 
-/// Adds a new registry entry for a canister
-///
-/// # Arguments
-/// * `canister_id` - The Principal ID of the canister
-/// * `name` - Name of the developer or organization
-/// * `email` - Contact email
-/// * `telegram` - Optional Telegram contact
-/// * `twitter` - Optional Twitter handle
-/// * `project_name` - Name of the project
-/// * `description` - Description of the project/canister
-/// * `website_url` - Optional website URL
-#[update(guard = "caller_is_not_anonymous")]
-fn add_registry(
+pub fn add_registry(
     canister_id: Principal,
     name: String,
     email: String,
@@ -95,7 +82,6 @@ fn add_registry(
     description: String,
     website_url: Option<String>,
 ) -> Result<(), String> {
-    // Input validation
     if name.trim().is_empty() {
         return Err("Name cannot be empty".to_string());
     }
@@ -143,48 +129,27 @@ fn add_registry(
     Ok(())
 }
 
-#[update(guard = "caller_is_admin")]
-fn update_registry_status(canister_id: Principal, status: StrikeStatus) -> Result<(), String> {
+pub fn update_registry_status(canister_id: Principal, status: StrikeStatus) -> Result<(), String> {
     let mut registry = REGISTRY
         .with(|s| s.borrow_mut().get(&canister_id))
         .ok_or("Canister not found")?;
 
     registry.status = status;
 
-    // Save registry
     REGISTRY.with(|s| s.borrow_mut().insert(canister_id, registry));
 
     Ok(())
 }
 
-#[query(guard = "caller_is_admin")]
-fn get_registry() -> Vec<StrikeRegistry> {
-    // Add try-catch logic to ensure we don't fail if a single registry fails to decode
-    let mut result = Vec::new();
+pub fn get_registries(params: GetRegistriesParams) -> PaginatedResponse<StrikeRegistry> {
+    let mut result: Vec<StrikeRegistry> = Vec::new();
 
     REGISTRY.with(|s| {
         let registry_ref = s.borrow();
         for (id, _) in registry_ref.iter() {
             // Get each registry with safe handling
             if let Some(registry) = registry_ref.get(&id) {
-                result.push(registry);
-            }
-        }
-    });
-
-    result
-}
-
-#[query(guard = "caller_is_admin")]
-fn get_registry_by_status(status: Option<StrikeStatus>) -> Vec<StrikeRegistry> {
-    let mut result = Vec::new();
-
-    REGISTRY.with(|s| {
-        let registry_ref = s.borrow();
-        for (id, _) in registry_ref.iter() {
-            // Get each registry with safe handling
-            if let Some(registry) = registry_ref.get(&id) {
-                if let Some(filter_status) = status {
+                if let Some(filter_status) = params.status {
                     if registry.status == filter_status {
                         result.push(registry);
                     }
@@ -195,26 +160,11 @@ fn get_registry_by_status(status: Option<StrikeStatus>) -> Vec<StrikeRegistry> {
         }
     });
 
-    result
+    let total = result.len() as u32;
+    let items = result
+        .into_iter()
+        .paginate(params.pagination)
+        .map(|registry| registry.into())
+        .collect();
+    PaginatedResponse { total, items }
 }
-
-#[update(guard = "caller_is_admin")]
-pub fn add_admin(admin: Principal) -> Result<(), String> {
-    let caller = ic_cdk::api::caller();
-    admins::add_admins(caller, [admin].to_vec())
-}
-
-#[update(guard = "caller_is_admin")]
-pub fn remove_admin(admin: Principal) -> Result<(), String> {
-    let caller = ic_cdk::api::caller();
-    admins::remove_admins(caller, [admin].to_vec())
-}
-
-#[query]
-pub fn is_admin(user: Principal) -> bool {
-    admins::is_admin(user)
-}
-
-ic_cdk::export_candid!();
-
-fn main() {}

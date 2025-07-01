@@ -47,12 +47,21 @@ export default function ManageRegistryPage() {
   const [isFetchingRegistries, setIsFetchingRegistries] = useState(false);
   const { actor } = useBackend();
 
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10);
+
   const fetchRegistriesByStatus = async (status: StatusType) => {
     setIsFetchingRegistries(true);
     try {
-      const data = await actor.get_registry_by_status({ status });
-      if (data) setRegistries(data);
-      else setRegistries([]);
+      const data = await actor.get_registries({
+        status,
+        pagination: { page: 1, pageSize },
+      });
+      if (data) {
+        setRegistries(data.items);
+        setTotal(data.total);
+      } else setRegistries([]);
     } catch (error) {
       console.error('Error fetching registries:', error);
       setRegistries([]);
@@ -84,8 +93,9 @@ export default function ManageRegistryPage() {
 
     setIsLoading(true);
     try {
-      await actor.update_registry_status(selectedRegistry.canisterId, {
-        Trusted: null,
+      await actor.update_registry_status({
+        canisterId: selectedRegistry.canisterId,
+        status: 'Trusted',
       });
       await fetchRegistriesByStatus(selectedStatus);
       closeModal();
@@ -101,8 +111,9 @@ export default function ManageRegistryPage() {
 
     setIsLoading(true);
     try {
-      await actor.update_registry_status(selectedRegistry.canisterId, {
-        Blocked: null,
+      await actor.update_registry_status({
+        canisterId: selectedRegistry.canisterId,
+        status: 'Blocked',
       });
       await fetchRegistriesByStatus(selectedStatus);
       closeModal();
@@ -157,8 +168,27 @@ export default function ManageRegistryPage() {
     }
   };
 
+  const fetchRegistriesPage = async (status: StatusType, page: number) => {
+    setIsFetchingRegistries(true);
+    try {
+      const data = await actor.get_registries({
+        status,
+        pagination: { page, pageSize },
+      });
+      if (data) {
+        setRegistries(data.items);
+        setTotal(data.total);
+      } else setRegistries([]);
+    } catch (error) {
+      console.error('Error fetching registries:', error);
+      setRegistries([]);
+    } finally {
+      setIsFetchingRegistries(false);
+    }
+  };
+
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
+    <div className="container mx-auto px-4 py-8 max-w-7xl min-h-[calc(100vh-200px)]">
       <h1 className="text-3xl font-bold mb-6">Manage Registries</h1>
 
       <Card className="mb-6">
@@ -235,6 +265,82 @@ export default function ManageRegistryPage() {
                 ))}
               </TableBody>
             </Table>
+
+            {/* Pagination */}
+            {total > 0 && (
+              <div className="flex items-center justify-between px-4 py-4 border-t">
+                <div className="text-sm text-muted-foreground">
+                  Showing {Math.min((page - 1) * pageSize + 1, total)} to{' '}
+                  {Math.min(page * pageSize, total)} of {total} entries
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (page > 1) {
+                        setPage(page - 1);
+                        fetchRegistriesPage(selectedStatus, page - 1);
+                      }
+                    }}
+                    disabled={page === 1 || isFetchingRegistries}
+                  >
+                    Previous
+                  </Button>
+                  <div className="flex items-center">
+                    {Array.from(
+                      { length: Math.ceil(total / pageSize) },
+                      (_, i) => i + 1,
+                    )
+                      .filter((p) => {
+                        return (
+                          p === 1 ||
+                          p === Math.ceil(total / pageSize) ||
+                          (p >= page - 1 && p <= page + 1)
+                        );
+                      })
+                      .map((p, i, arr) => (
+                        <React.Fragment key={p}>
+                          {i > 0 && arr[i - 1] !== p - 1 && (
+                            <span className="px-2 text-muted-foreground">
+                              ...
+                            </span>
+                          )}
+                          <Button
+                            variant={p === page ? 'default' : 'outline'}
+                            size="sm"
+                            className="w-9 h-9"
+                            style={{ color: p === page ? 'white' : 'black' }}
+                            onClick={() => {
+                              setPage(p);
+                              fetchRegistriesPage(selectedStatus, p);
+                            }}
+                            disabled={isFetchingRegistries}
+                          >
+                            {p}
+                          </Button>
+                        </React.Fragment>
+                      ))}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (page < Math.ceil(total / pageSize)) {
+                        setPage(page + 1);
+                        fetchRegistriesPage(selectedStatus, page + 1);
+                      }
+                    }}
+                    disabled={
+                      page >= Math.ceil(total / pageSize) ||
+                      isFetchingRegistries
+                    }
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>

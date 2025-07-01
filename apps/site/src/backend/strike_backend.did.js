@@ -1,9 +1,24 @@
 export const idlFactory = ({ IDL }) => {
   const Result = IDL.Variant({ 'Ok' : IDL.Null, 'Err' : IDL.Text });
+  const AddRegistryParams = IDL.Record({
+    'website_url' : IDL.Opt(IDL.Text),
+    'twitter' : IDL.Opt(IDL.Text),
+    'name' : IDL.Text,
+    'canister_id' : IDL.Principal,
+    'description' : IDL.Text,
+    'email' : IDL.Text,
+    'project_name' : IDL.Text,
+    'telegram' : IDL.Opt(IDL.Text),
+  });
   const StrikeStatus = IDL.Variant({
     'Blocked' : IDL.Null,
     'Submitted' : IDL.Null,
     'Trusted' : IDL.Null,
+  });
+  const Pagination = IDL.Record({ 'page' : IDL.Nat32, 'pageSize' : IDL.Nat32 });
+  const GetRegistriesParams = IDL.Record({
+    'status' : IDL.Opt(StrikeStatus),
+    'pagination' : Pagination,
   });
   const StrikeRegistry = IDL.Record({
     'status' : StrikeStatus,
@@ -19,26 +34,21 @@ export const idlFactory = ({ IDL }) => {
     'project_name' : IDL.Text,
     'telegram' : IDL.Opt(IDL.Text),
   });
+  const PaginatedResponse = IDL.Record({
+    'total' : IDL.Nat32,
+    'items' : IDL.Vec(StrikeRegistry),
+  });
+  const UpdateRegistryStatusParams = IDL.Record({
+    'status' : StrikeStatus,
+    'canister_id' : IDL.Principal,
+  });
   return IDL.Service({
     'add_admin' : IDL.Func([IDL.Principal], [Result], []),
-    'add_registry' : IDL.Func(
-        [
-          IDL.Principal,
-          IDL.Text,
-          IDL.Text,
-          IDL.Opt(IDL.Text),
-          IDL.Opt(IDL.Text),
-          IDL.Text,
-          IDL.Text,
-          IDL.Opt(IDL.Text),
-        ],
-        [Result],
-        [],
-      ),
-    'get_registry' : IDL.Func([], [IDL.Vec(StrikeRegistry)], ['query']),
-    'get_registry_by_status' : IDL.Func(
-        [IDL.Opt(StrikeStatus)],
-        [IDL.Vec(StrikeRegistry)],
+    'add_registry' : IDL.Func([AddRegistryParams], [Result], []),
+    'get_admins' : IDL.Func([], [IDL.Vec(IDL.Principal)], []),
+    'get_registries' : IDL.Func(
+        [GetRegistriesParams],
+        [PaginatedResponse],
         ['query'],
       ),
     'get_strike_by_canister_id' : IDL.Func(
@@ -49,7 +59,7 @@ export const idlFactory = ({ IDL }) => {
     'is_admin' : IDL.Func([IDL.Principal], [IDL.Bool], ['query']),
     'remove_admin' : IDL.Func([IDL.Principal], [Result], []),
     'update_registry_status' : IDL.Func(
-        [IDL.Principal, StrikeStatus],
+        [UpdateRegistryStatusParams],
         [Result],
         [],
       ),
