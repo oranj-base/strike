@@ -4,7 +4,6 @@ import { Connect2ICProvider } from '@oranjbase/icp-wallet-adapter-react';
 import {
   createClient,
   InternetIdentity,
-  Plug,
   Nfid,
   XverseConnector,
   UnisatConnector,
@@ -33,7 +32,6 @@ function createICPConnectors(config: any, canisterId?: string) {
   if (canisterId) {
     return [
       new InternetIdentity(config),
-      new Plug(config, canisterId),
       new Nfid(config),
     ];
   } else {

@@ -64,7 +64,7 @@ export default function Page() {
   };
 
   return (
-    <div className="container flex flex-col items-center justify-center min-h-screen px-4 py-12 mx-auto max-w-3xl">
+    <div className="container flex flex-col items-center justify-center min-h-[calc(100vh-200px)] px-4 py-12 mx-auto max-w-3xl">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold tracking-tight mb-2">
           Strike Status Checker

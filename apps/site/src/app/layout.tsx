@@ -11,6 +11,10 @@ import {
 import ConnectProvider from '@/provider/ConnectProvider';
 import './globals.css';
 import { BackendProvider } from './context';
+import Header from '@/components/header';
+import Footer from '@/components/footer';
+import { Toaster } from 'react-hot-toast';
+import '@/assets/main.css';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -43,7 +47,7 @@ const archivo = Archivo({
   variable: '--font-archivo',
 });
 export const metadata: Metadata = {
-  title: 'STRIKE | Blinks on ICP',
+  title: 'STRIKE | Interact with DApps directly on any platform, with STRIKE',
 };
 
 export default function RootLayout({
@@ -54,18 +58,23 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${syne.variable} ${sora.variable} ${spaceGrotesk.variable} ${instrumentSans.variable} ${archivo.variable} font-inter`}
+      className={`${inter.variable} ${syne.variable} ${sora.variable} ${spaceGrotesk.variable} ${instrumentSans.variable} ${archivo.variable} font-inter `}
     >
       <head>
         <meta charSet="UTF-8" />
         <link rel="icon" type="image/svg+xml" href="/strike.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <body className="bg-[#FAFAFA]">
+      <body className="bg-[#FAFAFA] container max-w-[1440px] mx-auto font-inter no-scrollbar">
         <Suspense>
           <ConnectProvider>
-            <BackendProvider>{children}</BackendProvider>
+            <BackendProvider>
+              <Header />
+              {children}
+              <Footer />
+            </BackendProvider>
           </ConnectProvider>
+          <Toaster />
         </Suspense>
       </body>
     </html>

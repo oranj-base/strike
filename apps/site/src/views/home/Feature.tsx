@@ -47,7 +47,7 @@ export default function Feature() {
       <div className="lg:px-[88px] px-[40px] lg:py-[112px]">
         <div className="relative flex flex-col gap-[20px] rounded-[12px] p-[12px] bg-[#F4F4F5]">
           <Image
-            src={'/hello-strike.png'}
+            src={'/hello-strike.webp'}
             alt="card"
             width={336}
             height={320}
