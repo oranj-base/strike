@@ -167,9 +167,14 @@ export default function Header() {
             ) : (
               <ConnectButton
                 style={{
-                  height: '40px',
-                  background: '#2563eb',
-                  textAlign: 'center',
+                  borderRadius: 12,
+                  padding: `8px 12px`,
+                  borderColor: '#2B5ACC',
+                  backgroundColor: '#3670FF',
+                  fontWeight: 600,
+                  fontSize: 14,
+                  borderWidth: 1,
+                  borderStyle: 'solid',
                 }}
               />
             )}
@@ -254,9 +259,14 @@ export default function Header() {
                   ) : (
                     <ConnectButton
                       style={{
-                        height: '40px',
-                        background: '#2563eb',
-                        textAlign: 'center',
+                        borderRadius: 12,
+                        padding: `8px 12px`,
+                        borderColor: '#2B5ACC',
+                        backgroundColor: '#3670FF',
+                        fontWeight: 600,
+                        fontSize: 14,
+                        borderWidth: 1,
+                        borderStyle: 'solid',
                       }}
                     />
                   )}

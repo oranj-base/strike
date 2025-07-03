@@ -65,17 +65,19 @@ export default function RootLayout({
         <link rel="icon" type="image/svg+xml" href="/strike.svg" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <body className="bg-[#FAFAFA] container max-w-[1440px] mx-auto font-inter no-scrollbar">
-        <Suspense>
-          <ConnectProvider>
-            <BackendProvider>
-              <Header />
-              {children}
-              <Footer />
-            </BackendProvider>
-          </ConnectProvider>
-          <Toaster />
-        </Suspense>
+      <body className="bg-[#FAFAFA] font-inter flex justify-center no-scrollbar">
+        <div className="container max-w-[1440px] ">
+          <Suspense>
+            <ConnectProvider>
+              <BackendProvider>
+                <Header />
+                {children}
+                <Footer />
+              </BackendProvider>
+            </ConnectProvider>
+            <Toaster />
+          </Suspense>
+        </div>
       </body>
     </html>
   );
