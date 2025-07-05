@@ -1,0 +1,25 @@
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background: transparent;
+}
+
+::-webkit-scrollbar {
+  width: 2px;
+  height: 5px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  @apply bg-neutral-800;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+    height: 0px;
+    width: 0px;
+  }
+}

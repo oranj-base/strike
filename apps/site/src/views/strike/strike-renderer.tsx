@@ -3,7 +3,6 @@
 import React from 'react';
 import { HttpAgent } from '@dfinity/agent';
 import { Blink, useAction, useActionICPWalletAdapter } from '@oranjbase/strike';
-import { useClient } from '@oranjbase/icp-wallet-adapter-react';
 
 import { host } from '@/config';
 
@@ -17,6 +16,6 @@ export default function StrikeRenderer({ url }: { url: string }) {
   const { action } = useAction({ url, adapter });
   const { hostname } = new URL(action?.url || host);
   return (
-    <>{action ? <Blink action={action} websiteText={hostname} /> : null}</>
+    <>{action ? <Blink action={action} websiteText={hostname} websiteUrl={undefined} callbacks={undefined} /> : null}</>
   );
 }

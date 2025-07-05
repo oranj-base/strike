@@ -18,24 +18,23 @@
     },
     "strike_frontend": {
       "dependencies": ["strike_backend"],
-      "source": ["apps/site/dist"],
+      "source": ["apps/site/.next"],
       "frontend": {
-        "entrypoint": "apps/site/dis/index.html"
+        "entrypoint": "apps/site/.next/server/app/index.html"
       },
       "type": "assets",
-      "workspace": "@blinks-icp/site"
+      "workspace": "@oranjbase/strike-site"
     },
-    "internet-identity": {
-      "type": "pull",
-      "id": "rdmx6-jaaaa-aaaaa-aaadq-cai"
-    },
-    "icp_ledger_canister": {
+    "internet_identity": {
       "type": "custom",
-      "candid": "https://raw.githubusercontent.com/dfinity/ic/d87954601e4b22972899e9957e800406a0a6b929/rs/rosetta-api/icp_ledger/ledger.did",
-      "wasm": "https://download.dfinity.systems/ic/d87954601e4b22972899e9957e800406a0a6b929/canisters/ledger-canister.wasm.gz",
+      "candid": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity.did",
+      "frontend": {},
+      "wasm": "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz",
+      "shrink": false,
       "remote": {
+        "candid": "internet_identity.did",
         "id": {
-          "ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
+          "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
         }
       }
     }
@@ -46,6 +45,11 @@
       "packtool": ""
     }
   },
+  "metadata": [
+    {
+      "name": "candid:service"
+    }
+  ],
   "networks": {
     "local": {
       "bind": "127.0.0.1:4943",

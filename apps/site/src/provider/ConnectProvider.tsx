@@ -4,7 +4,6 @@ import { Connect2ICProvider } from '@oranjbase/icp-wallet-adapter-react';
 import {
   createClient,
   InternetIdentity,
-  Plug,
   Nfid,
   XverseConnector,
   UnisatConnector,
@@ -29,12 +28,15 @@ function createSiwbConnectors(config: any, siwbCanisterId: string) {
   ];
 }
 
-function createICPConnectors(config: any, canisterId: string) {
-  return [
-    new InternetIdentity(config),
-    new Plug(config, canisterId),
-    new Nfid(config),
-  ];
+function createICPConnectors(config: any, canisterId?: string) {
+  if (canisterId) {
+    return [
+      new InternetIdentity(config),
+      new Nfid(config),
+    ];
+  } else {
+    return [new InternetIdentity(config), new Nfid(config)];
+  }
 }
 
 export default function ConnectProvider({
@@ -45,7 +47,7 @@ export default function ConnectProvider({
   const searchParams = useSearchParams();
 
   const actionUrl =
-    searchParams.get('url') ?? 'https://strike.oranj.co/actions.json';
+    searchParams?.get('url') ?? 'https://strike.oranj.co/actions.json';
 
   const { action } = useAction({ url: actionUrl, adapter: undefined });
 

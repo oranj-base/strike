@@ -23,6 +23,16 @@ export async function generateMetadata(
 
   const actionApiUrl = await unfurlUrlToActionApiUrl(actionUrl);
 
+  if (actionApiUrl === null) {
+    return {
+      title: 'STRIKE | Action Not Found',
+      description: 'The requested action could not be found or is invalid.',
+      openGraph: {
+        images: [],
+      },
+    };
+  }
+
   const action = await Action.fetch(actionApiUrl);
 
   return {

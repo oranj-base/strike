@@ -4,7 +4,6 @@ import Header from './Header';
 import Demo from './Demo';
 import Step from './Step';
 import Feature from './Feature';
-import Footer from './Footer';
 
 export function Home() {
   return (
@@ -14,7 +13,6 @@ export function Home() {
         <Step />
         <Feature />
         <Demo />
-        <Footer />
       </main>
     </div>
   );
