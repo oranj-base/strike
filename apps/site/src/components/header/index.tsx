@@ -20,7 +20,7 @@ import toast from 'react-hot-toast';
 
 export default function Header() {
   const pathname = usePathname();
-  const { isAdmin, identity } = useBackend();
+  const { isAdmin, identity, setIdentity } = useBackend();
   const { disconnect } = useConnect();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -66,6 +66,7 @@ export default function Header() {
   };
 
   const logout = () => {
+    setIdentity(null);
     disconnect();
   };
 
