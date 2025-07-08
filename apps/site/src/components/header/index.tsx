@@ -37,7 +37,11 @@ export default function Header() {
     { href: '/', label: 'Home' },
     { href: '/register', label: 'Register' },
     { href: '/explore', label: 'Explore' },
-    { href: '/docs', label: 'Documentation' },
+    {
+      href: 'https://docs.strike.oranj.co/',
+      label: 'Documentation',
+      external: true,
+    },
   ];
 
   const adminLinks = [
@@ -87,19 +91,31 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-muted ${
-                  pathname === link.href
-                    ? 'text-primary font-semibold'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) =>
+              link.external ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-muted text-muted-foreground hover:text-foreground`}
+                >
+                  {link.label}
+                </a>
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-muted ${
+                    pathname === link.href
+                      ? 'text-primary font-semibold'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ),
+            )}
 
             {/* Admin Dropdown - Only show if user has admin links */}
             {isAdmin && (
@@ -190,19 +206,31 @@ export default function Header() {
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[350px]">
               <nav className="flex flex-col gap-4 mt-8">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`px-3 py-2 rounded-md text-base font-medium transition-colors hover:bg-muted ${
-                      pathname === link.href
-                        ? 'text-primary font-semibold'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                {navLinks.map((link) =>
+                  link.external ? (
+                    <a
+                      key={link.href}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-2 rounded-md text-base font-medium transition-colors hover:bg-muted text-muted-foreground hover:text-foreground"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={`px-3 py-2 rounded-md text-base font-medium transition-colors hover:bg-muted ${
+                        pathname === link.href
+                          ? 'text-primary font-semibold'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  ),
+                )}
 
                 {/* Admin Links in Mobile Menu */}
                 {isAdmin && (

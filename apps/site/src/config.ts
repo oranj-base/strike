@@ -13,6 +13,7 @@ export const provider =
     : 'http://rdmx6-jaaaa-aaaaa-aaadq-cai.localhost:4943';
 
 export const ICP_BLINK_PREFIX = /^(icp-action:|icp:)/;
+export const STRIKE_ACTION_REGEX = /^https:\/\/.+\/actions\.json$/;
 
 export interface Wallet {
   id: string;

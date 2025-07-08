@@ -41,7 +41,7 @@ export function CanisterRegistry() {
           Actions Registry
         </h1>
         <p className="text-base md:text-lg text-muted-foreground">
-          Register your Action to unfurl your Blink on Twitter.
+          Register your Action to unfurl your Strike Card on X.
         </p>
       </div>
 
@@ -70,7 +70,7 @@ export function CanisterRegistry() {
           <div className="border-t border-border my-2" />
           <p className="text-sm md:text-base text-muted-foreground">
             Please make sure you provide a sample URL you would want to tweet to
-            ensure accurate mapping between blink/action.
+            ensure accurate mapping between strike/action.
           </p>
         </CardContent>
       </Card>

@@ -1,3 +1,4 @@
+import { STRIKE_ACTION_REGEX } from '@/config';
 import { useState } from 'react';
 
 interface FormData {
@@ -27,9 +28,12 @@ const CanisterRegistryForm = ({ onSubmit }: CanisterRegistryFormProps) => {
     strikeCardLink: '',
   });
 
+  const [error, setError] = useState<string | null>(null);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
+    setError(null);
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
@@ -52,6 +56,20 @@ const CanisterRegistryForm = ({ onSubmit }: CanisterRegistryFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (
+      new URL(formData.strikeCardLink) &&
+      STRIKE_ACTION_REGEX.test(formData.strikeCardLink)
+    ) {
+      formData.strikeCardLink =
+        window.location.origin +
+        '/action?url=icp-action:' +
+        formData.strikeCardLink;
+    } else {
+      setError(
+        'Please provide a valid Strike Action URL that ends with "actions.json".',
+      );
+      return;
+    }
     onSubmit(formData);
   };
 
@@ -63,7 +81,7 @@ const CanisterRegistryForm = ({ onSubmit }: CanisterRegistryFormProps) => {
             htmlFor="name"
             className="mb-1 text-sm font-medium text-gray-500"
           >
-            Name <span className="text-red-500">*</span>
+            Full Name <span className="text-red-500">*</span>
           </label>
           <input
             required
@@ -190,7 +208,7 @@ const CanisterRegistryForm = ({ onSubmit }: CanisterRegistryFormProps) => {
             htmlFor="strikeCardLink"
             className="mb-1 text-sm font-medium text-gray-500"
           >
-            Strike Card Link <span className="text-red-500">*</span>
+            Strike Action Link <span className="text-red-500">*</span>
           </label>
           <input
             required
@@ -199,9 +217,10 @@ const CanisterRegistryForm = ({ onSubmit }: CanisterRegistryFormProps) => {
             type="text"
             value={formData.strikeCardLink}
             onChange={handleChange}
-            placeholder="https://..."
+            placeholder="https://strike.oranj.co/actions.json"
             className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
+          {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
         </div>
 
         <div className="flex justify-between mt-4">
