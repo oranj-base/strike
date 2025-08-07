@@ -57,15 +57,14 @@ export default function ConnectProvider({
     providerUrl: provider,
   };
 
-  const providers =
-    isServer || !canisterId
-      ? []
-      : !siwbCanisterId
-        ? [...createICPConnectors(config, canisterId)]
-        : [
-            ...createICPConnectors(config, canisterId),
-            ...createSiwbConnectors(config, siwbCanisterId),
-          ];
+  const providers = isServer
+    ? []
+    : !siwbCanisterId
+      ? [...createICPConnectors(config, canisterId)]
+      : [
+          ...createICPConnectors(config, canisterId),
+          ...createSiwbConnectors(config, siwbCanisterId),
+        ];
 
   const client = createClient({
     providers,
