@@ -54,6 +54,16 @@ pub fn remove_admins(caller: Principal, admins_to_remove: Vec<Principal>) -> Res
     remove_admins_unchecked(admins_to_remove)
 }
 
+pub fn get_admins() -> Vec<Principal> {
+    ADMINS.with(|admins| {
+        admins
+            .borrow()
+            .iter()
+            .filter_map(|(principal, _)| Principal::try_from(principal).ok())
+            .collect()
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

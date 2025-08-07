@@ -5,7 +5,7 @@ use cargo_metadata::MetadataCommand;
 use escargot::CargoBuild;
 use std::path::PathBuf;
 
-use crate::{StrikeRegistry, StrikeStatus};
+use crate::strike::{StrikeRegistry, StrikeStatus};
 
 /// Builds a canister with the specified name from the current
 /// package and returns the WebAssembly module.

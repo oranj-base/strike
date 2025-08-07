@@ -1,36 +1,59 @@
-mod admins;
-mod guards;
-mod lifecycle;
-mod memory;
-mod serializer;
-#[cfg(test)]
-mod test;
-
 use candid::{CandidType, Decode, Encode, Principal};
-use ic_cdk::{caller, query, update};
+use ic_cdk::caller;
 use ic_stable_structures::{storable::Bound, Storable};
 use serde::{Deserialize, Serialize};
 use std::borrow::Cow;
 
-use crate::guards::*;
 use crate::memory::REGISTRY;
+use crate::types::{Paginate, PaginatedResponse, Pagination};
 
-#[derive(Serialize, Deserialize, CandidType, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, CandidType, Debug, PartialEq, Clone, Copy)]
 #[repr(u8)]
-enum StrikeStatus {
+pub enum StrikeStatus {
     Submitted,
     Trusted,
     Blocked,
 }
 
+/// Represents a registry entry for a canister in the Strike system
 #[derive(Serialize, Deserialize, CandidType, Debug)]
-struct StrikeRegistry {
-    canister_id: Principal,
-    module_hash: Option<String>,
-    website_url: Option<String>,
-    created_at: u64,
-    added_by: Principal,
-    status: StrikeStatus,
+pub struct StrikeRegistry {
+    pub canister_id: Principal,
+    pub module_hash: Option<String>,
+    pub name: String,
+    pub email: String,
+    pub telegram: Option<String>,
+    pub twitter: Option<String>,
+    pub project_name: String,
+    pub description: String,
+    pub website_url: Option<String>,
+    pub created_at: u64,
+    pub added_by: Principal,
+    pub status: StrikeStatus,
+}
+
+#[derive(CandidType, Deserialize)]
+pub struct AddRegistryParams {
+    pub canister_id: Principal,
+    pub name: String,
+    pub email: String,
+    pub telegram: Option<String>,
+    pub twitter: Option<String>,
+    pub project_name: String,
+    pub description: String,
+    pub website_url: Option<String>,
+}
+
+#[derive(CandidType, Deserialize)]
+pub struct UpdateRegistryStatusParams {
+    pub canister_id: Principal,
+    pub status: StrikeStatus,
+}
+
+#[derive(CandidType, Deserialize)]
+pub struct GetRegistriesParams {
+    pub status: Option<StrikeStatus>,
+    pub pagination: Pagination,
 }
 
 impl Storable for StrikeRegistry {
@@ -45,18 +68,47 @@ impl Storable for StrikeRegistry {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-#[query]
-fn get_strike_by_canister_id(canister_id: Principal) -> Option<StrikeRegistry> {
-    REGISTRY.with(|s| s.borrow().get(&canister_id))
+pub fn get_strike_by_canister_id(principal: Principal) -> Option<StrikeRegistry> {
+    REGISTRY.with(|s| s.borrow().get(&principal))
 }
 
-#[update(guard = "caller_is_not_anonymous")]
-fn add_registry(canister_id: Principal, module_hash: Option<String>, website_url: Option<String>) -> Result<(), String> {
+pub fn add_registry(
+    canister_id: Principal,
+    name: String,
+    email: String,
+    telegram: Option<String>,
+    twitter: Option<String>,
+    project_name: String,
+    description: String,
+    website_url: Option<String>,
+) -> Result<(), String> {
+    if name.trim().is_empty() {
+        return Err("Name cannot be empty".to_string());
+    }
+
+    if email.trim().is_empty() {
+        return Err("Email cannot be empty".to_string());
+    }
+
+    if project_name.trim().is_empty() {
+        return Err("Project name cannot be empty".to_string());
+    }
+
+    if description.trim().is_empty() {
+        return Err("Description cannot be empty".to_string());
+    }
+
     let caller = caller();
 
     let registry = StrikeRegistry {
         canister_id: canister_id.clone(),
-        module_hash,
+        module_hash: None, // This can be set later if needed
+        name,
+        email,
+        telegram,
+        twitter,
+        project_name,
+        description,
         website_url,
         created_at: ic_cdk::api::time(),
         added_by: caller,
@@ -77,37 +129,42 @@ fn add_registry(canister_id: Principal, module_hash: Option<String>, website_url
     Ok(())
 }
 
-#[update(guard = "caller_is_admin")]
-fn update_registry_status(canister_id: Principal, status: StrikeStatus) -> Result<(), String> {
+pub fn update_registry_status(canister_id: Principal, status: StrikeStatus) -> Result<(), String> {
     let mut registry = REGISTRY
         .with(|s| s.borrow_mut().get(&canister_id))
         .ok_or("Canister not found")?;
 
     registry.status = status;
 
-    // Save registry
     REGISTRY.with(|s| s.borrow_mut().insert(canister_id, registry));
 
     Ok(())
 }
 
-#[update(guard = "caller_is_admin")]
-pub fn add_admin(admin: Principal) -> Result<(), String> {
-    let caller = ic_cdk::api::caller();
-    admins::add_admins(caller, [admin].to_vec())
+pub fn get_registries(params: GetRegistriesParams) -> PaginatedResponse<StrikeRegistry> {
+    let mut result: Vec<StrikeRegistry> = Vec::new();
+
+    REGISTRY.with(|s| {
+        let registry_ref = s.borrow();
+        for (id, _) in registry_ref.iter() {
+            // Get each registry with safe handling
+            if let Some(registry) = registry_ref.get(&id) {
+                if let Some(filter_status) = params.status {
+                    if registry.status == filter_status {
+                        result.push(registry);
+                    }
+                } else {
+                    result.push(registry);
+                }
+            }
+        }
+    });
+
+    let total = result.len() as u32;
+    let items = result
+        .into_iter()
+        .paginate(params.pagination)
+        .map(|registry| registry.into())
+        .collect();
+    PaginatedResponse { total, items }
 }
-
-#[update(guard = "caller_is_admin")]
-pub fn remove_admin(admin: Principal) -> Result<(), String> {
-    let caller = ic_cdk::api::caller();
-    admins::remove_admins(caller, [admin].to_vec())
-}
-
-#[query]
-pub fn is_admin(user: Principal) -> bool {
-    admins::is_admin(user)
-}
-
-ic_cdk::export_candid!();
-
-fn main() {}
