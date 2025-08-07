@@ -14,6 +14,7 @@
   ],
   "scripts": {
     "dev:site": "yarn workspace @oranjbase/strike-site dev",
+    "dev:extension": "yarn workspace @oranjbase/strike-chrome-extension dev",
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint"
