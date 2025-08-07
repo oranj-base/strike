@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import { ConnectDialog } from '@oranjbase/icp-wallet-adapter-react';
+import { ConnectButton, ConnectDialog } from '@oranjbase/icp-wallet-adapter-react';
 import { ICP_BLINK_PREFIX } from '@oranjbase/strike';
 import {
   StrikeLogo,
@@ -47,6 +47,7 @@ export default function Header() {
             </span>
           </a>
           <div className="sm:flex hidden flex-row gap-[16px]">
+            <ConnectButton style={{background: '#3670FF'}} />
             <div className="flex flex-row gap-[8px] font-medium items-center text-[14px] leading-[24px]">
               <ExtensionIcon width={20} height={20} />
               <a

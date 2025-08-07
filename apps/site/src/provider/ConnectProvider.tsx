@@ -4,7 +4,6 @@ import { Connect2ICProvider } from '@oranjbase/icp-wallet-adapter-react';
 import {
   createClient,
   InternetIdentity,
-  Plug,
   Nfid,
   XverseConnector,
   UnisatConnector,
@@ -16,7 +15,7 @@ import '@oranjbase/strike/index.css';
 import '@oranjbase/icp-wallet-adapter-react/index.css';
 import { host, provider } from '../config';
 import { useSearchParams } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 const isServer = typeof window === 'undefined';
 
@@ -29,12 +28,12 @@ function createSiwbConnectors(config: any, siwbCanisterId: string) {
   ];
 }
 
-function createICPConnectors(config: any, canisterId: string) {
-  return [
-    new InternetIdentity(config),
-    new Plug(config, { canisterId }),
-    new Nfid(config),
-  ];
+function createICPConnectors(config: any, canisterId?: string) {
+  if (canisterId) {
+    return [new InternetIdentity(config), new Nfid(config)];
+  } else {
+    return [new InternetIdentity(config), new Nfid(config)];
+  }
 }
 
 export default function ConnectProvider({
@@ -42,10 +41,16 @@ export default function ConnectProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [siwbCanisterId, setSiwbCanisterId] = useState<string | undefined>(
-    undefined,
-  );
-  const [canisterId, setCanisterId] = useState<string | undefined>(undefined);
+  const searchParams = useSearchParams();
+
+  const actionUrl =
+    searchParams?.get('url') ?? 'https://strike.oranj.co/actions.json';
+
+  const { action } = useAction({ url: actionUrl, adapter: undefined });
+
+  const siwbCanisterId = useMemo(() => action?.siwbCanisterId, [action]);
+
+  const canisterId = useMemo(() => action?.canisterId, [action]);
 
   const config = {
     host,
@@ -69,13 +74,5 @@ export default function ConnectProvider({
     },
   });
 
-  return (
-    <Connect2ICProvider
-      client={client}
-      setSiwbCanisterId={setSiwbCanisterId}
-      setCanisterId={setCanisterId}
-    >
-      {children}
-    </Connect2ICProvider>
-  );
+  return <Connect2ICProvider client={client}>{children}</Connect2ICProvider>;
 }

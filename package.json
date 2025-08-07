@@ -17,7 +17,9 @@
     "dev:extension": "yarn workspace @oranjbase/strike-chrome-extension dev",
     "build": "turbo build",
     "dev": "turbo dev",
-    "lint": "turbo lint"
+    "lint": "turbo lint",
+    "generate": "dfx generate && mkdir -p apps/site/src/backend && cp ./src/declarations/strike_backend/strike_backend.did.js ./src/declarations/strike_backend/strike_backend.did.d.ts apps/site/src/backend/",
+    "extract": "cargo build --release --target wasm32-unknown-unknown --package strike_backend && candid-extractor target/wasm32-unknown-unknown/release/strike_backend.wasm > strike_backend.did && cp strike_backend.did canisters/strike_backend/strike_backend.did"
   },
   "devDependencies": {
     "turbo": "^2.4.4"

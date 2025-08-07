@@ -26,6 +26,7 @@
         "./src/*"
       ]
     },
+    "target": "ES2017",
     "strictNullChecks": true
   },
   "include": [
