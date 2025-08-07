@@ -37,7 +37,12 @@ class Client {
   }
 
   async connectAsync(
-    props: { provider?: string; derivationOrigin?: string } | undefined
+    props:
+      | {
+          provider?: string;
+          derivationOrigin?: string;
+        }
+      | undefined
   ) {
     const { provider, derivationOrigin } = props || {};
     this.service.send({

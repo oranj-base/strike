@@ -1,6 +1,8 @@
 import { type Config } from "../base-connector";
 import { SIWBConnector, type SIWBMeta } from "./siwb-connector";
 
+import xverseLogoLight from "../../assets/xverse.svg";
+import xverseLogoDark from "../../assets/xverse.svg";
 export class XverseConnector extends SIWBConnector {
   constructor(
     config: Partial<Config> = {},
@@ -12,8 +14,8 @@ export class XverseConnector extends SIWBConnector {
       name: "Xverse",
       features: ["bitcoin"],
       icon: {
-        dark: "/wallet/xverse.svg",
-        light: "/wallet/xverse.svg",
+        dark: xverseLogoDark,
+        light: xverseLogoLight,
       },
       link: "https://chromewebstore.google.com/detail/xverse-wallet/idnnbdplmphpflfnlkomgpfbpcgelopg?hl=en",
     });

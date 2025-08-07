@@ -2,8 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-  font-size: 16px;
-  background-color: #ffffff;
+body {
+  width: 320px;
+  height: 250px;
+  margin: 0;
   font-family: Inter, Roboto, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  width: 100%;
 }
