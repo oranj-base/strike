@@ -1,6 +1,6 @@
 {
   "$schema": "./schema.json",
-  "icon": "https://strike.oranj.co/hello-strike.png",
+  "icon": "https://strike.oranj.co/hello-strike.webp",
   "homepage": "https://strike.oranj.co",
   "label": "Simple ownership",
   "title": "Simple ownership",
@@ -35,10 +35,15 @@
           "name": "owner",
           "label": "Enter a new owner",
           "candidType": "Principal"
+        },
+        {
+          "name": "owner1",
+          "label": "Enter a new owner11",
+          "candidType": "Principal"
         }
       ],
-      "input": ["Principal"],
-      "inputParameters": ["{owner}"],
+      "input": ["Principal", "Principal"],
+      "inputParameters": ["{owner}", "{owner1}"],
       "output": []
     }
   ]
