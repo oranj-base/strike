@@ -35,15 +35,10 @@
           "name": "owner",
           "label": "Enter a new owner",
           "candidType": "Principal"
-        },
-        {
-          "name": "owner1",
-          "label": "Enter a new owner11",
-          "candidType": "Principal"
         }
       ],
-      "input": ["Principal", "Principal"],
-      "inputParameters": ["{owner}", "{owner1}"],
+      "input": ["Principal"],
+      "inputParameters": ["{owner}"],
       "output": []
     }
   ]
