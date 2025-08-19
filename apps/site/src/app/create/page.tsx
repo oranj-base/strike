@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import ReactJson from 'react-json-view';
+import dynamic from 'next/dynamic';
 import {
   Card,
   CardContent,
@@ -26,6 +26,8 @@ import { joiResolver } from '@hookform/resolvers/joi';
 import { ActionLayout } from '@oranjbase/strike';
 import '@oranjbase/strike/index.css';
 import '@oranjbase/icp-wallet-adapter-react/index.css';
+
+const ReactJson = dynamic(() => import('react-json-view'), { ssr: false });
 
 const uiParameterschema = Joi.object({
   name: Joi.string().required(),
