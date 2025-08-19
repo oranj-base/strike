@@ -44,8 +44,8 @@ const actionSchema = Joi.object({
 });
 
 const formSchema = Joi.object({
-  icon: Joi.string().required(),
-  homepage: Joi.string().required(),
+  icon: Joi.string().uri().required(),
+  homepage: Joi.string().uri().required(),
   label: Joi.string().required(),
   title: Joi.string().required(),
   description: Joi.string().required(),
