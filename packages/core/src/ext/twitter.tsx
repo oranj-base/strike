@@ -1,3 +1,4 @@
+import { ConnectButton } from '@oranjbase/icp-wallet-adapter-react';
 import { createRoot } from 'react-dom/client';
 import {
   Action,
@@ -10,6 +11,7 @@ import { ActionContainer, type StylePreset } from '../ui/index.ts';
 import { noop } from '../utils/constants.ts';
 import { isInterstitial } from '../utils/interstitial-url.ts';
 import { unfurlUrlToActionApiUrl } from '../utils/url-mapper.ts';
+import ConnectProvider from './ConnectProvider.tsx';
 
 type ObserverSecurityLevel = SecurityLevel;
 
@@ -61,6 +63,7 @@ const normalizeOptions = (
 
 export function setupTwitterObserver(
   config: ActionAdapter,
+  isActive: boolean,
   callbacks: Partial<ActionCallbacksConfig> = {},
   options: Partial<ObserverOptions> = DEFAULT_OPTIONS,
 ) {
@@ -77,9 +80,13 @@ export function setupTwitterObserver(
         if (node.nodeType !== Node.ELEMENT_NODE) {
           return;
         }
-        handleNewNode(node as Element, config, callbacks, mergedOptions).catch(
-          noop,
-        );
+        handleNewNode(
+          node as Element,
+          config,
+          isActive,
+          callbacks,
+          mergedOptions,
+        ).catch(noop);
       }
     }
   });
@@ -89,6 +96,7 @@ export function setupTwitterObserver(
 async function handleNewNode(
   node: Element,
   config: ActionAdapter,
+  isActive: boolean,
   callbacks: Partial<ActionCallbacksConfig>,
   options: NormalizedObserverOptions,
 ) {
@@ -154,15 +162,16 @@ async function handleNewNode(
     }
   }
 
-  addMargin(container).replaceChildren(
-    createAction({
-      originalUrl: actionUrl,
-      action,
-      callbacks,
-      options,
-      isInterstitial: interstitialData.isInterstitial,
-    }),
-  );
+  if (isActive)
+    addMargin(container).replaceChildren(
+      createAction({
+        originalUrl: actionUrl,
+        action,
+        callbacks,
+        options,
+        isInterstitial: interstitialData.isInterstitial,
+      }),
+    );
 }
 
 function createAction({
@@ -184,14 +193,28 @@ function createAction({
 
   actionRoot.render(
     <div onClick={(e) => e.stopPropagation()}>
-      <ActionContainer
-        stylePreset={resolveXStylePreset()}
-        action={action}
-        websiteUrl={originalUrl.toString()}
-        websiteText={originalUrl.hostname}
-        callbacks={callbacks}
-        securityLevel={options.securityLevel}
-      />
+      <ConnectProvider
+        siwbCanisterId={action.siwbCanisterId}
+        canisterId={action.canisterId}
+      >
+        <ActionContainer
+          stylePreset={resolveXStylePreset()}
+          action={action}
+          websiteUrl={originalUrl.toString()}
+          websiteText={originalUrl.hostname}
+          callbacks={callbacks}
+          securityLevel={options.securityLevel}
+        />
+        <div style={{ position: 'absolute', top: '30px', right: '30px' }}>
+          <ConnectButton
+            style={{
+              fontSize: '14px',
+              background: '#1d9bf0',
+              padding: '5px 10px',
+            }}
+          />
+        </div>
+      </ConnectProvider>
     </div>,
   );
 

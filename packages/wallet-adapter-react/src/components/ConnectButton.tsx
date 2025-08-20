@@ -20,22 +20,18 @@ const ConnectButton: React.FC<PropsWithChildren<Props>> = ({
     onDisconnect,
   });
 
-  return (
-    <>
-      {isConnected ? (
-        <button onClick={disconnect} style={style} className="connect-button">
-          {children ?? "Disconnect"}
-        </button>
-      ) : (
-        <button
-          onClick={() => dialog.open()}
-          style={style}
-          className="connect-button"
-        >
-          {children ?? "Connect"}
-        </button>
-      )}
-    </>
+  return isConnected ? (
+    <button onClick={disconnect} style={style} className="connect-button">
+      {children ?? "Disconnect"}
+    </button>
+  ) : (
+    <button
+      onClick={() => dialog.open()}
+      style={style}
+      className="connect-button"
+    >
+      {children ?? "Connect"}
+    </button>
   );
 };
 

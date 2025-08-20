@@ -1,6 +1,9 @@
 import { type Config } from "../base-connector";
 import { SIWBConnector, type SIWBMeta } from "./siwb-connector";
 
+import orangeLogoLight from "../../assets/orange.png";
+import orangeLogoDark from "../../assets/orange.png";
+
 export class OrangeConnector extends SIWBConnector {
   constructor(
     config: Partial<Config> = {},
@@ -12,8 +15,8 @@ export class OrangeConnector extends SIWBConnector {
       name: "Orange",
       features: ["bitcoin"],
       icon: {
-        dark: "/wallet/orange.png",
-        light: "/wallet/orange.png",
+        dark: orangeLogoDark,
+        light: orangeLogoLight,
       },
       link: "https://chromewebstore.google.com/detail/glmhbknppefdmpemdmjnjlinpbclokhn",
     });

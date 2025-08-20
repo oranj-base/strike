@@ -1,6 +1,9 @@
 import { type Config } from "../base-connector";
 import { SIWBConnector, type SIWBMeta } from "./siwb-connector";
 
+import unisatLogoLight from "../../assets/unisat.png";
+import unisatLogoDark from "../../assets/unisat.png";
+
 export class UnisatConnector extends SIWBConnector {
   constructor(
     config: Partial<Config> = {},
@@ -12,8 +15,8 @@ export class UnisatConnector extends SIWBConnector {
       name: "Unisat",
       features: ["bitcoin"],
       icon: {
-        dark: "/wallet/unisat.png",
-        light: "/wallet/unisat.png",
+        dark: unisatLogoDark,
+        light: unisatLogoLight,
       },
       link: "https://chromewebstore.google.com/detail/unisat-wallet/ppbibelpcjmhbdihakflkdcoccbgbkpo?hl=en",
     });

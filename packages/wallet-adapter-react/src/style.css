@@ -163,7 +163,6 @@
     background: #545454;
 }
 
-
 .connect-button {
     font-size: 18px;
     background: rgb(35 35 39);
@@ -344,4 +343,5 @@
     align-items: center;
     justify-content: center;
     gap: 4px;
+    color: #424242;
   }
