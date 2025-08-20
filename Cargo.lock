@@ -1576,6 +1576,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "strike-actions"
+version = "0.1.0"
+dependencies = [
+ "candid",
+ "serde",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "strike_backend"
 version = "0.1.0"
 dependencies = [

@@ -37,6 +37,7 @@ export default function Header() {
     { href: '/', label: 'Home' },
     { href: '/register', label: 'Register' },
     { href: '/explore', label: 'Explore' },
+    { href: '/create', label: 'Create' },
     {
       href: 'https://docs.strike.oranj.co/',
       label: 'Documentation',

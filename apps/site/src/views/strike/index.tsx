@@ -1,13 +1,9 @@
 'use client';
-import {
-  ConnectButton,
-  ConnectDialog,
-} from '@oranjbase/icp-wallet-adapter-react';
+import { ConnectDialog } from '@oranjbase/icp-wallet-adapter-react';
 import '@oranjbase/strike/index.css';
 import '@oranjbase/icp-wallet-adapter-react/index.css';
 
 import StrikeRenderer from './strike-renderer';
-import { StrikeLogo } from '@/assets';
 
 export function StrikePage({ url: initialUrl }: { url: string }) {
   return (
