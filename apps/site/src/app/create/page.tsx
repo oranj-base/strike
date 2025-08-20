@@ -404,14 +404,14 @@ export default function CreateStrikeCardPage() {
                     </span>
                   )}
                 </div>
-                {/* SwibCanister ID */}
+                {/* SiwbCanister ID */}
                 <div className="flex items-center space-x-2">
                   <Controller
                     control={control}
                     name="hassiwbCanisterId"
                     render={({ field }) => (
                       <Checkbox
-                        id="swib-canister-id"
+                        id="siwb-canister-id"
                         checked={field.value}
                         onCheckedChange={field.onChange}
                         className="mt-1 accent-indigo-600"
@@ -419,24 +419,24 @@ export default function CreateStrikeCardPage() {
                     )}
                   />
                   <Label
-                    htmlFor="swib-canister-id"
+                    htmlFor="siwb-canister-id"
                     className="text-indigo-600 font-semibold"
                   >
-                    SWIB Canister ID
+                    SIWB Canister ID
                   </Label>
                 </div>
                 {hassiwbCanisterId && (
                   <div>
                     <Label
-                      htmlFor="swib-canister-id-input"
+                      htmlFor="siwb-canister-id-input"
                       className="text-indigo-600 font-semibold"
                     >
-                      SWIB Canister ID
+                      SIWB Canister ID
                     </Label>
                     <Input
-                      id="swib-canister-id-input"
+                      id="siwb-canister-id-input"
                       {...register('siwbCanisterId')}
-                      placeholder="Enter SWIB canister ID"
+                      placeholder="Enter SIWB canister ID"
                       className="mt-1 rounded-lg border-indigo-200 focus:ring-2 focus:ring-indigo-400"
                     />
                     {errors.siwbCanisterId && (
