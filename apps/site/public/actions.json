@@ -1,6 +1,6 @@
 {
   "$schema": "./schema.json",
-  "icon": "https://strike.oranj.co/hello-strike.png",
+  "icon": "https://strike.oranj.co/hello-strike.webp",
   "homepage": "https://strike.oranj.co",
   "label": "Simple ownership",
   "title": "Simple ownership",

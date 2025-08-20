@@ -15,6 +15,7 @@ import {
   type ActionContext,
   type ActionState,
 } from '../api/index.ts';
+import { useAction, useActionICPWalletAdapter } from '../hooks/index.ts';
 import { checkSecurity, type SecurityLevel } from '../shared/index.ts';
 import { isPostRequestError } from '../utils/type-guards.ts';
 import {
@@ -170,7 +171,21 @@ export const ActionContainer = ({
   // please do not use it yet, better api is coming..
   Experimental__ActionLayout?: typeof ActionLayout;
 }) => {
-  const [action] = useState(initialAction);
+  const { adapter } = useActionICPWalletAdapter({
+    agent: initialAction.adapter.agent,
+  });
+
+  const [action, setAction] = useState(initialAction);
+
+  const { action: newAction } = useAction({
+    url: 'icp-action:' + initialAction.url,
+    adapter,
+  });
+
+  useEffect(() => {
+    if (newAction) setAction(newAction);
+  }, [newAction]);
+
   const normalizedSecurityLevel: NormalizedSecurityLevel = useMemo(() => {
     if (typeof securityLevel === 'string') {
       return {

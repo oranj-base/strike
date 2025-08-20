@@ -30,10 +30,7 @@ function createSiwbConnectors(config: any, siwbCanisterId: string) {
 
 function createICPConnectors(config: any, canisterId?: string) {
   if (canisterId) {
-    return [
-      new InternetIdentity(config),
-      new Nfid(config),
-    ];
+    return [new InternetIdentity(config), new Nfid(config)];
   } else {
     return [new InternetIdentity(config), new Nfid(config)];
   }

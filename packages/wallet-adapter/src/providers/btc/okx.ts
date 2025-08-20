@@ -1,6 +1,9 @@
 import { type Config } from "../base-connector";
 import { SIWBConnector, type SIWBMeta } from "./siwb-connector";
 
+import okxLogoLight from "../../assets/okx.png";
+import okxLogoDark from "../../assets/okx.png";
+
 export class OKXConnector extends SIWBConnector {
   constructor(
     config: Partial<Config> = {},
@@ -12,8 +15,8 @@ export class OKXConnector extends SIWBConnector {
       name: "OKX",
       features: ["bitcoin"],
       icon: {
-        dark: "/wallet/okx.png",
-        light: "/wallet/okx.png",
+        dark: okxLogoDark,
+        light: okxLogoLight,
       },
       link: "https://chromewebstore.google.com/detail/okx-wallet/mcohilncbfahbmgdjkbpemcciiolgcge?hl=en",
     });
