@@ -183,14 +183,14 @@ const MessageBlock = ({
         className={clsx(
           'flex items-start gap-3 rounded-lg border p-4',
           isSuccess
-            ? 'border-stroke-success bg-bg-success'
-            : 'bg-bg-error border-stroke-error',
+            ? 'border-green-200 bg-green-50 dark:border-green-900/30 dark:bg-green-950/20'
+            : 'border-red-200 bg-red-50 dark:border-red-900/30 dark:bg-red-950/20',
         )}
       >
         <div className="mt-0.5 flex-shrink-0">
           {isSuccess ? (
             <svg
-              className="text-icon-success h-5 w-5"
+              className="text-green-600 dark:text-green-500 h-5 w-5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -204,7 +204,7 @@ const MessageBlock = ({
             </svg>
           ) : (
             <svg
-              className="h-5 w-5 text-icon-error"
+              className="text-red-600 dark:text-red-500 h-5 w-5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -222,7 +222,9 @@ const MessageBlock = ({
           <p
             className={clsx(
               'text-sm font-medium',
-              isSuccess ? 'text-text-success' : 'text-text-error',
+              isSuccess
+                ? 'text-green-800 dark:text-green-400'
+                : 'text-red-800 dark:text-red-400',
             )}
           >
             {isSuccess ? 'Success' : 'Error'}
@@ -230,7 +232,9 @@ const MessageBlock = ({
           <p
             className={clsx(
               'mt-1 break-words text-sm',
-              isSuccess ? 'text-text-success' : 'text-text-error',
+              isSuccess
+                ? 'text-green-700 dark:text-green-500'
+                : 'text-red-700 dark:text-red-500',
             )}
           >
             {message}
