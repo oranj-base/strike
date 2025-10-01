@@ -1,4 +1,5 @@
 import type {
+  ActionPostRequest,
   GeneralParameterType,
   TypedActionParameter,
 } from '../../actions-spec.ts';
@@ -7,7 +8,7 @@ import { AbstractActionComponent } from './AbstractActionComponent.ts';
 import { ButtonActionComponent } from './ButtonActionComponent.ts';
 
 export class SingleValueActionComponent extends AbstractActionComponent {
-  private parameterValue: string | null = null;
+  private parameterValue: string | string[] | null = null;
 
   constructor(
     protected _parent: Action,
@@ -24,15 +25,18 @@ export class SingleValueActionComponent extends AbstractActionComponent {
     return this._parentComponent ?? null;
   }
 
-  protected buildBody(principal: string) {
+  protected buildBody(principal: string): ActionPostRequest<any> {
     if (this._href.indexOf(`{${this.parameter.name}}`) > -1) {
       return { principal };
     }
 
+    // Ensure we don't send null values
+    const value = this.parameterValue ?? '';
+
     return {
       principal,
-      params: {
-        [this.parameter.name]: this.parameterValue,
+      data: {
+        [this.parameter.name]: value,
       },
     };
   }
@@ -43,15 +47,16 @@ export class SingleValueActionComponent extends AbstractActionComponent {
     return param as TypedActionParameter<GeneralParameterType>;
   }
 
-  public setValue(value: string) {
+  public setValue(value: string | string[]) {
     this.parameterValue = value;
   }
 
   get href(): string {
-    return this._href.replace(
-      `{${this.parameter.name}}`,
-      encodeURIComponent(this.parameterValue?.toString().trim() ?? ''),
-    );
+    const encodedValue = Array.isArray(this.parameterValue)
+      ? this.parameterValue.map((v) => encodeURIComponent(v.trim())).join(',')
+      : encodeURIComponent(this.parameterValue?.toString().trim() ?? '');
+
+    return this._href.replace(`{${this.parameter.name}}`, encodedValue);
   }
 
   toButtonActionComponent(): ButtonActionComponent {

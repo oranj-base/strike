@@ -340,19 +340,63 @@ export const ActionContainer = ({
       }
       // construct idlFactory
       const idlFactory: IDL.InterfaceFactory = ({ IDL }) => {
-        const input = actionData.input.map(
-          (i) => IDL[i as unknown as keyof typeof IDL],
-        );
+        const parseType = (typeStr: string): IDL.Type => {
+          const trimmed = typeStr.trim();
 
-        const output = actionData.output.map(
-          (i) => IDL[i as unknown as keyof typeof IDL],
-        );
+          // Check if it's a Vec type
+          const vecMatch = trimmed.match(/^Vec\s+(.+)$/i);
+          if (vecMatch) {
+            const innerType = parseType(vecMatch[1]);
+            return IDL.Vec(innerType);
+          }
+
+          // Handle basic types
+          const typeLower = trimmed.toLowerCase();
+          switch (typeLower) {
+            case 'principal':
+              return IDL.Principal;
+            case 'text':
+              return IDL.Text;
+            case 'nat':
+              return IDL.Nat;
+            case 'nat8':
+              return IDL.Nat8;
+            case 'nat16':
+              return IDL.Nat16;
+            case 'nat32':
+              return IDL.Nat32;
+            case 'nat64':
+              return IDL.Nat64;
+            case 'int':
+              return IDL.Int;
+            case 'int8':
+              return IDL.Int8;
+            case 'int16':
+              return IDL.Int16;
+            case 'int32':
+              return IDL.Int32;
+            case 'int64':
+              return IDL.Int64;
+            case 'float32':
+              return IDL.Float32;
+            case 'float64':
+              return IDL.Float64;
+            case 'bool':
+              return IDL.Bool;
+            case 'null':
+              return IDL.Null;
+            default:
+              throw new Error(`Unknown type: ${typeStr}`);
+          }
+        };
+
+        const input = actionData.input.map((typeStr) => parseType(typeStr));
+        const output = actionData.output.map((typeStr) => parseType(typeStr));
+
         return IDL.Service({
-          [actionData.method]: IDL.Func(
-            input as unknown as IDL.Type[],
-            output as unknown as IDL.Type[],
-            [actionData.type === 'query' ? 'query' : ''],
-          ),
+          [actionData.method]: IDL.Func(input, output, [
+            actionData.type === 'query' ? 'query' : '',
+          ]),
         });
       };
       // Create actor
@@ -372,6 +416,7 @@ export const ActionContainer = ({
       for (let i = 0; i < actionData.inputParameters.length; i++) {
         const parameter = actionData.inputParameters[i];
         const type = actionData.input[i];
+        const uiParameter = actionData.uiParameters[i];
         let value = '';
 
         // If the parameter is a placeholder, replace it with the value from the input
@@ -382,12 +427,33 @@ export const ActionContainer = ({
         } else {
           value = parameter;
         }
-        switch (type.toLowerCase()) {
+
+        // Check if the type indicates an array (e.g., "Vec Text")
+        const isArrayType =
+          type.toLowerCase().startsWith('vec') || uiParameter?.isArray;
+
+        // Extract the inner type from Vec types
+        const innerType = type.toLowerCase().startsWith('vec')
+          ? type.replace(/^vec\s*/i, '').trim()
+          : type;
+
+        switch (innerType.toLowerCase()) {
           case 'principal':
-            parameters.push(Principal.fromText(value));
+            if (isArrayType) {
+              const principals = Array.isArray(value) ? value : [value];
+              parameters.push(
+                principals.map((v: string) => Principal.fromText(v)),
+              );
+            } else {
+              parameters.push(Principal.fromText(value));
+            }
             break;
           case 'text':
-            parameters.push(value);
+            if (isArrayType) {
+              parameters.push(Array.isArray(value) ? value : [value]);
+            } else {
+              parameters.push(value);
+            }
             break;
           default:
             throw new Error(`Unknown type: ${type}`);

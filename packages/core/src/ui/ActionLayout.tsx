@@ -166,6 +166,81 @@ const DisclaimerBlock = ({
   return null;
 };
 
+const MessageBlock = ({
+  type,
+  message,
+  className,
+}: {
+  type: 'success' | 'error';
+  message: string;
+  className?: string;
+}) => {
+  const isSuccess = type === 'success';
+
+  return (
+    <div className={className}>
+      <div
+        className={clsx(
+          'flex items-start gap-3 rounded-lg border p-4',
+          isSuccess
+            ? 'border-stroke-success bg-bg-success'
+            : 'bg-bg-error border-stroke-error',
+        )}
+      >
+        <div className="mt-0.5 flex-shrink-0">
+          {isSuccess ? (
+            <svg
+              className="text-icon-success h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          ) : (
+            <svg
+              className="h-5 w-5 text-icon-error"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          )}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p
+            className={clsx(
+              'text-sm font-medium',
+              isSuccess ? 'text-text-success' : 'text-text-error',
+            )}
+          >
+            {isSuccess ? 'Success' : 'Error'}
+          </p>
+          <p
+            className={clsx(
+              'mt-1 break-words text-sm',
+              isSuccess ? 'text-text-success' : 'text-text-error',
+            )}
+          >
+            {message}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const ActionLayout = ({
   stylePreset = 'default',
   title,
@@ -277,14 +352,10 @@ export const ActionLayout = ({
           )}
           <ActionContent form={form} inputs={inputs} buttons={buttons} />
           {success && (
-            <span className="mt-4 flex justify-center text-subtext text-text-success">
-              {success}
-            </span>
+            <MessageBlock type="success" message={success} className="mt-4" />
           )}
           {error && !success && (
-            <span className="mt-4 flex justify-center text-subtext text-text-error">
-              {error}
-            </span>
+            <MessageBlock type="error" message={error} className="mt-4" />
           )}
         </div>
       </div>
