@@ -71,7 +71,7 @@ export class FormActionComponent extends AbstractActionComponent {
       .replaceAll(/={[^}]+}/g, '=');
   }
 
-  public setValue(value: string | Array<string>, name: string) {
+  public setValue(value: string | string[], name: string) {
     this.parameterValues[name] = value;
   }
 

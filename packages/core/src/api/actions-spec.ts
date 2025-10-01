@@ -167,6 +167,7 @@ export interface UIParameter {
   name: string;
   label: string;
   candidType: string;
+  isArray?: boolean; // Add this to indicate array types
 }
 
 /**
