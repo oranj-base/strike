@@ -179,9 +179,9 @@ export interface ActionPostResponse<_T extends ActionType = ActionType> {
   method: string;
   type: 'query' | 'update';
   /** whether the input parameters should be treated as a structural type (record) */
-  isStructuralType?: boolean;
+  inputIsStructured?: boolean;
   /** whether the output parameters should be treated as a structural type (record) */
-  outputStructuralType?: boolean;
+  outputIsStructured?: boolean;
   uiParameters: UIParameter[];
   inputParameters: string[];
   input: string[];

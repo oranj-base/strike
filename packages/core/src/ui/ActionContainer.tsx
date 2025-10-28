@@ -486,7 +486,7 @@ export const ActionContainer = ({
           return result;
         };
 
-        const input = actionData.isStructuralType
+        const input = actionData.inputIsStructured
           ? [
               IDL.Record(
                 Object.fromEntries(
@@ -564,7 +564,7 @@ export const ActionContainer = ({
 
       const parameters: any[] = [];
 
-      if (actionData.isStructuralType) {
+      if (actionData.inputIsStructured) {
         // Build a record object with all parameters
         const record: Record<string, any> = {};
 
