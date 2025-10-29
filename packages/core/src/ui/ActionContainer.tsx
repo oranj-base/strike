@@ -499,7 +499,18 @@ export const ActionContainer = ({
             ]
           : actionData.input.map((typeStr) => parseType(typeStr));
 
-        const output = actionData.output.map((typeStr) => parseType(typeStr));
+        const output = actionData.outputIsStructured
+          ? [
+              IDL.Record(
+                Object.fromEntries(
+                  actionData.output.map((typeStr, index) => [
+                    `field${index}`,
+                    parseType(typeStr),
+                  ]),
+                ),
+              ),
+            ]
+          : actionData.output.map((typeStr) => parseType(typeStr));
 
         return IDL.Service({
           [actionData.method]: IDL.Func(input, output, [
