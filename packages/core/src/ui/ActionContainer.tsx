@@ -341,13 +341,75 @@ export const ActionContainer = ({
       // construct idlFactory
       const idlFactory: IDL.InterfaceFactory = ({ IDL }) => {
         const parseType = (typeStr: string): IDL.Type => {
-          const trimmed = typeStr.trim();
+          // Remove all whitespace and newlines for easier parsing
+          const trimmed = typeStr.replace(/\s+/g, ' ').trim();
 
           // Check if it's a Vec type
           const vecMatch = trimmed.match(/^Vec\s+(.+)$/i);
           if (vecMatch) {
             const innerType = parseType(vecMatch[1]);
             return IDL.Vec(innerType);
+          }
+
+          // Check if it's an Opt type
+          const optMatch = trimmed.match(/^Opt\s+(.+)$/i);
+          if (optMatch) {
+            const innerType = parseType(optMatch[1]);
+            return IDL.Opt(innerType);
+          }
+
+          // Check if it's a Variant type
+          // Format: "Variant{field1:Type1;field2:Type2}" or "Variant{field1:Type1; field2:Variant{...}}"
+          const variantMatch = trimmed.match(/^Variant\s*\{(.+)\}$/i);
+          if (variantMatch) {
+            const fieldsStr = variantMatch[1];
+            const variantFields: Record<string, IDL.Type> = {};
+
+            // Split by semicolon, but handle nested structures
+            const fields = splitByDelimiter(fieldsStr, ';');
+
+            fields.forEach((field) => {
+              const colonIndex = field.indexOf(':');
+              if (colonIndex === -1) {
+                // Field with no type (like CommonError)
+                const name = field.trim();
+                if (name) {
+                  variantFields[name] = IDL.Null;
+                }
+              } else {
+                const name = field.substring(0, colonIndex).trim();
+                const type = field.substring(colonIndex + 1).trim();
+                if (name && type) {
+                  variantFields[name] = parseType(type);
+                }
+              }
+            });
+
+            return IDL.Variant(variantFields);
+          }
+
+          // Check if it's a Record type
+          // Format: "Record{field1:Type1;field2:Type2}"
+          const recordMatch = trimmed.match(/^Record\s*\{(.+)\}$/i);
+          if (recordMatch) {
+            const fieldsStr = recordMatch[1];
+            const recordFields: Record<string, IDL.Type> = {};
+
+            // Split by semicolon, but handle nested structures
+            const fields = splitByDelimiter(fieldsStr, ';');
+
+            fields.forEach((field) => {
+              const colonIndex = field.indexOf(':');
+              if (colonIndex !== -1) {
+                const name = field.substring(0, colonIndex).trim();
+                const type = field.substring(colonIndex + 1).trim();
+                if (name && type) {
+                  recordFields[name] = parseType(type);
+                }
+              }
+            });
+
+            return IDL.Record(recordFields);
           }
 
           // Handle basic types
@@ -385,13 +447,70 @@ export const ActionContainer = ({
               return IDL.Bool;
             case 'null':
               return IDL.Null;
+            case 'empty':
+              return IDL.Empty;
             default:
               throw new Error(`Unknown type: ${typeStr}`);
           }
         };
 
-        const input = actionData.input.map((typeStr) => parseType(typeStr));
-        const output = actionData.output.map((typeStr) => parseType(typeStr));
+        // Helper function to split by delimiter while respecting nested braces
+        const splitByDelimiter = (str: string, delimiter: string): string[] => {
+          const result: string[] = [];
+          let current = '';
+          let braceDepth = 0;
+
+          for (let i = 0; i < str.length; i++) {
+            const char = str[i];
+
+            if (char === '{') {
+              braceDepth++;
+              current += char;
+            } else if (char === '}') {
+              braceDepth--;
+              current += char;
+            } else if (char === delimiter && braceDepth === 0) {
+              if (current.trim()) {
+                result.push(current.trim());
+              }
+              current = '';
+            } else {
+              current += char;
+            }
+          }
+
+          if (current.trim()) {
+            result.push(current.trim());
+          }
+
+          return result;
+        };
+
+        const input = actionData.inputIsStructured
+          ? [
+              IDL.Record(
+                Object.fromEntries(
+                  actionData.input.map((typeStr, index) => [
+                    actionData.uiParameters[index].name,
+                    parseType(typeStr),
+                  ]),
+                ),
+              ),
+            ]
+          : actionData.input.map((typeStr) => parseType(typeStr));
+
+        const output = actionData.outputIsStructured
+          ? [
+              IDL.Record(
+                Object.fromEntries(
+                  actionData.output.map((typeStr, index) => [
+                    `field${index}`,
+                    parseType(typeStr),
+                  ]),
+                ),
+              ),
+            ]
+          : actionData.output.map((typeStr) => parseType(typeStr));
 
         return IDL.Service({
           [actionData.method]: IDL.Func(input, output, [
@@ -411,52 +530,91 @@ export const ActionContainer = ({
       }
       const actor = actorResult.actor;
 
-      const parameters: any[] = [];
-
-      for (let i = 0; i < actionData.inputParameters.length; i++) {
-        const parameter = actionData.inputParameters[i];
-        const type = actionData.input[i];
-        const uiParameter = actionData.uiParameters[i];
-        let value = '';
-
-        // If the parameter is a placeholder, replace it with the value from the input
-        if (/^\{(.*)\}$/.test(parameter)) {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-expect-error
-          value = params[parameter.slice(1, -1)];
-        } else {
-          value = parameter;
-        }
-
-        // Check if the type indicates an array (e.g., "Vec Text")
-        const isArrayType =
-          type.toLowerCase().startsWith('vec') || uiParameter?.isArray;
-
-        // Extract the inner type from Vec types
+      const parseValue = (value: string, type: string): any => {
         const innerType = type.toLowerCase().startsWith('vec')
           ? type.replace(/^vec\s*/i, '').trim()
           : type;
 
-        switch (innerType.toLowerCase()) {
-          case 'principal':
-            if (isArrayType) {
-              const principals = Array.isArray(value) ? value : [value];
-              parameters.push(
-                principals.map((v: string) => Principal.fromText(v)),
-              );
-            } else {
-              parameters.push(Principal.fromText(value));
-            }
-            break;
-          case 'text':
-            if (isArrayType) {
-              parameters.push(Array.isArray(value) ? value : [value]);
-            } else {
-              parameters.push(value);
-            }
-            break;
-          default:
-            throw new Error(`Unknown type: ${type}`);
+        const isArrayType = type.toLowerCase().startsWith('vec');
+
+        const convertSingleValue = (val: string, typeStr: string): any => {
+          switch (typeStr.toLowerCase()) {
+            case 'principal':
+              return Principal.fromText(val);
+            case 'text':
+              return val;
+            case 'nat':
+            case 'nat8':
+            case 'nat16':
+            case 'nat32':
+            case 'nat64':
+              return BigInt(val);
+            case 'int':
+            case 'int8':
+            case 'int16':
+            case 'int32':
+            case 'int64':
+              return BigInt(val);
+            case 'bool':
+              return val.toLowerCase() === 'true' || val === '1';
+            case 'float32':
+            case 'float64':
+              return parseFloat(val);
+            default:
+              return val;
+          }
+        };
+
+        if (isArrayType) {
+          const values = Array.isArray(value) ? value : [value];
+          return values.map((v) => convertSingleValue(v, innerType));
+        }
+
+        return convertSingleValue(value, innerType);
+      };
+
+      const parameters: any[] = [];
+
+      if (actionData.inputIsStructured) {
+        // Build a record object with all parameters
+        const record: Record<string, any> = {};
+
+        for (let i = 0; i < actionData.inputParameters.length; i++) {
+          const parameter = actionData.inputParameters[i];
+          const type = actionData.input[i];
+          const uiParameter = actionData.uiParameters[i];
+          let value = '';
+
+          // If the parameter is a placeholder, replace it with the value from the input
+          if (/^\{(.*)\}$/.test(parameter)) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            value = params[parameter.slice(1, -1)];
+          } else {
+            value = parameter;
+          }
+
+          record[uiParameter.name] = parseValue(value, type);
+        }
+
+        parameters.push(record);
+      } else {
+        // Process parameters individually (existing behavior)
+        for (let i = 0; i < actionData.inputParameters.length; i++) {
+          const parameter = actionData.inputParameters[i];
+          const type = actionData.input[i];
+          let value = '';
+
+          // If the parameter is a placeholder, replace it with the value from the input
+          if (/^\{(.*)\}$/.test(parameter)) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            value = params[parameter.slice(1, -1)];
+          } else {
+            value = parameter;
+          }
+
+          parameters.push(parseValue(value, type));
         }
       }
 
@@ -465,12 +623,66 @@ export const ActionContainer = ({
       // @ts-expect-error
       const result = await actor[actionData.method](...parameters);
 
-      // TODO: Handle next action
+      // Helper function to format the result nicely
+      const formatResult = (data: any): string => {
+        // Handle variant results
+        if (data && typeof data === 'object') {
+          // Check if it's a variant (has single key)
+          const keys = Object.keys(data);
+          if (keys.length === 1) {
+            const key = keys[0];
+            const value = data[key];
 
-      dispatch({
-        type: ExecutionType.FINISH,
-        successMessage: JSON.stringify(result),
-      });
+            // If value is null/undefined, just show the variant name
+            if (value === null || value === undefined) {
+              return key;
+            }
+
+            // If value is a nested variant or object, format recursively
+            if (typeof value === 'object') {
+              return `${key}: ${formatResult(value)}`;
+            }
+
+            // For simple values
+            return `${key}: ${value}`;
+          }
+        }
+
+        // For non-variant or complex objects, use JSON stringify
+        return JSON.stringify(
+          data,
+          (_, v) => (typeof v === 'bigint' ? v.toString() : v),
+          2,
+        );
+      };
+
+      // Check if result is an error variant
+      const isErrorResult = (data: any): boolean => {
+        if (data && typeof data === 'object') {
+          const keys = Object.keys(data);
+          // Check for common error variant keys
+          if (keys.length === 1) {
+            const key = keys[0].toLowerCase();
+            return key === 'err' || key === 'error';
+          }
+        }
+        return false;
+      };
+
+      const formattedResult = formatResult(result);
+
+      if (isErrorResult(result)) {
+        dispatch({
+          type: ExecutionType.SOFT_RESET,
+          errorMessage: formattedResult,
+        });
+      } else {
+        dispatch({
+          type: ExecutionType.FINISH,
+          successMessage: formattedResult,
+        });
+      }
+
       return;
     } catch (e) {
       console.error(e);

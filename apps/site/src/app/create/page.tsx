@@ -70,6 +70,8 @@ type FormValues = {
     type: string;
     uiParameters: { name: string; label: string; candidType: string }[];
     output: string[];
+    inputIsStructured: boolean;
+    outputIsStructured: boolean;
   }[];
 };
 
@@ -112,6 +114,8 @@ export default function CreateStrikeCardPage() {
     type: '',
     uiParameters: [] as { name: string; label: string; candidType: string }[],
     output: [] as string[],
+    inputIsStructured: false,
+    outputIsStructured: false,
   });
   const [uiParamDraft, setUiParamDraft] = useState({
     name: '',
@@ -119,6 +123,9 @@ export default function CreateStrikeCardPage() {
     candidType: '',
   });
   const [outputDraft, setOutputDraft] = useState('');
+
+  // Add state for "Use Custom Type" checkbox
+  const [useCustomOutputType, setUseCustomOutputType] = useState(false);
 
   const hassiwbCanisterId = watch('hassiwbCanisterId');
 
@@ -172,6 +179,8 @@ export default function CreateStrikeCardPage() {
       type: '',
       uiParameters: [],
       output: [],
+      inputIsStructured: false,
+      outputIsStructured: false,
     });
     setUiParamDraft({ name: '', label: '', candidType: '' });
     setOutputDraft('');
@@ -195,6 +204,8 @@ export default function CreateStrikeCardPage() {
         input: action.uiParameters.map((p) => p.candidType),
         inputParameters: action.uiParameters.map((p) => `{${p.name}}`),
         output: action.output,
+        inputIsStructured: action.inputIsStructured,
+        outputIsStructured: action.outputIsStructured,
       })),
     };
   }, [
@@ -267,6 +278,23 @@ export default function CreateStrikeCardPage() {
         )
       : undefined;
   }, [watch, watch('actions')]);
+
+  const candidTypes = [
+    'text',
+    'principal',
+    'nat',
+    'nat16',
+    'nat32',
+    'nat64',
+    'int',
+    'int8',
+    'int16',
+    'int32',
+    'int64',
+    'bool',
+    'float32',
+    'float64',
+  ];
 
   return (
     <div className="container max-w-5xl mx-auto py-10">
@@ -414,7 +442,7 @@ export default function CreateStrikeCardPage() {
                         id="siwb-canister-id"
                         checked={field.value}
                         onCheckedChange={field.onChange}
-                        className="mt-1 accent-indigo-600"
+                        className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-400"
                       />
                     )}
                   />
@@ -588,6 +616,26 @@ export default function CreateStrikeCardPage() {
                       </SelectContent>
                     </Select>
                   </div>
+                  {/* Input Is Structured Checkbox */}
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="input-is-structured"
+                      checked={actionDraft.inputIsStructured}
+                      onCheckedChange={(checked) =>
+                        setActionDraft((prev) => ({
+                          ...prev,
+                          inputIsStructured: checked === true,
+                        }))
+                      }
+                      className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-400"
+                    />
+                    <Label
+                      htmlFor="input-is-structured"
+                      className="text-indigo-600 font-semibold"
+                    >
+                      Input Is Structured
+                    </Label>
+                  </div>
                   {/* Action UI Parameters */}
                   <div className="bg-indigo-50 rounded-lg p-3 space-y-2">
                     <p className="font-semibold text-indigo-700">
@@ -660,8 +708,11 @@ export default function CreateStrikeCardPage() {
                           <SelectValue placeholder="CandidType" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="text">Text</SelectItem>
-                          <SelectItem value="principal">Principal</SelectItem>
+                          {candidTypes.map((type) => (
+                            <SelectItem key={type} value={type}>
+                              {type}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <Button
@@ -673,6 +724,26 @@ export default function CreateStrikeCardPage() {
                         Add
                       </Button>
                     </div>
+                  </div>
+                  {/* Output Is Structured Checkbox */}
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="output-is-structured"
+                      checked={actionDraft.outputIsStructured}
+                      onCheckedChange={(checked) =>
+                        setActionDraft((prev) => ({
+                          ...prev,
+                          outputIsStructured: checked === true,
+                        }))
+                      }
+                      className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-400"
+                    />
+                    <Label
+                      htmlFor="output-is-structured"
+                      className="text-indigo-600 font-semibold"
+                    >
+                      Output Is Structured
+                    </Label>
                   </div>
                   {/* Action Outputs */}
                   <div className="bg-indigo-50 rounded-lg p-3 space-y-2">
@@ -697,32 +768,64 @@ export default function CreateStrikeCardPage() {
                         ))}
                       </ul>
                     )}
-                    <div className="flex flex-row space-x-2">
-                      <Select
-                        value={outputDraft}
-                        onValueChange={setOutputDraft}
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="use-custom-output-type"
+                        checked={useCustomOutputType}
+                        onCheckedChange={(checked) =>
+                          setUseCustomOutputType(checked === true)
+                        }
+                        className="w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-400"
+                      />
+                      <Label
+                        htmlFor="use-custom-output-type"
+                        className="text-indigo-600 font-semibold"
                       >
-                        <SelectTrigger
-                          id="action-output-type"
-                          className="mt-1 rounded-lg border-indigo-200 focus:ring-2 focus:ring-indigo-400"
-                        >
-                          <SelectValue placeholder="Select output type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="principal">Principal</SelectItem>
-                          <SelectItem value="text">Text</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
-                        onClick={handleAddOutput}
-                      >
-                        Add
-                      </Button>
+                        Use Custom Type
+                      </Label>
                     </div>
+                    {!useCustomOutputType ? (
+                      <div>
+                        <Select
+                          value={outputDraft}
+                          onValueChange={(val) => setOutputDraft(val)}
+                        >
+                          <SelectTrigger
+                            id="default-output-type"
+                            className="mt-1 rounded-lg border-indigo-200 focus:ring-2 focus:ring-indigo-400"
+                          >
+                            <SelectValue placeholder="Select type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {candidTypes.map((type) => (
+                              <SelectItem key={type} value={type}>
+                                {type}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ) : (
+                      <div>
+                        <Input
+                          id="custom-output-type"
+                          value={outputDraft}
+                          onChange={(e) => setOutputDraft(e.target.value)}
+                          placeholder="Enter custom output type"
+                          className="mt-1 rounded-lg border-indigo-200 focus:ring-2 focus:ring-indigo-400"
+                        />
+                      </div>
+                    )}
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      className="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 mt-2"
+                      onClick={handleAddOutput}
+                    >
+                      Add
+                    </Button>
                   </div>
+
                   <Button
                     type="button"
                     className="w-full mt-2 bg-gradient-to-r from-indigo-500 to-indigo-700 text-white font-semibold shadow-lg hover:from-indigo-600 hover:to-indigo-800"

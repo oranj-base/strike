@@ -229,16 +229,16 @@ const MessageBlock = ({
           >
             {isSuccess ? 'Success' : 'Error'}
           </p>
-          <p
+          <pre
             className={clsx(
-              'mt-1 break-words text-sm',
+              'mt-1 whitespace-pre-wrap break-words text-sm',
               isSuccess
                 ? 'text-green-700 dark:text-green-500'
                 : 'text-red-700 dark:text-red-500',
             )}
           >
             {message}
-          </p>
+          </pre>
         </div>
       </div>
     </div>

@@ -167,7 +167,6 @@ export interface UIParameter {
   name: string;
   label: string;
   candidType: string;
-  isArray?: boolean; // Add this to indicate array types
 }
 
 /**
@@ -179,6 +178,10 @@ export interface ActionPostResponse<_T extends ActionType = ActionType> {
   /** method to do update call */
   method: string;
   type: 'query' | 'update';
+  /** whether the input parameters should be treated as a structural type (record) */
+  inputIsStructured?: boolean;
+  /** whether the output parameters should be treated as a structural type (record) */
+  outputIsStructured?: boolean;
   uiParameters: UIParameter[];
   inputParameters: string[];
   input: string[];
