@@ -24,6 +24,11 @@ export default defineConfig(({ mode }) => {
     },
     define: {
       global: 'globalThis',
-    }
+    },
+    server: {
+      cors: {
+        origin: '*',
+      },
+    },
   };
 });
