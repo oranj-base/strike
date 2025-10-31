@@ -341,8 +341,14 @@ export const ActionContainer = ({
       // construct idlFactory
       const idlFactory: IDL.InterfaceFactory = ({ IDL }) => {
         const parseType = (typeStr: string): IDL.Type => {
-          // Remove all whitespace and newlines for easier parsing
-          const trimmed = typeStr.replace(/\s+/g, ' ').trim();
+          // Basic normalization: collapse whitespace and strip surrounding parentheses / trailing punctuation
+          let trimmed = typeStr.replace(/\s+/g, ' ').trim();
+          // strip surrounding parentheses or stray trailing characters like ')' that may appear in examples
+          if (trimmed.startsWith('(') && trimmed.endsWith(')')) {
+            trimmed = trimmed.slice(1, -1).trim();
+          }
+          // remove accidental trailing characters (e.g. extra ')') and trailing commas
+          trimmed = trimmed.replace(/^[(\s]+|[)\s,]+$/g, '').trim();
 
           // Check if it's a Vec type
           const vecMatch = trimmed.match(/^Vec\s+(.+)$/i);
@@ -519,12 +525,93 @@ export const ActionContainer = ({
       }
       const actor = actorResult.actor;
 
-      const parseValue = (value: string, type: string): any => {
-        const innerType = type.toLowerCase().startsWith('vec')
-          ? type.replace(/^vec\s*/i, '').trim()
+      const parseValue = (
+        value: string | string[] | undefined,
+        type: string,
+      ): any => {
+        // Helper to split a fields string by delimiter while respecting nested braces
+        const splitByDelimiterLocal = (
+          str: string,
+          delimiter = ';',
+        ): string[] => {
+          const result: string[] = [];
+          let current = '';
+          let depth = 0;
+          for (let i = 0; i < str.length; i++) {
+            const ch = str[i];
+            if (ch === '{') {
+              depth++;
+              current += ch;
+            } else if (ch === '}') {
+              depth--;
+              current += ch;
+            } else if (ch === delimiter && depth === 0) {
+              if (current.trim()) result.push(current.trim());
+              current = '';
+            } else {
+              current += ch;
+            }
+          }
+          if (current.trim()) result.push(current.trim());
+          return result;
+        };
+
+        // Handle Record types specially by building an object from nested fields
+        const recordMatch = type.match(/^Record\s*\{(.+)\}$/i);
+        if (recordMatch) {
+          const fieldsStr = recordMatch[1];
+          const fields = splitByDelimiterLocal(fieldsStr, ';');
+
+          // Try to interpret incoming value as an object (JSON) first
+          let parsedObj: Record<string, any> | undefined = undefined;
+          if (typeof value === 'string') {
+            const trimmed = value.trim();
+            if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+              try {
+                parsedObj = JSON.parse(trimmed);
+              } catch {
+                parsedObj = undefined;
+              }
+            }
+          } else if (typeof value === 'object' && value !== null) {
+            parsedObj = value as Record<string, any>;
+          }
+
+          // If no object provided and value is a plain string, treat it as owner shorthand
+          if (!parsedObj && typeof value === 'string' && value.trim() !== '') {
+            parsedObj = { owner: value.trim() };
+          }
+
+          const result: Record<string, any> = {};
+
+          for (const field of fields) {
+            const colonIndex = field.indexOf(':');
+            const name =
+              colonIndex === -1
+                ? field.trim()
+                : field.substring(0, colonIndex).trim();
+            const fType =
+              colonIndex === -1
+                ? 'Null'
+                : field.substring(colonIndex + 1).trim();
+            const sourceVal = parsedObj ? parsedObj[name] : undefined;
+            result[name] = parseValue(sourceVal as any, fType);
+          }
+
+          return result;
+        }
+
+        // Detect optional types (Opt ...)
+        const isOptional = /^\s*opt\s+/i.test(type);
+        const typeWithoutOpt = isOptional
+          ? type.replace(/^\s*opt\s+/i, '').trim()
           : type;
 
-        const isArrayType = type.toLowerCase().startsWith('vec');
+        // Detect vector types (Vec ...)
+        const isVec = /^\s*vec\s+/i.test(typeWithoutOpt);
+        const innerType = isVec
+          ? typeWithoutOpt.replace(/^\s*vec\s*/i, '').trim()
+          : typeWithoutOpt.trim();
 
         const convertSingleValue = (val: string, typeStr: string): any => {
           switch (typeStr.toLowerCase()) {
@@ -545,7 +632,7 @@ export const ActionContainer = ({
             case 'int64':
               return BigInt(val);
             case 'bool':
-              return val.toLowerCase() === 'true' || val === '1';
+              return String(val).toLowerCase() === 'true' || val === '1';
             case 'float32':
             case 'float64':
               return parseFloat(val);
@@ -554,12 +641,44 @@ export const ActionContainer = ({
           }
         };
 
-        if (isArrayType) {
-          const values = Array.isArray(value) ? value : [value];
-          return values.map((v) => convertSingleValue(v, innerType));
+        // Helper to convert input into the inner type (handles vec inner conversion)
+        const convertToInner = (raw: string | string[] | undefined) => {
+          if (isVec) {
+            const values = Array.isArray(raw)
+              ? raw
+              : raw !== undefined
+                ? String(raw).split(',')
+                : [];
+            return values.map((v) =>
+              convertSingleValue(String(v).trim(), innerType),
+            );
+          }
+          // not a vec: single value
+          return convertSingleValue(String(raw ?? ''), innerType);
+        };
+
+        // If optional, return [] for none, or [convertedValue] for some
+        if (isOptional) {
+          const isNone = rawIsEmpty(value);
+          if (isNone) {
+            return []; // Candid None for Opt
+          }
+          const converted = convertToInner(value);
+          return [converted];
         }
 
-        return convertSingleValue(value, innerType);
+        // Non-optional:
+        return convertToInner(value);
+
+        function rawIsEmpty(v: string | string[] | undefined) {
+          if (v === undefined || v === null) return true;
+          if (Array.isArray(v))
+            return (
+              v.length === 0 ||
+              v.every((x) => x === '' || x === undefined || x === null)
+            );
+          return String(v).trim() === '';
+        }
       };
 
       const parameters: any[] = [];
