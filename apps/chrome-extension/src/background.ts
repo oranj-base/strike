@@ -1,5 +1,4 @@
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-
   if (
     !sender.tab &&
     msg.type !== 'getNetwork' &&

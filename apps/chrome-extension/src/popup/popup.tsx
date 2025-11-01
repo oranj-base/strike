@@ -19,7 +19,6 @@ function Popup() {
 
     const value = enabled ? 'on' : 'off';
     chrome.storage.local.set({ strke: value }, () => {
-
       // Reload current active tab
       chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs[0]?.id) {

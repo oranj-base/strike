@@ -21,7 +21,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "fmt": "prettier --write '**/*.{tsx,ts,json,css,scss,md}'",
-    "zip": "npm run build && node src/zip.js"
+    "zip": "npm run build && node src/zip.js",
+    "publish-extension": "npm run zip && node src/publish-chrome-extension.js"
   },
   "dependencies": {
     "@oranjbase/icp-wallet-adapter": "*",
